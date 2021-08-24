@@ -1,0 +1,880 @@
+---
+sidebar_position: 1
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Data Model
+
+Ditto is a NoSQL database, that can store JSON-like Documents organized by Collections. However, unlike JSON, Ditto allows you to apply updates to the document which will be synchronized with any other copy on other devices. In addition, it supports additional data types.
+
+## Collections
+
+You can think of collections as a table in a traditional database. However, unlike traditional SQL databases, Ditto's collections are far simpler and more flexible. A collection merely referenced by its string value, there is no need to "create" a collection. While it is typically common for all documents in a collection to have the same structure, it is not a technical requirement. For example, all documents referencing cars can go in the "cars" collection and boat documents in the "boats" collection. You can create any number of collections that best represent your data model.
+
+To get a reference to a collection:
+
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+let carsCollection = ditto.store.collection("cars")
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+let carsCollection = ditto.store["cars"]
+// or
+let carsCollection = ditto.store.collection("cars")
+
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITCollection *carsCollection  = [ditto.store collection:@"cars"];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+val carsCollection = ditto.store["cars"]
+// or
+val carsCollection = ditto.store.collection("cars")
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+DittoCollection carsCollection = ditto.store.collection("cars");
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+var carsCollection = ditto.Store.Collection("cars");
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+Collection cars_collection = ditto.store.collection("cars");
+```
+
+</TabItem>
+</Tabs>
+
+## Documents
+A Ditto document is a schema flexible unit of data in Ditto. If collections are similar to tables, then a document is similar to a row. A document, at its highest level, is a map that can contain arbitrarily nested keys and values. Each document has a primary key, often referred to as an id.
+
+## Document `_id`, the Primary Key
+In order for documents to sync, each document must have a unique identifier which we refer to as the id. This is the primary key of the document and is not optional.
+
+You can supply your own unique identifier when creating a document:
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+let docId = ditto.store.collection("people").insert({
+    "_id": "123abc",
+    "name": "Susan",
+    "age": 31
+})
+console.log(docId) // "123abc"
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+let docId = ditto.store["people"].insert([
+    "_id": "123abc"
+    "name": "Susan",
+    "age": 31
+])
+print(docId) // "123abc"
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+NSString *docId = [[ditto.store collection:@"people"]
+                    insert:@{ @"_id": @"123abc" @"name": @"Susan", @"age": @31 }
+                    isDefault:false
+                    error:nil];
+NSLog(@"%@", docId); // => "123abc"
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+val docId = ditto.store["people"].insert(
+    mapOf(
+        "_id" to "123abc"
+        "name" to "Susan",
+        "age" to 31
+    )
+)
+docId // => "123abc"
+
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Map<String, Object> content = new HashMap<>();
+content.put("_id", "123abc");
+content.put("name", "Susan");
+content.put("age", 31);
+DittoDocumentID docId = ditto.store.collection("people").insert(content);
+Log.d("Debug", docId); // => 123abc
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+// Insert JSON-compatible data into Ditto
+var content = new Dictionary<string, object>
+{
+    { "_id", "123abc" },
+    { "name", "Susan" },
+    { "age", 31 }
+};
+ditto.Store.Collection("people").Insert(content);
+docId; // => "123abc"
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+json person = json({
+    { "_id", "123abc" },
+    {"name", "Susan"},
+    {"age", 31}
+});
+DocumentId doc_id = ditto.store
+                         .collection("people")
+                         .insert(person);
+```
+
+</TabItem>
+</Tabs>
+
+The id parameter is optional during insertion. If you do not supply a document `_id`, Ditto will automatically generate a random, unique string and use that as the document's `_id` instead.
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+let docId = ditto.store.collection("people").insert({
+    "name": "Susan",
+    "age": 31
+})
+console.log(docId) // "507f191e810c19729de860ea"
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+let docId = ditto.store["people"].insert([
+    "name": "Susan",
+    "age": 31
+])
+print(docId) // "507f191e810c19729de860ea"
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+NSString *docId = [[ditto.store collection:@"people"]
+                    insert:@{ @"name": @"Susan", @"age": @31 }
+                    isDefault:false
+                    error:nil];
+NSLog(@"%@", docId); // => "507f191e810c19729de860ea"
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+val docId = ditto.store["people"].insert(
+    mapOf(
+        "name" to "Susan",
+        "age" to 31
+    )
+)
+docId // => "507f191e810c19729de860ea"
+
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Map<String, Object> content = new HashMap<>();
+content.put("name", "Susan");
+content.put("age", 31);
+DittoDocumentID docId = ditto.store.collection("people").insert(content);
+Log.d("Debug", docId); // => 507f191e810c19729de860ea
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+// Insert JSON-compatible data into Ditto
+var content = new Dictionary<string, object>
+{
+    { "name", "Susan" },
+    { "age", 31 }
+};
+ditto.Store.Collection("people").Insert(content);
+docId; // => "123abc"
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+json person = json({
+    {"name", "Susan"},
+    {"age", 31}
+});
+DocumentId doc_id = ditto.store
+                         .collection("people")
+                         .insert(person);
+```
+
+</TabItem>
+</Tabs>
+
+## Allowed Document Data Types
+
+Like JSON, Ditto only supports strings as keys in documents. That means attempting to insert a document like the following will throw an error:
+
+```jsonc
+{
+    1: "numeric_keys_are_invalid",
+    "this_part": "is_valid_though"
+}
+```
+
+Document values support all JSON compatible values like `string`, `boolean`, `number`, `null` and arrays or nested maps. In addition, document values can also support special types like binary or counter types. These special types will be discussed below.
+
+<table class="table table-responsive">
+  <tbody>
+    <tr>
+      <th>Data Type</th>
+      <th>Allowed Values</th>
+    </tr>
+    <tr>
+      <td>Boolean</td>
+      <td>
+        <p><code>false</code> or <code>true</code></p>
+      </td>
+    </tr>
+    <tr>
+      <td>String</td>
+      <td>A utf-8 encodable string value</td>
+    </tr>
+    <tr>
+      <td>Number</td>
+      <td>A 64-bit floating point value.</td>
+    </tr>
+    <tr>
+      <td>Array</td>
+      <td>
+        Arrays are an ordered list of values. Arrays can contain all primitive
+        values as well as nested collection types like other Arrays or Maps
+      </td>
+    </tr>
+    <tr>
+      <td>Maps (sometimes referred to as dictionary)</td>
+      <td>
+        This represents a nested object within the overall document. Comparing
+        values at the map level for equality first checks that each key and each
+        value match.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p><code>null</code></p>
+      </td>
+      <td>This represents an absence of value</td>
+    </tr>
+    <tr>
+      <td>
+        <p>Binary</p>
+      </td>
+      <td>
+        <p>
+          A byte string of binary data. Can be used to store images, files
+          etc... We highly recommend keeping the size of the binary to be as
+          small as possible so that syncing stays fast. We highly recommend that
+          you use the <code>Attachment</code> type for most use cases.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p>Attachment</p>
+      </td>
+      <td>
+        <p>
+          A file to sync. This is different from the <code>Binary</code> type
+          where it is meant to hold larger payloads of data. This is best use
+          for multimedia data like images, sounds, pdfs etc...
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p>Counter</p>
+      </td>
+      <td>
+        <p>
+          A special 64 bit floating point value that has the ability to be
+          incremented and decremented. This is highly valuable for building
+          applications like an inventory application where multiple devices need
+          to concurrently increment or decrement values.
+        </p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+The following snippets show a various set of data types
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+// Insert JSON-compatible data into Ditto
+await ditto.store.collection('foo').insert({
+    value: {
+        "boolean": true,
+        "string": "Hello World",
+        "number": 10,
+        "map": { "key": "value" },
+        "array": [1, 2, 3],
+        "null": null
+    }
+})
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+// Insert JSON-compatible data into Ditto
+ditto.store["foo"].insert([
+    "boolean": true,
+    "string": "Hello World",
+    "number": 10,
+    "map": ["key": "value"],
+    "array": [1,2,3],
+    "null": nil
+])
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+// Insert JSON-compatible data into Ditto
+[[ditto.store collection:@"foo"]
+  insert:@{
+      @"boolean": @true,
+      @"string": @"Hello World",
+      @"number": @10,
+      @"map": @{ @"key": @"value" },
+      @"array": @[ @1, @2, @3 ],
+      @"null": [NSNull null]
+  }
+  isDefault:false
+  error:nil];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+ditto.store["foo"].insert(mapOf(
+    "boolean" to true,
+    "string" to "Hello World",
+    "number" to 10,
+    "map" to mapOf("key" to "value"),
+    "array" to listOf(1,2,3),
+    "null" to null
+))
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+// Insert JSON-compatible data into Ditto
+Map<String, Object> content = new HashMap<>();
+content.put("boolean", true);
+content.put("string", "Hello World");
+content.put("number", 10);
+Map<String, String> innerMap = new HashMap<>();
+innerMap.put("key", "value");
+content.put("map", innerMap);
+content.put("array", Arrays.asList(1, 2, 3));
+content.put("null", null);
+ditto.store.collection("foo").insert(content);
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+// Insert JSON-compatible data into Ditto
+var content = new Dictionary<string, object>
+{
+    { "boolean", true },
+    { "string", "Hello World" },
+    { "number", 10 },
+    { "map", new Dictionary<string, string>{{ "key", "value"}} },
+    { "array", new int[] {1, 2, 3} },
+    { "null", null }
+};
+ditto.Store.Collection("foo").Insert(content);
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+// Insert JSON-compatible data into Ditto
+ditto.store.collection("foo").insert({
+    {"boolean", true},
+    {"string", "Hello World"},
+    {"number", 10},
+    {"map", {{"key", "value"}}},
+    {"array", {1,2,3}},
+    {"null", null}
+});
+```
+
+</TabItem>
+</Tabs>
+
+## Binary Data - Attachments
+
+If you have a large amount of binary data, or perhaps just a large file, that you want to sync between devices then instead of inserting this into a document as bytes you should make use of the attachments feature.
+
+Attachments do not get synced between devices by default, even if they are part of a document that is being synced between devices. This is because they could be very large files that a given device doesn't need. Instead an attachment must be explicitly fetched using an attachment token that will be present in the document that the attachment is linked to.
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+// This feature is coming soon
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+let collection = ditto.store["foo"]
+
+let myImageURL = bundle.url(forResource: "image", withExtension: "png")!
+
+let metadata = ["name": "my_image.png"]
+let attachment = collection.newAttachment(
+    path: myImageURL.path,
+    metadata: metadata
+)!
+
+try! collection.insert(["some": "string", "my_attachment": attachment])
+
+// Later, find the document and the fetch the attachment
+
+let doc = collection.findByID(docID).exec()
+let attachmentToken = doc!["my_attachment"].attachmentToken!
+
+let fetcher = collection.fetchAttachment(token: attachmentToken) { status in
+    switch status {
+    case .completed(let fetchedAttachment):
+        // Do something with attachment
+        break
+    default:
+        print("Unable to fetch attachment")
+        break
+    }
+}
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+NSURL *myImageURL = [bundle URLForResource:@"image" withExtension:@"png"];
+
+NSDictionary<NSString *, NSString *> *metadata = @{@"name": @"my_image.png"};
+DITAttachment *attachment = [collection newAttachment:myImageURL.path
+                                             metadata:metadata];
+
+[collection insert:@{@"some": @"string", @"my_attachment": attachment} error:nil];
+
+// Later, find the document and the fetch the attachment
+
+DITDocument *doc = [[collection findByID:docID] exec];
+DITAttachmentToken *attachmentToken = doc[@"my_attachment"].attachmentToken;
+
+DITAttachmentFetcher *fetcher = [collection fetchAttachment:attachmentToken
+                                            onStatusChanged:^(DITAttachmentStatus *status) {
+    switch (status.type) {
+        case DITAttachmentStatusTypeCompleted: {
+            DITAttachment *fetchedAttachment = completed.attachment;
+            // Do something with attachment
+            break;
+        }
+        default:
+            NSLog(@"Unable to fetch attachment")
+            break;
+    }
+}];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+val attachmentStream =  context.assets.open("image.png")
+
+val metadata = mapOf("name" to "my_image.png")
+val attachment = coll.newAttachment(attachmentStream, metadata)
+
+val docID =  coll.insert(mapOf("some" to "string", "my_attachment" to attachment))
+
+// Later, find the document and the fetch the attachment
+
+val doc = coll.findByID(docID).exec()
+val attachmentToken = doc!!["my_attachment"].attachmentToken
+
+val fetcher =  coll.fetchAttachment(attachmentToken!!) {
+    when (it) {
+        is Completed -> {
+            let fetchedAttachment = it.attachment
+            // Do something with attachment
+        }
+        else -> println("Unable to fetch attachment")
+    }
+}
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+InputStream attachmentStream = context.getAssets().open("image.png");
+
+Map<String, String> metadata = new HashMap<>();
+metadata.put("name", "my_image.png");
+DittoAttachment attachment = coll.newAttachment(attachmentStream, metadata);
+
+Map<String, Object> content = new HashMap<>();
+content.put("some", "string");
+content.put("my_attachment", attachment);
+DittoDocumentID docID = coll.insert(content);
+
+// Later, find the document and the fetch the attachment
+
+DittoDocument doc = coll.findByID(docID).exec();
+DittoAttachmentToken attachmentToken = doc.get("my_attachment").getAttachmentToken();
+
+class AttachmentStatusHandler implements DittoAttachmentStatusChangeHandler {
+
+    @Override
+    public void onStatusChanged(@NotNull DittoAttachmentStatus status) {
+        if (status instanceof DittoAttachmentStatus.Completed) {
+            DittoAttachment att = ((DittoAttachmentStatus.Completed) status).getAttachment();
+            // Do something with attachment
+        } else {
+            System.out.println("Unable to fetch attachment");
+        }
+    }
+}
+
+AttachmentStatusHandler attachmentStatusHandler = new AttachmentStatusHandler();
+DittoAttachmentFetcher fetcher = coll.fetchAttachment(attachmentToken, attachmentStatusHandler);
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+var coll = ditto.Store.Collection("people");
+var path = "path/to/image.png";
+var metadata = new Dictionary<string, string> { { "name", "my_image.png" } };
+var attachment = coll.NewAttachment(path, metadata);
+var docID = coll.Insert(new Dictionary<string, object> { { "some", "string" }, { "my_attachment", attachment } });
+
+// Later, find the document and the fetch the attachment
+
+DittoDocument doc = coll.FindById(docID).Exec();
+DittoAttachmentToken attachmentToken = doc["my_attachment"].AttachmentToken;
+var fetcher = carsCollection.FetchAttachment(token: attachmentToken, (status) =>
+{
+    if (status is DittoAttachmentFetchEvent.Completed)
+    {
+        // Do something with attachment
+    }
+    else
+    {
+        Console.WriteLine($"Unable to fetch attachment");
+    }
+});
+
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+std::string attachment_file_path = std::filesystem::path(
+    std::filesystem::current_path() + "/image.png").string();
+std::map<std::string, std::string> metadata = {{"some", "string"}};
+Attachment attachment =
+    collection.new_attachment(attachment_file_path, metadata);
+
+collection.insert({{"some", "string"}, {"my_attachment", attachment}});
+
+// Later, find the document and the fetch the attachment
+
+std::shared_ptr<Document> doc = collection.find_by_id(doc_id).exec();
+
+std::shared_ptr<AttachmentToken> att_token =
+    (*doc)["my_attachment"].get_attachment_token();
+
+std::unique_ptr<AttachmentFetcher> fetcher = collection.fetch_attachment(
+    att_token,
+    AttachmentFetcherEventHandler{
+        [&](std::unique_ptr<AttachmentStatus> status) {
+        switch (status->type) {
+        case AttachmentStatusType::Completed: {
+            AttachmentStatusCompleted *completed_status =
+                static_cast<AttachmentStatusCompleted *>(status.get());
+            Attachment fetched_attachment = completed_status->attachment;
+            // Do something with attachment
+            break;
+        }
+        default:
+            std::cout << "Unable to fetch attachment" << std::endl;
+        }
+        }});
+```
+
+</TabItem>
+</Tabs>
+
+
+## Counter Types
+
+Counter is a very special type that is specific to Ditto. While they look like the number type, they are geared towards building applications where various different devices need to increment or decrement at the same time while preserving consistency. The most common use is to build a voting system or an inventory application. Building applications that needs a consistent count with only using the default number type will not be appropriate. This is where the counter comes in.
+
+Counters can be edited through a special method called increment which takes a number to increment the counter by. If you wish to decrement the counter then you can supply a negative number.
+
+To create a counter, first insert a document with number value. You must then call an update function to convert the number into a counter with the replaceWithCounter method. This will convert the number into a counter.
+
+Once the value in the document is a counter, you can proceed to increment or decrement the value. This will preserve an accurate value once devices sync.
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+// This feature is not yet supported for JavaScript
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+let docId = ditto.store["people"].insert([
+    "name": "Frank",
+    "ownedCars": 0 // here 0 is a number
+])
+
+ditto.store.["people"].findByID(docId).update({ mutableDoc in
+    mutableDoc?["ownedCars"].replaceWithCounter()
+    mutableDoc?["ownedCars"].increment(amount: 1)
+})
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+NSString *docId = [[ditto.store collection:@"people"]
+                    insert:@{ @"model": @"Frank", @"ownedCars": @0 }
+                    isDefault:false
+                    error:nil];
+
+[[[ditto.store collection:@"people"] findByID:docId] update:^(DITMutableDocument * mutableDoc) {
+    [mutableDoc[@"ownedCars"] replaceWithCounterAndReturnError:nil];
+    [mutableDoc[@"ownedCars"] incrementWithAmount:1 error:nil];
+}];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+val docID = ditto.store["people"].insert(mapOf(
+    "name" to "Frank",
+    "ownedCars" to 0
+))
+
+ditto.store.collection("people").findByID(docID).update { mutableDoc ->
+    mutableDoc["ownedCars"].replaceWithCounter()
+    mutableDoc["ownedCars"].increment(1)
+}
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Map<String, Object> content = new HashMap<>();
+content.put("name", "Frank");
+content.put("ownedCars", 0);
+DittoDocumentID docID = ditto.store.collection("people").insert(content);
+
+ditto.store.collection("people").findByID(docID).update(mutDoc -> {
+    try {
+        mutDoc.get("ownedCars").replaceWithCounter();
+        mutDoc.get("ownedCars").increment(1);
+    } catch (DittoError err) {
+        // Do something with error
+    }
+});
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+var content = new Dictionary<string, object>
+{
+    { "name", "Frank" },
+    { "ownedCars", 0 }
+};
+ditto.Store.Collection("people").Insert(content);
+ditto.Store.Collection("people").FindById(docId).Update((mutableDoc) => {
+    mutableDoc["ownedCars"].ReplaceWithCounter();
+    mutableDoc["ownedCars"].Increment(1);
+});
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+DocumentId docID = ditto.store.collection("people").insert({
+    {"name", "Frank"},
+    {"ownedCars", 0}
+};
+
+ditto.store
+     .collection("people")
+     .find_by_id(docID)
+     .update([](MutableDocument &doc) {
+         doc["ownedCars"].replace_with_counter();
+         doc["ownedCars"].increment(1);
+     };
+```
+
+</TabItem>
+</Tabs>

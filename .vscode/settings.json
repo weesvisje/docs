@@ -1,0 +1,6 @@
+{
+  "editor.tabCompletion": "onlySnippets",
+  "[markdown]":  {
+    "editor.quickSuggestions": true
+  }
+}

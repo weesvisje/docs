@@ -1,0 +1,698 @@
+---
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Insert, Update, and Remove
+
+## Inserting Documents
+
+Insert data into a collection with the insert function. It will return the `_id` of the document that was inserted.
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+const docID = await ditto.store.collection('people').insert({
+    value: {name: "Susan", age: 31}
+})
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+// Insert JSON-compatible data into Ditto
+let docId = ditto.store["people"].insert([
+    "name": "Susan",
+    "age": 31
+])
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+// Insert JSON-compatible data into Ditto
+DITDocumentID *docID = [[ditto.store collection:@"people"]
+     insert:@{ @"name": @"Susan", @"age": [NSNumber numberWithInt:31] }
+     isDefault:false
+     error:nil];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+val docId = ditto.store["people"].insert(mapOf(
+    "name" to "Susan",
+    "age" to 31
+))
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Map<String, Object> content = new HashMap<>();
+content.put("name", "Susan");
+content.put("age", 31);
+DittoDocumentID docId = ditto.store.collection("people").insert(content);
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+var content = new Dictionary<string, object>
+{
+    { "name", "Susan" },
+    { "age", 31 }
+};
+var docId = ditto.Store.Collection("people").Insert(content);
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+json content = json({
+    { "name", "Susan" },
+    { "age", 31 }
+});
+DocumentId doc_id = ditto.store.collection("people").insert(content);
+```
+
+</TabItem>
+</Tabs>
+
+### Inserting with a specific `_id`
+
+There are times where you want to specify the `_id` of the document before insertion. Note that the `_id` is immutable. This means that you cannot change the `_id` once you have inserted the document.
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+const docID = await ditto.store.collection('people').insert({
+    _id, "123abc",
+    name: "Susan", 
+    age: 31
+})
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+// Insert JSON-compatible data into Ditto
+let docId = ditto.store["people"].insert([
+    "_id": "123abc",
+    "name": "Susan",
+    "age": 31
+])
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+// Insert JSON-compatible data into Ditto
+DITDocumentID *docID = [[ditto.store collection:@"people"]
+     insert:@{ @"_id": "123abc", @"name": @"Susan", @"age": [NSNumber numberWithInt:31] }
+     isDefault:false
+     error:nil];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+val docId = ditto.store["people"].insert(mapOf(
+    "_id" to "123abc",
+    "name" to "Susan",
+    "age" to 31
+), DittoDocumentID("123abc"))
+
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Map<String, Object> content = new HashMap<>();
+content.put("_id", "123abc");
+content.put("name", "Susan");
+content.put("age", 31);
+DittoDocumentID docId = ditto.store.collection("people").insert(content);
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+var content = new Dictionary<string, object>
+{
+    { "_id_", "123abc" },
+    { "name", "Susan" },
+    { "age", 31 }
+};
+ditto.Store.Collection("people").Insert(content);
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+ditto.store.collection("people").insert({{"_id", "123abc"}, { "name", "Susan" }, { "age", 31 }});
+```
+
+</TabItem>
+</Tabs>
+
+### Default Data
+
+Default Data can be thought of as "placeholder" data.  Default Data is useful when your app needs to load "starter" data from an external data source, like from a backend API, on multiple devices without creating odd "overwriting" behavior.
+
+Ditto's approach to conflict resolution orders changes by time. In most situations, this leads to predictable behavior. However, if your application is inserting the same initial data into multiple devices, such as common data from a central backend API, this could result in overwriting later changes:
+
+1. Device A inserts a document `{"firstName": "Adam"}` at time = 0 after downloading from a central API.
+2. Device A updates the document to `{"firstName": "Max"}` at time = 1.
+3. Device B synchronizes with Device A receiving the document `{"firstName": "Max"}` at time = 2.
+4. Device B downloads the same document from the backend API `{"firstName": "Adam"}` and inserts at t = 3, which overwrites the previous change synced at time = 1.
+
+In the above example, both Device A and B want to preserve the change by Device A that occurred after downloading the common data. To do so, Ditto offers an additional parameter: isDefault.
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+const docID = await ditto.store.collection('people').insert({
+    id: new DocumentID(123),
+    value: {name: "Susan", age: 31},
+    isDefault: true
+})
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+let docId = ditto.store.collection("people").insert([
+    "name": "Susan",
+    "age": 31
+], isDefault: true)
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITDocumentID *docID = [[ditto.store collection:@"people"]
+     insert:@{ @"name": @"Susan", @"age": [NSNumber numberWithInt:31] }
+     isDefault:true
+     error:nil];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+val docId = ditto.store.collection("people").insert(mapOf(
+    "name" to "Susan",
+    "age" to 31
+), isDefault: true)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Map<String, Object> content = new HashMap<>();
+content.put("name", "Susan");
+content.put("age", 31);
+DittoDocumentID docId = ditto.store
+                             .collection("people")
+                             .insert(content, new DittoDocumentID("doc-id"), true);
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+DittoDocumentID docID = ditto.Store
+                        .Collection("people")
+                        .Insert(
+                            {{"name", "Susan"}, {"age", 31}},
+                            new DittoDocumentID("doc-id"),
+                            true
+                        );
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+json content = json({{ "name", "Susan" }, { "age", 31 }}):
+DocumentId doc_id = ditto.store.collection("people")
+                               .insert(content, DocumentId("doc-id"), true);
+```
+
+</TabItem>
+</Tabs>
+
+## Updating Documents
+
+Updating documents are categorized into 3 types of operations:
+
+Standard
+
+* Set - sets value for a given key in the document
+* Remove - removes a value for a given key in the document
+
+Counters
+
+* Replace with counter - will convert a number value for a given key into a counter
+* Increment - unlike a number, a counter allows for increment operations (decrement is performed by incrementing by a negative increment) and these operations will converge
+
+Arrays
+
+* Push - inserts a value on to the end of an array at the document's key
+* Pop - removes a value at the end of an array at the document's key
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+const docID = await ditto.store.collection('people').insert({
+    value: {
+        name: "Frank",
+        age: 31,
+        ownedCars: 0,
+        friends: []
+    }
+})
+
+await ditto.store.collection('people').findByID(docID).update((mutableDoc) => {
+    mutableDoc['age'] = 32
+    mutableDoc['friends'].push('Susan')
+    
+    // Counters aren't supported by the JS SDK yet but will be soon:
+    mutableDoc['ownedCars'].replaceWithCounter()
+    mutableDoc['ownedCars'].increment(amount: 1)    
+})
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+let docId = ditto.store["people"].insert([
+    "name": "Frank",
+    "age": 31,
+    "ownedCars": 0,
+    "friends": []
+])
+
+ditto.store["people"].findByID(docId).update { mutableDoc in
+    mutableDoc?["age"].set(32)
+    mutableDoc?["ownedCars"].replaceWithCounter()
+    mutableDoc?["ownedCars"].increment(amount: 1)
+    mutableDoc?["friends"].push("Susan")
+}
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+NSString *docId = [[ditto.store collection:@"people"] insert:@{
+    @"name": @"Frank",
+    @"age": [NSNumber numberWithInt:31],
+    @"ownedCars": [NSNumber numberWithInt:0],
+    @"friends": @[]
+} error:nil];
+
+[[[ditto.store collection:@"people"] findByID:docId] update:^(DITMutableDocument *doc) {
+   [doc[@"age"] set:[NSNumber numberWithInt:32]];
+   [doc[@"ownedCars"] replaceWithCounter];
+   [doc[@"ownedCars"] increment:1];
+   [doc[@"friends"] push:@"Susan" error:nil];
+} error:nil];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+val docId = ditto.store["people"].insert(mapOf(
+    "name" to "Frank",
+    "age" to 31,
+    "ownedCars" to 0,
+    "friends" to emptyList<String>()
+))
+
+ditto.store.collection("people").findByID(docId).update { mutableDoc ->
+    mutableDoc?.let {
+        it["age"].set(32)
+        it["ownedCars"].replaceWithCounter()
+        it["ownedCars"].increment(1)
+        it["friends"].push("Susan")
+        it["name"].replaceText(5, 0, " Smith")
+    }
+}
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Map<String, Object> content = new HashMap<>();
+content.put("name", "Frank");
+content.put("age", 31);
+content.put("ownedCars", 0);
+content.put("friends", Arrays.asList());
+DittoDocumentID docId = ditto.store.collection("people").insert(content);
+
+ditto.store.collection("people").findByID(docId).update(doc -> {
+    try {
+      doc.get("age").set(32);
+      doc.get("ownedCars").replaceWithCounter();
+      doc.get("ownedCars").increment(1);
+      doc.get("friends").push("Susan");
+    } catch (DittoError err) {
+        // Do something with error
+    }
+});
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+var content = new Dictionary<string, object>
+{
+    { "name", "Bob" },
+    { "age", 40 },
+    { "ownedCars", 0 },
+    { "friends", new List<object>() }
+};
+
+var docId = ditto.Store.Collection("people").Insert(content);
+ditto.Store.Collection("people").FindById(docId).Update((mutableDoc) => {
+    mutableDoc["age"].Set(32);
+    mutableDoc["ownedCars"].ReplaceWithCounter();
+    mutableDoc["ownedCars"].Increment(1);
+    mutableDoc["friends"].Push("Susan");
+});
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+DocumentId doc_id = ditto.store.collection("people").insert({
+  {"name", "Frank"},
+  {"age", 31},
+  {"ownedCars", 0},
+  {"friends": {}}
+});
+
+ditto.store
+     .collection("people")
+     .find_by_id(doc_id)
+     .update([](MutableDocument &doc) {
+       doc["age"].set(32);
+       doc["ownedCars"].replace_with_counter();
+       doc["ownedCars"].increment(1);
+       doc["friends"].push("Susan");
+     });
+```
+
+</TabItem>
+</Tabs>
+
+## Removing Documents
+
+Removes will delete or remove one or more documents from the collection. These remove operations will also sync and remove the relevant documents from connected peers.
+
+### Removing by `_id`
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+await ditto.store.collection('people').findByID(docID).remove()
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+ditto.store["people"].findByID(docId).remove()
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITCollection *collection = [ditto.store collection:@"people"];
+[[collection findByID:@"123"] remove];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+ditto.store["people"].findByID(docId).remove()
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+ditto.store.collection("people").findByID(docId).remove();
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+ditto.Store.Collection("people").FindByID(docId).Remove();
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+ditto.store.collection("people").find_by_id(docId).remove();
+```
+
+</TabItem>
+</Tabs>
+
+### Removing by query
+
+You can also remove several documents with a query string. This example will remove all documents in the "people" collection who has an age property lower than or equal to 32 (`"age <= 32"`)
+
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+await ditto.store.collection('people').find('age <= 32').remove()
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+ditto.store["people"].find("age <= 32").remove()
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITCollection *collection = [ditto.store collection:@"people"];
+[[collection find:@"age <= 32"] remove];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+ditto.store["people"].find("age <= 32").remove()
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+ditto.store.collection("people").find("age <= 32").remove();
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+ditto.Store.Collection("people").Find("age <= 32").Remove();
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+ditto.store.collection("people").find("age <= 32").remove();
+```
+
+</TabItem>
+</Tabs>
+
+## Evicting Data
+
+There are times where you want to remove data _without_ syncing the delete operation. This operation is different than remove in that it only removes one of more documents from the local storage and **does not sync the change to other devices.**
+
+For example, you might use this operation when a device has completed an activity that involved synchronizing data with other devices and has transmitted the data to a backend. At this point, the device can evict the data locally to free up storage, but it does not want to remove the data from any other device.
+
+The API is extremely similar to the `remove()` API, however it uses `evict()` instead.
+
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+await ditto.store.collection('people').find('age <= 32').evict()
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+ditto.store["people"].find("age <= 32").evict()
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITCollection *collection = [ditto.store collection:@"people"];
+[[collection find:@"age <= 32"] evict];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+ditto.store["people"].find("age <= 32").evict()
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+ditto.store.collection("people").find("age <= 32").evict();
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+ditto.Store.Collection("people").Find("age <= 32").evict();
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+ditto.store.collection("people").find("age <= 32").evict();
+```
+
+</TabItem>
+</Tabs>
