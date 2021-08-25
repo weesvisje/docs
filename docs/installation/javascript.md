@@ -1,10 +1,11 @@
 ---
+title: 'JavaScript'
 sidebar_position: 1
 ---
 
-# JavaScript
+# JavaScript Installation Instructions
 
-Ditto's JavaScript SDK can run either in the browser, NodeJS, or Electron environments. React Native support is currently under development.
+Ditto's JavaScript SDK can run either in the browser, NodeJS, or Electron environments. React Native support is currently under development. For more information about browser support or NodeJS and Electron support [click here.](../reference/supported-platforms)
 
 1. Add the JS package with either npm or yarn.
 

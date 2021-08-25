@@ -98,7 +98,7 @@ std::vector<Document> results = ditto.store.collection("people")
 To refer to keys within the document's property tree, Ditto uses dot notation that should be familiar to most developers. Let's say we have a document like so:
 
 
-```jsonc
+```json
 {
    "_id": "123abc",
    "name": { "first": "Alan", "last": "Turing" },
@@ -109,13 +109,13 @@ To refer to keys within the document's property tree, Ditto uses dot notation th
 
 If you wanted to query for the `lastName` property nested in `name` with the following document contents
 
-```
+```js
 find("name.last == 'Turing'")
 ```
 
 Keys in the query syntax by default must be alphanumeric or include underscore (a-zA-Z0-9_). In addition, the key must start with an alpha characters first (a-zA-Z_). If your key uses another character, such as a hyphen, you must use a __brack syntax__. To query for th `"street-line"` property underneath `"work"`, you will need to do the following: 
 
-```
+```js
 find("work['street-line'] == '678 Johnson Street'")
 ```
 
