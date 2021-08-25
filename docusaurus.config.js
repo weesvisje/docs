@@ -17,6 +17,7 @@ module.exports = {
     navbar: {
       title: "Ditto",
       logo: {
+        href: '/',
         alt: "My Site Logo",
         src: "img/logo.png",
       },
@@ -25,8 +26,9 @@ module.exports = {
           type: "doc",
           docId: "intro",
           position: "left",
-          label: "Tutorial",
+          label: "Quick Start",
         },
+        { href: "https://www.ditto.live", label: "Home", position: "left" },
         { to: "/blog", label: "Blog", position: "left" },
         {
           href: "https://github.com/getditto/docs",
@@ -42,8 +44,12 @@ module.exports = {
           title: "Docs",
           items: [
             {
-              label: "Tutorial",
+              label: "Quick Start",
               to: "/docs/intro",
+            },
+            {
+              label: "Main Website",
+              href: "https://www.ditto.live/",
             },
           ],
         },
@@ -52,15 +58,11 @@ module.exports = {
           items: [
             {
               label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus",
-            },
-            {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus",
+              href: "https://stackoverflow.com/questions/tagged/ditto",
             },
             {
               label: "Twitter",
-              href: "https://twitter.com/docusaurus",
+              href: "https://twitter.com/dittolive",
             },
           ],
         },
@@ -73,12 +75,12 @@ module.exports = {
             },
             {
               label: "GitHub",
-              href: "https://github.com/facebook/docusaurus",
+              href: "https://github.com/getditto/docs",
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} DittoLive, Inc. Built with Docusaurus.`,
     },
     prism: {
       additionalLanguages: ["csharp", "swift", "java", "kotlin", "cpp"],
@@ -95,13 +97,13 @@ module.exports = {
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
           editUrl:
-            "https://github.com/facebook/docusaurus/edit/master/website/",
+            "https://github.com/getditto/docs/edit/master/website/",
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            "https://github.com/facebook/docusaurus/edit/master/website/blog/",
+            "https://github.com/getditto/docs/master/website/blog/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),

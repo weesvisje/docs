@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 ## Enabling Sync
 
-To enable Ditto to sync data, you'll need to call `ditto.tryStartSync()`. Preferably, you should call `tryStartSync()` early on in your application's life cycle like in your `AppDelegate.application(_:didFinishLaunchingWithOptions:)` or `Application.onCreate` methods.
+To enable Ditto to sync data, you'll need to call `ditto.tryStartSync()`. Preferably, you should call `tryStartSync()` early on in your application's life cycle like in your `AppDelegate.application(_:didFinishLaunchingWithOptions:)` or `Application.onCreate` methods. Your application only needs to call this function once. 
 
 <Tabs
   groupId="programming-language"
@@ -96,6 +96,13 @@ catch (DittoException ex)
 <TabItem value="cpp">
 
 ```cpp
+try {
+    ditto.try_start_sync();
+} catch (const DittoError &err) {
+    // handle exception  
+} catch (const std::exception &e) {
+    std::cerr << exc.what();
+}
 ```
 
 </TabItem>
@@ -103,7 +110,9 @@ catch (DittoException ex)
 
 ## Syncing Data with Live Queries
 
-Ditto will only sync data with other peers when it has an active `LiveQuery`. A `LiveQuery` is a long-running subscription to a constructed Ditto query. Use a query to specify what types of data to sync with other devices. To create a `LiveQuery`, simply add `.observe` to a query cursor like so:
+Ditto will only sync data with other peers when it has an active `LiveQuery`. With Ditto, syncing a _pull_ mechanism. Your app will sync by subscribing to a query, this is what we call a `LiveQuery`. A `LiveQuery` is a long-running subscription to a constructed Ditto query. Use a query to specify what types of data to sync with other devices. [Learn more about how to create queries](./querying)
+
+To create a `LiveQuery`, simply add `.observe` to a query cursor like so:
 
 <Tabs
   groupId="programming-language"
@@ -180,7 +189,7 @@ this.liveQuery = ditto.store.collection("cars")
 
 ```csharp
 // --- Register live query to update UI
-var localLiveQuery = ditto.Store.Collection("cars").Find("color == 'red'").Observe((docs, DittoLiveQueryEvent) =>
+var liveQuery = ditto.Store.Collection("cars").Find("color == 'red'").Observe((docs, DittoLiveQueryEvent) =>
 {
     // Do something...
 });
@@ -212,7 +221,7 @@ Here are some quick facts about the `LiveQuery` behavior.
 
 ## Live Queries without Syncing Data
 
-There are many situations where an app needs to observe live queries _without_ initiating syncing with other devices. 
+There are many situations where your app needs to observe live queries _without_ initiating syncing with other devices. For example, this is useful if your app intends to treat certain documents and collections as local-only data. Instead of `.observe`, call `.observeLocal` like so:
 
 <Tabs
   groupId="programming-language"
@@ -362,3 +371,5 @@ std::shared_ptr<LiveQuery> query = collection
 
 </TabItem>
 </Tabs>
+
+Note: if your ditto instance has not called `tryStartSync`, there will be no difference between `.observe` and `.observeLocal`.

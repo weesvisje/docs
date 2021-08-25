@@ -3,6 +3,9 @@ title: 'iOS'
 sidebar_position: 2
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # iOS Installation Instructions
 
 1. [Ensure you have CocoaPods 1.1.0 or later](https://guides.cocoapods.org/using/getting-started.html)
@@ -19,18 +22,13 @@ If you are installing for an Objective-C project use the following CocoaPod inst
 pod 'DittoObjC'
 ```
 
-## Permissions
+4. Add the following permissions in your `Info.plist` so that your app can use all the necessary communication channels. Right click on your project's `Info.plist` file, click `Open As > Source Code`.
 
-Since iOS 13 and Xcode 11 an app must ask the user's permission to use Bluetooth. Ditto will activate Bluetooth by default, which means the user will receive a permission prompt automatically.
+![Example banner](./xcode-info-plist-open-as-source.png)
 
-You must include several keys in the __Info.plist__ file your app.
+5. _Add_ the following keys. 
 
-* Privacy - Local Network Usage Description
-* Privacy - Bluetooth Peripheral Usage Description
-* Privacy - Bluetooth Always Usage Description
-* A Bonjour service _http-alt._tcp.
-
-```xml
+```xml title=Info.plist
 <key>NSBluetoothAlwaysUsageDescription</key>
 <string>Uses Bluetooth to connect and sync with nearby devices</string>
 <key>NSBluetoothPeripheralUsageDescription</key>
@@ -42,3 +40,41 @@ You must include several keys in the __Info.plist__ file your app.
   <string>_http-alt._tcp.</string>
 </array>
 ```
+
+The values like `<string>Uses WiFi to connect and sync with nearby devices</string>` will be displayed in a prompt. Replace it with whatever language is best for your users.
+
+6. You can now use Ditto in your application:
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="swift"
+  values={[
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+  ]
+}>
+<TabItem value="swift">
+
+```swift
+import DittoSwift
+
+let ditto = Ditto()
+ditto.setLicenseToken("my license token")
+try! ditto.tryStartSync()
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+#import <DittoObjC/DittoObjC.h>
+
+
+DITDitto *ditto = [[DITDitto alloc] init];
+[ditto setLicenseToken: @"my license token"];
+NSError *error = nil;
+[ditto tryStartSync:&error];
+```
+
+</TabItem>
+</Tabs>
