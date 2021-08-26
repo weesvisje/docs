@@ -1,0 +1,159 @@
+---
+title: '2 - Configure Ditto'
+---
+
+## 2-1 Create Application Class 
+
+Typically, applications with Ditto will need to run Ditto as a singleton. To construct Ditto it'll need access to a live Android `Context`. Since the Application class is a singleton and has the necessary `Context`, we can create a subclass called __TasksApplication.kt__
+
+1. Add a `companion object` and declare `var ditto: Ditto? = null`. This will create a static variable that we can always access throughout our entire application.
+2. In the `override fun onCreate()`, construct ditto with `DefaultAndroidDittoDependencies` see below. 
+
+
+```kotlin title="TasksApplication.kt"
+import android.app.Application
+import live.ditto.Ditto
+import live.ditto.DittoIdentity
+import live.ditto.android.DefaultAndroidDittoDependencies
+
+
+class TasksApplication: Application() {
+
+    companion object {
+        var ditto: Ditto? = null;
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        // construct a DefaultAndroidDittoDependencies object with the applicationContext
+        val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
+        // for this example we will use a Development identity
+        val identity = DittoIdentity.Development(appName = "live.ditto.tasks", dependencies = androidDependencies);
+        ditto = Ditto(androidDependencies, identity)
+    }
+
+}
+```
+
+Now you will be able to access this Ditto anywhere in your application like so:
+
+```kotlin
+val docs = TasksApplication.ditto!!.store["tasks].findAll().exec()
+```
+
+## 2-2 Add Permissions and Register Class
+
+The lines to add are highlighted below. 
+
+```diff title="AndroidManifest.xml" {5-15,18}
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="live.ditto.compose.tasks">
+
++    <uses-permission android:name="android.permission.BLUETOOTH" />
++    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
++    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
++    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
++    <uses-permission android:name="android.permission.INTERNET" />
++    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
++    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
++    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
++    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
++    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+
+
+    <application
++       android:name=".TasksApplication" 
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        ... more
+        />
+
+```
+
+## 2-3 Start Ditto Sync
+
+When Android studio created the project, it should have created a file called __MainActivity.kt__. In this file, we will take the singleton `TasksApplication.ditto!!` and begin to start the sync process with `tryStartSync()`
+
+Notice the line `ditto!!.setLicenseToken("<REPLACE_ME>")`, please add your Ditto license token. For more information about how to get a license token please go to https://portal.ditto.live, sign up and create an app. 
+
+If you skip this step, the app will still work but Ditto will only work as local database. The app will show an error in the event that `tryStartSync` encounters an error.
+
+```kotlin title="MainActivity" {5-18}
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+      super.onCreate(savedInstanceState)
+
+      val ditto = TasksApplication.ditto
+      try {
+          ditto!!.setLicenseToken("<REPLACE_ME>")
+          ditto!!.tryStartSync()
+      } catch (e: DittoError) {
+          Toast.makeText(
+              this@MainActivity,
+              """
+                  Uh oh! There was an error trying to start Ditto's sync feature.
+                  That's okay, it will still work as a local database.
+                  This is the error: ${e.localizedMessage}
+              """.trimIndent(), Toast.LENGTH_LONG
+          ).show()
+      }
+
+      setContent {
+          // ... 
+      }
+    }
+}
+```
+
+
+### 2-3 Create a Task data class
+
+Ditto is a document database, which represents all of it's rows in the database a JSON-like structure. In this tutorial, we will represent each task like so:
+
+```jsonc 
+{
+  "_id": "123abc", 
+  "body": "Get Milk",
+  "isCompleted": true
+}
+```
+
+These Task documents will all be in the the "tasks" collection. We will be referencing this collection throughout this tutorial with:
+
+```kotlin
+val tasksCollection = TasksApplication.ditto!!.store["tasks"]
+```
+
+Ditto documents have a flexible structure. Often times, in strongly-typed languages we will create a data structure to better define the data. 
+
+Create a new Kotlin file called __Task.kt__ in your project. 
+
+```kotlin title="Task.kt"
+data class Task(
+    val _id: String = UUID.randomUUID().toString(),
+    val body: String,
+    val isCompleted: Boolean
+) {
+    constructor(document: DittoDocument) : this(
+        document["_id"].stringValue,
+        document["body"].stringValue,
+        document["isCompleted"].booleanValue
+    ) {
+
+    }
+}
+```
+
+This data class takes a `DittoDocument` and safely parses out the values into native Kotlin types. We also added an additional constructor that allows for us to preview data without requiring DItto.
+
+So now in our application if we want a `List<Task>` we write the following code:
+
+```kotlin
+val tasks: List<Task> = TasksApplication
+  .ditto!!.store["tasks]
+  .findAll()
+  .exec().map { it -> Task(it) }
+```
+
+Once we set up our user interface, you'll notice that reading these values becomes a bit easier with this added structure.

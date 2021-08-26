@@ -57,7 +57,7 @@ android {
 
 <Tabs
   groupId="programming-language"
-  defaultValue="javascript"
+  defaultValue="kotlin"
   values={[
     {label: 'Kotlin', value: 'kotlin'},
     {label: 'Java', value: 'java'},

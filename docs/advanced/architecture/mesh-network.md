@@ -58,33 +58,33 @@ When a user opens your app the first thing they will see is how quickly it syncs
 
 After this initial burst Ditto must become more efficient. A mobile phone has a finite battery. Each extra LAN connection consumes more CPU time and more radio energy. Bluetooth is particularly constrained: devices can manage only a handful of concurrent connections and each connection can take several seconds to initiate. Therefore in larger meshes Ditto must limit the number of interconnections, and choose wisely.
 
-<div class="d-flex justify-content-center">
+<!-- <div class="d-flex justify-content-center">
   <div class="col-lg-8 py-4">
     <img src="./diagram3_two_islands.png"/>
   </div>
-</div>
+</div> -->
 
 At the same time Ditto must not have too _few_ connections: otherwise islanding can occur, where different groups of devices in the same room are connected in individual clusters. If there is no connection between those groups they will not sync data with each other.
 
 Ditto avoids islanding using two techniques, neither of which require central coordination. First, a reasonably dense mesh is preferred so that islanding is improbable. Second, a random churn means that devices will slowly change which peers they are connected to. This ensures that even if an island did form, it will likely only last a few seconds.
 
-<div class="d-flex justify-content-center">
+<!-- <div class="d-flex justify-content-center">
   <div class="col-lg-8 py-4">
     <img
     alt="Bluetooth Case 1"
     class="img-fluid mx-auto d-block"
     src="./diagram4_bluetooth_case1.png" style='max-height:500px'/>
   </div>
-</div>
+</div> -->
 
 
 Next, certain optimisations are possible. Imagine there are two candidate peers for a Bluetooth connection but you only have capacity for one. If you are already connected to one of those peers via WiFi, then we should spend our Bluetooth connection on the other peer, to improve the diversity of the mesh.
 
-<div class="d-flex justify-content-center">
+<!-- <div class="d-flex justify-content-center">
   <div class="col-lg-8 py-4">
     <img alt="Bluetooth Case 2" class="img-fluid mx-auto d-block" src="./diagram5_bluetooth_case2.png" style='max-height:500px'/>
   </div>
-</div>
+</div> -->
 
 
 Now, imagine the same scenario except we have capacity for two Bluetooth connections. This time we should connect to _both_ of them. The Bluetooth connection where we have WiFi will sit idle for now, but if that WiFi connection goes away in the future then we can immediately failover to the pre-established Bluetooth connection. The user won't even notice that anything happened.

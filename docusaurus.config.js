@@ -1,6 +1,6 @@
 const lightCodeTheme = require("prism-react-renderer/themes/github");
 const darkCodeTheme = require("prism-react-renderer/themes/dracula");
-const path = require('path');
+const path = require("path");
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
@@ -17,7 +17,7 @@ module.exports = {
     navbar: {
       title: "Ditto",
       logo: {
-        href: '/',
+        href: "/",
         alt: "My Site Logo",
         src: "img/logo.png",
       },
@@ -29,6 +29,10 @@ module.exports = {
           label: "Quick Start",
         },
         { href: "https://www.ditto.live", label: "Home", position: "left" },
+        {
+          label: "Samples Apps",
+          href: "https://github.com/getditto/samples",
+        },
         { to: "/blog", label: "Blog", position: "left" },
         {
           href: "https://github.com/getditto/docs",
@@ -50,6 +54,10 @@ module.exports = {
             {
               label: "Main Website",
               href: "https://www.ditto.live/",
+            },
+            {
+              label: "Samples Apps",
+              href: "https://github.com/getditto/samples",
             },
           ],
         },
@@ -83,7 +91,7 @@ module.exports = {
       copyright: `Copyright © ${new Date().getFullYear()} DittoLive, Inc. Built with Docusaurus.`,
     },
     prism: {
-      additionalLanguages: ["csharp", "swift", "java", "kotlin", "cpp"],
+      additionalLanguages: ["csharp", "swift", "java", "kotlin", "cpp", "groovy"],
       theme: lightCodeTheme,
       darkTheme: darkCodeTheme,
     },
@@ -93,17 +101,36 @@ module.exports = {
       "@docusaurus/preset-classic",
       {
         docs: {
-          routeBasePath: '/',
+          remarkPlugins: [
+            [
+              require("mdx-mermaid"),
+              {
+                mermaid: {
+                  theme: "dark",
+                  themeVariables: {
+                    fontFamily: "Helvetica",
+                  },
+                  sequence: {
+                    actorFontFamily: "Helvetica",
+                    noteFontFamily: "Helvetica",
+                    messageFontFamily: "Helvetica",
+                  },
+                  journey: {
+                    taskFontFamily: "Helvetica",
+                  },
+                },
+              },
+            ],
+          ],
+          routeBasePath: "/",
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
-          editUrl:
-            "https://github.com/getditto/docs/edit/master/website/",
+          editUrl: "https://github.com/getditto/docs/edit/master/website/",
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl:
-            "https://github.com/getditto/docs/master/website/blog/",
+          editUrl: "https://github.com/getditto/docs/master/website/blog/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
