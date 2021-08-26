@@ -75,9 +75,9 @@ In order for Ditto to sync, we will need to add permissions to the __AndroidMani
 
 When Android studio created the project, it should have created a file called __MainActivity.kt__. In this file, we will take the singleton `TasksApplication.ditto!!` and begin to start the sync process with `tryStartSync()`
 
-Notice the line `ditto!!.setLicenseToken("<REPLACE_ME>")`, please add your Ditto license token. For more information about how to get a license token please go to https://portal.ditto.live, sign up and create an app. 
+1. Notice the line `ditto!!.setLicenseToken("<REPLACE_ME>")`, please add your Ditto license token. For more information about how to get a license token please go to https://portal.ditto.live, sign up and create an app. 
 
-If you skip this step, the app will still work but Ditto will only work as local database. The app will show an error in the event that `tryStartSync` encounters an error.
+2. The app will show a `Toast` error if `tryStartSync` encounters a mistake. Don't worry if an error occurs or if you omit this step, Ditto will continue to work as a local database. However, it's advised that you fix the errors to see the app sync across multiple devices.
 
 ```kotlin title="MainActivity" {5-18}
 class MainActivity : ComponentActivity() {
@@ -86,9 +86,11 @@ class MainActivity : ComponentActivity() {
 
       val ditto = TasksApplication.ditto
       try {
+          // 1.
           ditto!!.setLicenseToken("<REPLACE_ME>")
           ditto!!.tryStartSync()
       } catch (e: DittoError) {
+          // 2.
           Toast.makeText(
               this@MainActivity,
               """
@@ -107,9 +109,9 @@ class MainActivity : ComponentActivity() {
 ```
 
 
-### 2-3 Create a Task data class
+## 2-4 Create a Task data class
 
-Ditto is a document database, which represents all of it's rows in the database a JSON-like structure. In this tutorial, we will represent each task like so:
+Ditto is a document database, which represents all of its rows in the database a JSON-like structure. In this tutorial, we will define each task like so:
 
 ```jsonc 
 {
@@ -125,7 +127,7 @@ These Task documents will all be in the "tasks" collection. We will be referenci
 val tasksCollection = TasksApplication.ditto!!.store["tasks"]
 ```
 
-Ditto documents have a flexible structure. Often times, in strongly-typed languages we will create a data structure to define the data better. 
+Ditto documents have a flexible structure. Oftentimes, in strongly-typed languages like Kotlin, we will create a data structure give more definition to the app. 
 
 Create a new Kotlin file called __Task.kt__ in your project. 
 
