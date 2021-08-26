@@ -35,8 +35,6 @@ dependencies {
   
   // Ditto
   implementation "live.ditto:ditto:latest.release"
-  // RxJava3
-  implementation 'androidx.compose.runtime:runtime-rxjava3:1.0.1'
   // Jetpack Compose View Model
   implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
   // Live Data

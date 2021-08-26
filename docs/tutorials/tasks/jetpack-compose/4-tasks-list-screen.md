@@ -180,9 +180,11 @@ Notice that we _DO NOT HAVE TO_ manipulate the `tasks` value. Calling `update` w
 
 Finally let's create the `TasksListScreen`. This `@Composable` is where the `navController`, `TasksListScreenViewModel` and `TaskList` all come together. 
 
+The following code for `TasksListScreen` is rather small but a lot of things are happening. Follow the steps and look for the appropriate comments that line up to the numbers below:
+
 1. The `TasksListScreen` takes a `navController` as a parameter. This variable is used to navigate to `EditScreen` depending on if the user clicks a `floatingActionButton` or a `TasksListScreen.onClickBody`. See the [navigation section for more information on the routes](./navigation)
 2. Create reference to the `TasksListScreenViewModel` with `val tasksListViewModel: TasksListScreenViewModel = viewModel();`
-3. Now let's tell the `@Composable` to observe the `viewModel.tasks` as State object with `val tasks: List<Task> by tasksListViewModel.tasks.observeAsState(emptyList())`. The syntax `by` and function `observeAsState(emptyList())` will tell the `@Composable` to subscribe to changes. For more [information click here.](https://developer.android.com/jetpack/compose/state#viewmodel-state)
+3. Now let's tell the `@Composable` to observe the `viewModel.tasks` as State object with `val tasks: List<Task> by tasksListViewModel.tasks.observeAsState(emptyList())`. The syntax `by` and function `observeAsState(emptyList())` will tell the `@Composable` to subscribe to changes. For more [information about `observeAsState` and `ViewModel`, click here.](https://developer.android.com/jetpack/compose/state#viewmodel-state)
 4. We'll add a `TopAppBar` and `ExtendedFloatingActionButton` along with our `TaskList` all wrapped in a `Scaffold` view. `Scaffold` are handy ways to layout a more "standard" Android screen. [Learn more about `Scaffold`s here](https://developer.android.com/reference/kotlin/androidx/compose/material/package-summary#Scaffold(androidx.compose.ui.Modifier,androidx.compose.material.ScaffoldState,kotlin.Function0,kotlin.Function0,kotlin.Function1,kotlin.Function0,androidx.compose.material.FabPosition,kotlin.Boolean,kotlin.Function1,kotlin.Boolean,androidx.compose.ui.graphics.Shape,androidx.compose.ui.unit.Dp,androidx.compose.ui.graphics.Color,androidx.compose.ui.graphics.Color,androidx.compose.ui.graphics.Color,androidx.compose.ui.graphics.Color,androidx.compose.ui.graphics.Color,kotlin.Function1))
 5. Set the `ExtendedFloatingActionButton.onClick` handler to navigate to the `task/edit` route of the `navController`
 6. Use our `TaskList` inside of the `Scaffold.content`. Pass the `tasks` from step 2. into the `TaskList`
@@ -218,6 +220,7 @@ fun TasksListScreen(navController: NavController) {
         scaffoldState = scaffoldState,
         content = {
             TasksList(
+                // 6
                 tasks = tasks,
                 // 7.
                 onToggle = { tasksListViewModel.toggle(it) },

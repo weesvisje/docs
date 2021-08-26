@@ -43,7 +43,7 @@ val docs = TasksApplication.ditto!!.store["tasks].findAll().exec()
 
 ## 2-2 Add Permissions and Register Class
 
-The lines to add are highlighted below. 
+In order for Ditto to sync, we will need to add permissions to the __AndroidManifest.xml__ file. [For more information about these permissions, click here](/advanced/platform-permissions/android-platform-permissions). In addition we will need to register our custom `TasksApplication` as the main Application class in the `<application>` tag.
 
 ```diff title="AndroidManifest.xml" {5-15,18}
 <?xml version="1.0" encoding="utf-8"?>
@@ -119,13 +119,13 @@ Ditto is a document database, which represents all of it's rows in the database 
 }
 ```
 
-These Task documents will all be in the the "tasks" collection. We will be referencing this collection throughout this tutorial with:
+These Task documents will all be in the "tasks" collection. We will be referencing this collection throughout this tutorial with:
 
 ```kotlin
 val tasksCollection = TasksApplication.ditto!!.store["tasks"]
 ```
 
-Ditto documents have a flexible structure. Often times, in strongly-typed languages we will create a data structure to better define the data. 
+Ditto documents have a flexible structure. Often times, in strongly-typed languages we will create a data structure to define the data better. 
 
 Create a new Kotlin file called __Task.kt__ in your project. 
 
