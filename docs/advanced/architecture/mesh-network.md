@@ -23,7 +23,7 @@ Which transports are supported depends on what kind of device or SDK you are usi
 * A web application running in a browser can use **WebSocket**.
 * A Raspberry Pi can use **Bluetooth LE**, **LAN**, or **WebSocket**.
 
-Many transports will work automatically. Others like WebSocket require configuration. [You can learn more about the supported transports and upcoming transports here](/docs/references/network-transport-support)
+Many transports will work automatically. Others like WebSocket require configuration. [You can learn more about the supported transports and upcoming transports here](https://www.ditto.live/docs/references/network-transport-support)
 
 ## Discovering Peers
 
@@ -100,13 +100,13 @@ In smaller meshes Ditto will often create multiple connections to the same peer 
 3. Unneeded slower connections like Bluetooth are left idle, which means the limited radio bandwidth is reserved for those peers that really need it.
 4. If the fastest connection is lost, the next-best option is ready to go, reducing or eliminating the gap when no sync is possible.
 
-The seamless switching between transports relies on a Ditto component called the Multiplexer, which is described in detail in a <a href="/blog/posts/the-new-network-multiplexer">blog post</a>.
+The seamless switching between transports relies on a Ditto component called the Multiplexer, which is described in detail in a <a href="https://www.ditto.live/blog/posts/the-new-network-multiplexer">blog post</a>.
 
 As of Ditto v1.0 the Multiplexer uses one transport at a time with failover. In future versions this feature will enable more complex scenarios such as load-balancing across multiple routes and lossy transports.
 
 ## Servers and the Cloud
 
-In addition to the peer-to-peer transports like Bluetooth, a cloud or on-prem server can be configured by specifying its URL. At Ditto we call a server like this a _Big Peer_, while regular SDKs are _Small Peers_.
+In addition to peer-to-peer transports like Bluetooth, a cloud or on-prem server can be configured by specifying its URL. At Ditto we call a server like this a _Big Peer_, while regular SDKs are _Small Peers_.
 
 Big Peers are especially important for users who want to use Ditto in a web browser, since web browsers have very limited peer-to-peer capabilities. The JavaScript SDK can be configured with the Big Peer that should be used for sync.
 

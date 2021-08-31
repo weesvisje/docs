@@ -22,12 +22,6 @@ module.exports = {
         src: "img/logo.png",
       },
       items: [
-        {
-          type: "doc",
-          docId: "intro",
-          position: "left",
-          label: "Quick Start",
-        },
         { href: "https://www.ditto.live", label: "Home", position: "left" },
         {
           label: "Samples Apps",
@@ -48,7 +42,7 @@ module.exports = {
           items: [
             {
               label: "Quick Start",
-              to: "/docs/intro",
+              to: "/",
             },
             {
               label: "Main Website",
