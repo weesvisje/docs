@@ -105,7 +105,7 @@ let tasksCollection = ditto.store["tasks"]
 
 Ditto documents have a flexible structure. Oftentimes, in strongly-typed languages like Swift, we will create a data structure give more definition to the app. 
 
-Create a new Kotlin file called __Task.swift__ in your project. 
+Create a new Swift file called __Task.swift__ in your project. 
 
 1. Add `import DittoSwift` to the top of the file.
 2. Add the matching variables `let _id: String`, `let body: String`, and `let isCompleted: Bool` to the struct. We will use this to match the document values to to the struct.
