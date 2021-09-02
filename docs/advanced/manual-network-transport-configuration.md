@@ -57,6 +57,12 @@ do {
 <TabItem value="objc">
 
 ```objc
+DITMutableTransportConfig *transportConfig = [[DITMutableTransportConfig alloc] init];
+[transportConfig.connect.tcpServers addObject:@"135.1.5.5:12345"];
+[transportConfig.connect.tcpServers addObject:@"185.1.5.5:12345"];
+[ditto setTransportConfig:transportConfig];
+NSError *err = nil;
+[ditto tryStartSync:&err];
 ```
 
 </TabItem>
@@ -111,7 +117,11 @@ Feel free to add as many known remote `host:port` strings.
 
 You can enable the C# Ditto instance to listen for incoming connections from other remotes Ditto instances on a specific port. 
 
-In this example, we would like our Ditto instance to listen to _incoming_ connections on port `4000` on `localhost`.
+In this example, we would like our Ditto instance to listen to _incoming_ connections on port `4000` on `localhost`. 
+
+:::info
+To be safe, please do not use `localhost` when setting the IP interface. Use `"0.0.0.0"` instead.
+:::
  
 <Tabs
   groupId="programming-language"
@@ -128,7 +138,11 @@ In this example, we would like our Ditto instance to listen to _incoming_ connec
 }>
 <TabItem value="javascript">
 
+> Listening on a port is only available on Node or Electron environments. This functionality will not work when running inside of a web browser.
+
 ```js
+const transportConfig = new TransportConfig()
+transportConfig.li
 ```
 
 </TabItem>
@@ -155,6 +169,13 @@ do {
 <TabItem value="objc">
 
 ```objc
+DITMutableTransportConfig *transportConfig = [[DITMutableTransportConfig alloc] init];
+[transportConfig.listen.tcp setEnabled:true];
+[transportConfig.listen.tcp setInterfaceIp:@"0.0.0.0"];
+[transportConfig.listen.tcp setPort:4000];
+[ditto setTransportConfig:transportConfig];
+NSError *err = nil;
+[ditto tryStartSync:&err];
 ```
 
 </TabItem>
@@ -268,6 +289,20 @@ do {
 <TabItem value="objc">
 
 ```objc
+DITMutableTransportConfig *transportConfig = [[DITMutableTransportConfig alloc] init];
+// 1. Enable Local Area Network Connections
+[transportConfig enableAllPeerToPeer];
+// 2. Listen for incoming connections on port 4000
+[transportConfig.listen.tcp setEnabled:true];
+[transportConfig.listen.tcp setInterfaceIp:@"0.0.0.0"];
+[transportConfig.listen.tcp setPort:4000];
+// 3. Connect explicitly to remote devices
+[transportConfig.connect.tcpServers addObject:@"135.1.5.5:12345"];
+[transportConfig.connect.tcpServers addObject:@"185.1.5.5:12345"];
+
+[ditto setTransportConfig:transportConfig];
+NSError *err = nil;
+[ditto tryStartSync:&err];
 ```
 
 </TabItem>
@@ -296,7 +331,7 @@ transportConfig.Listen.Tcp.Enabled = true;
 transportConfig.Listen.Tcp.InterfaceIp = "0.0.0.0";
 transportConfig.Listen.Tcp.Port = 4000;
 
-// 3. Connect explicitly to a remote device on 
+// 3. Connect explicitly to remote devices
 transportConfig.Connect.TcpServers.Add("135.1.5.5:12345");
 transportConfig.Connect.TcpServers.Add("185.1.5.5:12345");
 
