@@ -127,4 +127,4 @@ namespace Tasks
 
 ```
 
-## 2 - 3 
+We have all the basic building blocks for syncing tasks to a locally stored `List<Task>` variable. In the following section, we will go over how to map the user commands to actual Ditto live query, insert, update and delete methods.

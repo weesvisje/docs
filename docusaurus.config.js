@@ -58,6 +58,14 @@ module.exports = {
           title: "Community",
           items: [
             {
+              label: "GitHub Discussions",
+              href: "https://github.com/getditto/docs/discussions",
+            },
+            {
+              label: "GitHub Issues",
+              href: "https://github.com/getditto/docs/issues",
+            },
+            {
               label: "Stack Overflow",
               href: "https://stackoverflow.com/questions/tagged/ditto",
             },

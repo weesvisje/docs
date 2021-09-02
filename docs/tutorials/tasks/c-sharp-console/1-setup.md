@@ -9,7 +9,7 @@ The following guide will show you how to build a Task list application with a st
 
 > Note: the C# SDK currently does not have the ability to sync over AWDL, LAN, or BLE communication just yet. We are working on this functionality. If this is very important to you please contact us at contact@ditto.live.
 
-## 1 - 1 Create a new Console Project
+## 1-1 Create a new Console Project
 
 1. Open up Visual Studio for Windows or for Mac. 
 2. Create a __New Project__ and select __Console Application__
@@ -112,7 +112,7 @@ namespace Tasks
 }
 ```
 
-## 1 - 3 Create a new file called __Task.cs__. 
+## 1-3 Create a new file called __Task.cs__. 
 
 Ditto documents have a flexible structure. Oftentimes, in strongly-typed languages like C#, we will create a data structure give more definition to the app. Create a new C# file called __Task.cs__ in your project. 
 

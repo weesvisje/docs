@@ -1,6 +1,6 @@
 ---
 title: 'C++'
-sidebar_position: 3
+sidebar_position: 7
 ---
 
 # C++ Installation Instructions

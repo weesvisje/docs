@@ -4,7 +4,7 @@ title: '3 - Assigning Commands'
 
 In this section we need to map the 
 
-## 3 - 1 Setting up the `while` loop.
+## 3-1 Setting up the `while` loop.
 
 Our application will continually ask for commands that we setup in the last section. For a console application, this is generally a `while` loop. 
 
@@ -118,9 +118,9 @@ namespace Tasks
 }
 ```
 
-## 3 - 2 Final application
+## 3-2 Final application
 
-Our application is complete! Our __Program.cs__ file should look like the following.
+Our application is complete! Our __Program.cs__ file should look like the following. Now you can run the example in your terminal, command line or right within the run command in Visual Studio.
 
 ```csharp title="Program.cs"
 using System;
