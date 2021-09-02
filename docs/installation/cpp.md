@@ -5,7 +5,7 @@ sidebar_position: 7
 
 # C++ Installation Instructions
 
-> C++ is currently only supported for iOS and MacOS. Windows and Linux support is coming soon.
+> C++ is currently only supported for iOS and Linux. We will publish binaries for Windows and macOS soon.
 
 1. To start integrating Ditto into your app you need to download a copy of the libditto.a static library and the Ditto.h header. The following command will download and then unpack an archive containing the library and header. The URL in the following command will download a copy of the static library built to work on iOS:
 
