@@ -33,6 +33,25 @@ In the example below, we know of two other Ditto instances located on:
 <TabItem value="javascript">
 
 ```js
+import { TransportConfig } from '@dittolive/ditto'
+
+const config = new TransportConfig()
+config.connect.tcpServers.push("135.1.5.5:12345")
+config.connect.tcpServers.push("185.1.5.5:12345")
+ditto.setTransportConfig(config);
+ditto.tryStartSync();
+```
+
+When running on a web browser, you'll need to specify _WebSocket_ endpoints. Web browsers are not capable of raw TCP connections. 
+
+```js
+import { TransportConfig } from '@dittolive/ditto'
+
+const config = new TransportConfig()
+config.connect.websocketURLs.push("wss://135.1.5.5:12345")
+config.connect.websocketURLs.push("wss://185.1.5.5:12345")
+ditto.setTransportConfig(config);
+ditto.tryStartSync();
 ```
 
 </TabItem>
@@ -138,11 +157,16 @@ To be safe, please do not use `localhost` when setting the IP interface. Use `"0
 }>
 <TabItem value="javascript">
 
-> Listening on a port is only available on Node or Electron environments. This functionality will not work when running inside of a web browser.
+
+> Listening on a port is only available on Node or Electron environments. This functionality will not work when running inside of a web browser. Web browsers do not allow code to listen to a host's IP or port.
 
 ```js
-const transportConfig = new TransportConfig()
-transportConfig.li
+const config = new TransportConfig()
+config.listen.tcp.isEnabled = true
+config.listen.tcp.interfaceIp = "0.0.0.0"
+config.listen.tcp.port = 4000
+ditto.setTransportConfig(config);
+ditto.tryStartSync();
 ```
 
 </TabItem>
@@ -227,7 +251,7 @@ ditto->try_start_sync()
 </TabItem>
 </Tabs>
 
-Incoming connections from other Ditto instances will be able to connect only if the port is accessible. Depending on your deployment _be sure to check that external connections can reach the port that you have specified in your `DittoTransportConfig`. You may need to set up port forwarding if external ports map differently to your host.
+Incoming connections from other Ditto instances will be able to connect only if the port is accessible. Depending on your deployment _be sure to check that external connections can reach the port_ that you have specified in your configuration. You may need to set up port forwarding if external ports map differently to your host.
 
 ## Explicitly enabling Peer to Peer Connections 
 
@@ -257,6 +281,20 @@ You can specify several modes of transport configuration within `DittoTransportC
 <TabItem value="javascript">
 
 ```js
+import { TransportConfig } from "@dittolive/ditto"
+
+const config = new TransportConfig()
+// 1. Enable All Peer to Peer Connections
+config.setAllPeerToPeerEnabled(true);
+
+// 2. Listen for incoming connections on port 4000
+config.listen.tcp.isEnabled = true
+config.listen.tcp.interfaceIp = "0.0.0.0"
+config.listen.tcp.port = 4000
+
+// 3. Connect explicitly to remote devices
+ditto.setTransportConfig(config);
+ditto.tryStartSync();
 ```
 
 </TabItem>
