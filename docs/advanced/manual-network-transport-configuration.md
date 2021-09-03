@@ -5,7 +5,9 @@ title: 'Manual Network Transport Configuration'
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Before you call `tryStartSync()` you may want to configure additional connections configurations for the current Ditto instance. _Before_ you call `tryStartSync()`, construct a `DittoTransportConfig` value and set `ditto.SetTransportConfig`.
+There are instances where you may want to configure additional connections configurations for the current Ditto instance. This section will teach you how to configure your Ditto instance to listen for connections on a port explicitly and to connect to remote instances via a host (IP) and port.
+
+ In this tutorial, we  _Before_ you call `tryStartSync()`, construct a `DittoTransportConfig` value and set `ditto.SetTransportConfig`.
 
 ### Explicitly connecting another remote Ditto instance
 
