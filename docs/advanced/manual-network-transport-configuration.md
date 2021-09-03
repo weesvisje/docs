@@ -94,6 +94,16 @@ NSError *err = nil;
 <TabItem value="java">
 
 ```java
+DittoTransportConfig config = new DittoTransportConfig();
+DittoConnect connect = new DittoConnect();
+connect.setTcpServers(Sets.newHashSet("135.1.5.5:12345", "185.1.5.5:12345"));
+config.setConnect(connect);
+
+try {
+    ditto.tryStartSync();    
+} catch(DittoError error) {
+    Log.d("DittoError", error.getLocalizedMessage());
+}
 ```
 
 </TabItem>
@@ -212,6 +222,22 @@ NSError *err = nil;
 <TabItem value="java">
 
 ```java
+DittoTransportConfig config = new DittoTransportConfig();
+config.enableAllPeerToPeer();
+
+DittoListen listen = new DittoListen();
+DittoTcpListenConfig tcpListenConfig = new DittoTcpListenConfig();
+tcpListenConfig.setEnabled(true);
+tcpListenConfig.setInterfaceIp("0.0.0.0");
+tcpListenConfig.setPort(4000);
+listen.setTcp(tcpListenConfig);
+config.setListen(listen);
+
+try {
+    ditto.tryStartSync();    
+} catch(DittoError error) {
+    Log.d("DittoError", error.getLocalizedMessage());
+}
 ```
 
 </TabItem>
@@ -353,6 +379,29 @@ NSError *err = nil;
 <TabItem value="java">
 
 ```java
+DittoTransportConfig config = new DittoTransportConfig();
+
+// 1. Enable Peer to Peer Connections
+config.enableAllPeerToPeer();
+
+// 2. Listen for incoming connections on port 4000
+DittoListen listen = new DittoListen();
+DittoTcpListenConfig tcpListenConfig = new DittoTcpListenConfig();
+tcpListenConfig.setEnabled(true);
+tcpListenConfig.setInterfaceIp("0.0.0.0");
+tcpListenConfig.setPort(4000);
+listen.setTcp(tcpListenConfig);
+config.setListen(listen);
+// 3. Connect explicitly to remote devices
+DittoConnect connect = new DittoConnect();
+connect.setTcpServers(Sets.newHashSet("135.1.5.5:12345", "185.1.5.5:12345"));
+config.setConnect(connect);
+
+try {
+    ditto.tryStartSync();    
+} catch(DittoError error) {
+    Log.d("DittoError", error.getLocalizedMessage());
+}
 ```
 
 </TabItem>
