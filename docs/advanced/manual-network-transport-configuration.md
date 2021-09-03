@@ -88,6 +88,12 @@ NSError *err = nil;
 <TabItem value="kotlin">
 
 ```kotlin
+val transportConfig = DittoTransportConfig();
+
+transportConfig.connect.tcpServers.add("135.1.5.5:12345");
+transportConfig.connect.tcpServers.add("185.1.5.5:12345");
+
+ditto.tryStartSync()
 ```
 
 </TabItem>
@@ -216,6 +222,10 @@ NSError *err = nil;
 <TabItem value="kotlin">
 
 ```kotlin
+val transportConfig = DittoTransportConfig();
+transportConfig.connect.tcpServers.add("135.1.5.5:12345");
+transportConfig.connect.tcpServers.add("185.1.5.5:12345");
+ditto.tryStartSync()
 ```
 
 </TabItem>
@@ -373,6 +383,19 @@ NSError *err = nil;
 <TabItem value="kotlin">
 
 ```kotlin
+val transportConfig = DittoTransportConfig();
+// 1. Enable All Peer to Peer Connections
+transportConfig.enableAllPeerToPeer();
+// 2. Listen for incoming connections on port 4000
+transportConfig.listen.tcp.enabled = true;
+transportConfig.listen.http.enabled = false;
+transportConfig.listen.tcp.interfaceIp = "0.0.0.0";
+transportConfig.listen.tcp.port = 4000;
+// 3. Connect explicitly to remote devices
+transportConfig.connect.tcpServers.add("135.1.5.5:12345");
+transportConfig.connect.tcpServers.add("185.1.5.5:12345");
+
+ditto.tryStartSync()
 ```
 
 </TabItem>
