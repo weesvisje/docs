@@ -101,7 +101,7 @@ try {
 } catch (const DittoError &err) {
     // handle exception  
 } catch (const std::exception &e) {
-    std::cerr << exc.what();
+    std::cerr << e.what();
 }
 ```
 
