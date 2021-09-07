@@ -35,5 +35,5 @@ ExecStart=/usr/lib/bluetooth/bluetoothd -P battery
 ```
 
 3. Save the file.
-4. Run systemctl daemon-reload and systemctl restart bluetooth to apply the changes to the Bluetooth service
+4. Run `systemctl daemon-reload` and `systemctl restart bluetooth` to apply the changes to the Bluetooth service
 After that, BlueZ should be able to connect to iOS devices without prompting and Ditto Apps should be able to communicate over BLE between iOS and Linux.
