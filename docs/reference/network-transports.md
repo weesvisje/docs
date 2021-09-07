@@ -3,9 +3,23 @@ title: "Network Transports"
 sidebar_position: 2
 ---
 
+import { CheckIcon } from '@heroicons/react/solid'
+import { ClockIcon } from '@heroicons/react/outline'
+
+export function Check() {
+  return <CheckIcon style={{width: 20, height: 20, margin: 'auto', display: 'block'}} />
+}
+
+export function Clock() {
+  return <ClockIcon style={{width: 20, height: 20, margin: 'auto', display: 'block'}} />
+}
+
 # Network Transport Support
 
 The following are the network transports supported by Ditto. By default Ditto will attempt to use all available transports if permissions are given.
+
+* <CheckIcon style={{width: 18, height: 18}} /> Means already supported in our current releases.
+* <ClockIcon style={{width: 18, height: 18}} /> Means that the feature is under development and will be release soon.
 
 <table class="table table-bordered reference-document-table">
   <thead class="thead-dark">
@@ -22,18 +36,18 @@ The following are the network transports supported by Ditto. By default Ditto wi
   <tbody>
     <tr>
       <th scope="row">Bluetooth Low Energy (BLE)</th>
-      <td>Supported</td>
-      <td>Supported</td>
-      <td>Coming Soon</td>
-      <td>Coming Soon</td>
-      <td>Supported</td>
+      <td><Check /></td>
+      <td><Check /></td>
+      <td><Check /></td>
+      <td><Clock /></td>
+      <td><Check /></td>
       <td></td>
     </tr>
     <tr>
       <th scope="row">Apple Wireless Direct Link (AWDL)</th>
-      <td>Supported</td>
+      <td><Check /></td>
       <td></td>
-      <td>Coming Soon</td>
+      <td><Clock /></td>
       <td></td>
       <td></td>
       <td></td>
@@ -41,7 +55,7 @@ The following are the network transports supported by Ditto. By default Ditto wi
     <tr>
       <th scope="row">Wi-Fi Aware</th>
       <td></td>
-      <td>Coming Soon</td>
+      <td><Clock /></td>
       <td></td>
       <td></td>
       <td></td>
@@ -50,38 +64,38 @@ The following are the network transports supported by Ditto. By default Ditto wi
     <tr>
       <th scope="row">Wi-Fi Direct</th>
       <td></td>
-      <td>Coming Soon</td>
+      <td><Clock /></td>
       <td></td>
-      <td>Coming Soon</td>
-      <td>Coming Soon</td>
+      <td><Clock /></td>
+      <td><Clock /></td>
       <td></td>
     </tr>
     <tr>
       <th scope="row">Local Area Network (LAN)</th>
-      <td>Supported</td>
-      <td>Supported</td>
-      <td>Supported</td>
-      <td>Supported</td>
-      <td>Supported</td>
+      <td><Check /></td>
+      <td><Check /></td>
+      <td><Check /></td>
+      <td><Check /></td>
+      <td><Check /></td>
       <td></td>
     </tr>
     <tr>
       <th scope="row">WebSockets</th>
-      <td>Supported</td>
-      <td>Supported</td>
-      <td>Supported</td>
-      <td>Supported</td>
-      <td>Supported</td>
-      <td>Supported</td>
+      <td><Check /></td>
+      <td><Check /></td>
+      <td><Check /></td>
+      <td><Check /></td>
+      <td><Check /></td>
+      <td><Check /></td>
     </tr>
     <tr>
       <th scope="row">Universal Serial Bus (USB)</th>
-      <td>Coming Soon</td>
-      <td>Coming Soon</td>
-      <td>Coming Soon</td>
-      <td>Coming Soon</td>
-      <td>Coming Soon</td>
-      <td>Coming Soon</td>
+      <td><Clock /></td>
+      <td><Clock /></td>
+      <td><Clock /></td>
+      <td><Clock /></td>
+      <td><Clock /></td>
+      <td><Clock /></td>
     </tr>
   </tbody>
 </table>
