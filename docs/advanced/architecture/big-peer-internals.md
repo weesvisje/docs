@@ -2,6 +2,10 @@
 title: 'Big Peer Internals'
 ---
 
+export function ImageHolder(props) {
+  return <div style={{padding: '2rem', margin: '2rem', borderRadius: '8px', background: 'white'}}>{props.children}</div>
+}
+
 # Big Peer Internal Architecture - HyDRA 
 
 HyDRA is Ditto's cloud database. It is designed to work in conjunction
@@ -43,7 +47,11 @@ current computer science systems research.
 
 The following drawing is a rough overview of the architecture.
 
+<ImageHolder>
+
 ![HyDRA Overview](diagram.png)
+
+</ImageHolder>
 
 ### Ditto CRDTs
 
@@ -431,7 +439,11 @@ paper.
 
 The graphic below illustrates how this looks.
 
+<ImageHolder>
+
 ![Random Slicing Cutshift](cutshift.png)
+
+</ImageHolder>
 
 As the image shows, Partition Four is made up of slices from P1, P2, and P3,
 these three slices we call Intervals. They represent, in this case, two disjoint
