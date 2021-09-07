@@ -8,15 +8,15 @@ If you would like to run Ditto on a Linux device and leverage Bluetooth Low Ener
 
 1. Install or update BlueZ 5.51 or higher
 
-Your device will need to install or update BlueZ with version 5.51 or higher. We've outlined a quick snippet set of instructions below to install BlueZ 5.60 as an example.
+Your device will need to install or update BlueZ with version 5.51 or higher. We've outlined a quick snippet set of instructions below to install BlueZ 5.61 as an example.
 
 ```
 sudo apt-get update
 sudo apt-get upgrade
-sudo apt-get install libdbus-1-dev libglib2.0-dev libudev-dev libical-dev libreadline-dev -y
-wget http://www.kernel.org/pub/linux/bluetooth/bluez-5.60.tar.xz
-tar -xf bluez-5.60.tar.xz
-cd bluez-5.60
+sudo apt-get install libdbus-1-dev libglib2.0-dev libudev-dev libical-dev libreadline-dev python-docutils -y
+wget http://www.kernel.org/pub/linux/bluetooth/bluez-5.61.tar.xz
+tar -xf bluez-5.61.tar.xz
+cd bluez-5.61
 ./configure
 make
 sudo make install
@@ -35,5 +35,5 @@ ExecStart=/usr/lib/bluetooth/bluetoothd -P battery
 ```
 
 3. Save the file.
-4. Run systemctl daemon-reload and systemctl restart bluetooth to apply the changes to the Bluetooth service
+4. Run `systemctl daemon-reload` and `systemctl restart bluetooth` to apply the changes to the Bluetooth service
 After that, BlueZ should be able to connect to iOS devices without prompting and Ditto Apps should be able to communicate over BLE between iOS and Linux.
