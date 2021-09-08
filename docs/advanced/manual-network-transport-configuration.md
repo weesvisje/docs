@@ -181,7 +181,7 @@ To be safe, please do not use `localhost` when setting the IP interface. Use `"0
 ```js
 const config = new TransportConfig()
 config.listen.tcp.isEnabled = true
-config.listen.tcp.interfaceIp = "0.0.0.0"
+config.listen.tcp.interfaceIP = "0.0.0.0"
 config.listen.tcp.port = 4000
 ditto.setTransportConfig(config);
 ditto.tryStartSync();
