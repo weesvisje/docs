@@ -8,9 +8,9 @@ In the last part of the tutorial we referenced a class called `TasksListScreen`.
 
 Each row of the tasks will be represented by a SwiftUI `View` called `TaskRow` which takes in a `Task` and two callbacks which we will use later.
 
-1. If the `task.isCompleted` is `true`, we will show a filled circle icon and a 
-strikethrough style for the `body`. 
-2. If the `task.isCompleted` is `false`, we will show a filled circle icon and a strikethrough style for the `body`. 
+1. If the `task.isCompleted` is `true`, we will show a filled circle icon and a
+strikethrough style for the `body`.
+2. If the `task.isCompleted` is `false`, we will show a filled circle icon and a strikethrough style for the `body`.
 3. If the user taps the `Icon`, we will call a `onToggle: ((_ task: Task) -> Void)?`, we will reverse the `isCompleted` from `true` to `false` or `false` to `true`
 4. If the user taps the `Text`, we will call a `onClickBody: ((_ task: Task) -> Void)?`. We will use this to navigate an `EditScreen` (we will create this later)
 
@@ -72,7 +72,7 @@ struct TaskRow_Previews: PreviewProvider {
 
 ## 3-2 Create a `TasksListScreenViewModel`
 
-In the world of SwiftUI, the most important design pattern is the MVVM, which stands for Model-View-ViewModel. MVVM strives to separate all data manipulation (Model and ViewModel) and data presentation (UI or View) into distinct areas of concern. When it comes to Ditto, we recommend that you never include references to edit `ditto` in `View.body`. All interactions with `ditto` for `insert`, `update`, `find`, `remove` and `observe` should be within a `ViewModel`. The View should only render data from observable variables from the `ViewModel` and only the `ViewModel` should make direct edits to these variables. 
+In the world of SwiftUI, the most important design pattern is the MVVM, which stands for Model-View-ViewModel. MVVM strives to separate all data manipulation (Model and ViewModel) and data presentation (UI or View) into distinct areas of concern. When it comes to Ditto, we recommend that you never include references to edit `ditto` in `View.body`. All interactions with `ditto` for `insert`, `update`, `find`, `remove` and `observe` should be within a `ViewModel`. The View should only render data from observable variables from the `ViewModel` and only the `ViewModel` should make direct edits to these variables.
 
 Typically we create a `ViewModel` per screen or per page of an application. For the `TasksListScreen` we need some functionality like:
 
@@ -81,21 +81,21 @@ Typically we create a `ViewModel` per screen or per page of an application. For 
 * Triggering an intention to create a `Task`
 * Clicking an icon to toggle the icon from `true` to `false` or `false` to `true`
 
-In SwiftUI we create a view model by inheriting the `ObservableObject`. The `ObservableObject` allows SwiftUI to watch changes to certain variables to trigger view updates intelligently. To learn more about `ObservableObject` we recommend this excellent [tutorial from Hacking with Swift](https://www.hackingwithswift.com/quick-start/swiftui/how-to-use-observedobject-to-manage-state-from-external-objects). 
+In SwiftUI we create a view model by inheriting the `ObservableObject`. The `ObservableObject` allows SwiftUI to watch changes to certain variables to trigger view updates intelligently. To learn more about `ObservableObject` we recommend this excellent [tutorial from Hacking with Swift](https://www.hackingwithswift.com/quick-start/swiftui/how-to-use-observedobject-to-manage-state-from-external-objects).
 
 1. Create a file called __TasksListScreenViewModel.swift__ in your project
 2. Add an `init` constructor to pass in a `ditto: Ditto` instance and store it in a local variable.
-3. Create two `@Published` variables for `tasks` and i`sPresentingEditScreen`. `@Published` variables are special variables of an `ObservableObject`. If these variables change, SwiftUI will update the view accordingly. Any variables that are _not_ decorated with `@Published` can change but will be ignored by SwiftUI. 
+3. Create two `@Published` variables for `tasks` and i`sPresentingEditScreen`. `@Published` variables are special variables of an `ObservableObject`. If these variables change, SwiftUI will update the view accordingly. Any variables that are _not_ decorated with `@Published` can change but will be ignored by SwiftUI.
 4. We also add a normal variable, `private(set) var taskToEdit: Task? = nil`. When a user is attempting to _edit_ a task, we need to tell the view model which task the user would like to edit. This does not need to trigger a view reload, so it's a simple variable.
 5. Here's where the magic happens. As soon as the `TasksListScreenViewModel` is initialized, we need to `.observe` all the tasks by creating a live query. To prevent the `liveQuery` from being prematurely deallocated, we store it as a variable. In the observe callback, we convert all the documents into `Task` objects and set it to the `@Published tasks` variable. Every time to `.observe` fires, SwiftUI will pick up the changes and tell the view to render the list of tasks.
 6. Add a function called `toggle()`. When a user clicks on a task's image icon, we need to trigger reversing the `isCompleted` state. In the function body we add a standard call to find the task by it's `_id` and attempt to mutate the `isCompleted` property.
 7. Add a function called `clickedBody`. When the user taps the `TaskRow`'s `Text` field, we need to store that task and change change the `isPresentingEditScreen` to true. This will give us enough information to present a `.sheet` in the `TasksListScreenViewModel` to feed to the `EditScreen`
-8. In the previous setup of the `TasksListScreen`, we added a `navigationBarItem` with a plus icon. When the user clicks this button we need to tell the view model that it should show the `EditScreen`. So we've set the `isPresentingEditScreen` property to `true`. However, because we are attempting to _create_ a `Task`, we need to set the `taskToEdit` to `nil` because we don't yet have a task. 
+8. In the previous setup of the `TasksListScreen`, we added a `navigationBarItem` with a plus icon. When the user clicks this button we need to tell the view model that it should show the `EditScreen`. So we've set the `isPresentingEditScreen` property to `true`. However, because we are attempting to _create_ a `Task`, we need to set the `taskToEdit` to `nil` because we don't yet have a task.
 
 
 ```swift title="TasksListScreenViewModel.swift"
 class TasksListScreenViewModel: ObservableObject {
-    
+
     // 3.
     // highlight-start
     @Published var tasks = [Task]()
@@ -156,7 +156,7 @@ class TasksListScreenViewModel: ObservableObject {
 Now we need to update our `TasksListScreen` to properly bind any callbacks, events, and data to the `TasksListScreenViewModel`.
 
 1. Back in the `TasksListScreen` view, we need to construct our `TasksListScreenViewModel` and store it as an `@ObservedObject`. This `@ObservedObject` tells the view to watch for specific changes in the `viewModel` variable.
-2. We will need to store our `ditto` object to pass to the `EditScreen` later. 
+2. We will need to store our `ditto` object to pass to the `EditScreen` later.
 3. In our `body` variable, find the `List` and add:
 
 ```swift

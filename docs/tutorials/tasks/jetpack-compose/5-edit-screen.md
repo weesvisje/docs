@@ -4,7 +4,7 @@ title: '5 - Editing Tasks'
 
 Our final screen will be the `EditScreen`. The `EditScreen` will be in charge of 3 functions:
 
-* Editing an existing `Task` 
+* Editing an existing `Task`
 * Creating a `Task` and inserting into the tasks collection
 * Deleting an existing `Task`
 
@@ -139,7 +139,7 @@ class EditScreenViewModel: ViewModel() {
         isCompleted.value = task.isCompleted
 
     }
-    
+
     // 3.
     fun save() {
         if (_id == null) {
@@ -159,7 +159,7 @@ class EditScreenViewModel: ViewModel() {
                 }
         }
     }
-  
+
     // 4.
     fun delete() {
         TasksApplication.ditto!!.store["tasks"].findByID(DittoDocumentID(_id!!))
@@ -174,7 +174,7 @@ Just like the `TasksListScreen` in the previous section, we will now create an `
 
 1. Add a constructor that accepts a `navController` and a `task: String?`. See [the section on navigation](./navigation) to reference these values.
 2. Create a reference to the `EditScreenViewModel`
-3. Call `setupWithTask` with the `taskId` from the constructor. The `EditScreenViewModel` will now know if the user is attempting to edit or create a new task. 
+3. Call `setupWithTask` with the `taskId` from the constructor. The `EditScreenViewModel` will now know if the user is attempting to edit or create a new task.
 4. To help the user show if they are attempting or edit or create, we will show a `TopAppBar` `Text` with an appropriate title.
 5. We will call `observeAsState` on the `EditScreenViewModel`'s `MutableLiveData` properties and extract the value to feed into our views.
 6. Create a Scaffold with a `TopAppBar` and `content { EditForm... }`
@@ -190,7 +190,7 @@ fun EditScreen(navController: NavController, taskId: String?) { // 1.
     editScreenViewModel.setupWithTask(taskId = taskId)
     // 4.
     val topBarTitle = if (taskId == null) "New Task" else "Edit Task"
-    
+
     // 5.
     val body: String by editScreenViewModel.body.observeAsState("")
     val isCompleted: Boolean by editScreenViewModel.isCompleted.observeAsState(initial = false)
@@ -230,4 +230,4 @@ fun EditScreen(navController: NavController, taskId: String?) { // 1.
 
 ## 5-4
 
-Finally you are now completely done with Tasks Jetpack Compose tutorial app. 
+Finally you are now completely done with Tasks Jetpack Compose tutorial app.

@@ -2,7 +2,7 @@
 title: '2 - Configuring Commands'
 ---
 
-Unlike many UI applications, Console or Command Line applications have limitations to user interactions. For example, console applications typically read text commands during a `while` loop as a standard design pattern. This section will outline the command line design and set up the loop to allow the user to give continual commands. 
+Unlike many UI applications, Console or Command Line applications have limitations to user interactions. For example, console applications typically read text commands during a `while` loop as a standard design pattern. This section will outline the command line design and set up the loop to allow the user to give continual commands.
 
 ## 2-1 Designing the Commands
 
@@ -12,7 +12,7 @@ Our Tasks Console app will have five commands that map to Ditto and general cons
 2. `--toggle` to allow the user to `.update` a new document's `bool isCompleted` property by its `_id`
 3. `--delete` to allow the user to `.remove` a new document by its `_id`
 4. `--list` will print every current Task that we have in the collection. In addition, we will always call this method before every item.
-5. `--exit` will quit the console app. 
+5. `--exit` will quit the console app.
 
 As a best practice, long-running console applications should continuously print the primary set of commands as long as they are succinct. We'll create a utility method called `ListCommands()` which, will `Console.WriteLine` each of the commands.
 
@@ -25,15 +25,15 @@ namespace Tasks
 {
     class Program
     {
-      
+
       public static void Main(params string[] args)
       {
         ditto = new Ditto(identity: DittoIdentity.Development(appName: "live.ditto.tasks"));
         // ... omitted for brevity
         // see `setup`
-        
-      }     
-      
+
+      }
+
       public static void ListCommands()
       {
           Console.WriteLine("************* Commands *************");
@@ -69,7 +69,7 @@ DittoLiveQuery liveQuery = ditto.Store["tasks"].FindAll().Observe((docs, _event)
 In the context of our console application, we need to:
 
 1. Store a `List<Task>` as a `static` variable so that we can print it upon command
-2. `.Observe` all the document in the tasks collection. Take care to store the `DittoLiveQuery` as a `static` variable as well. 
+2. `.Observe` all the document in the tasks collection. Take care to store the `DittoLiveQuery` as a `static` variable as well.
 3. In the `.Observe` callback, convert all the `List<DittoDocument> docs` into `List<Task>` and assign them to both variables detailed in step 1 and 2.
 
 
@@ -83,11 +83,11 @@ namespace Tasks
     class Program
     {
         static Ditto ditto;
-        
+
         // 1.
         // highlight-next-line
         static List<Task> tasks = new List<Task>();
-        // 2. 
+        // 2.
         // highlight-next-line
         static DittoLiveQuery liveQuery;
 
@@ -111,7 +111,7 @@ namespace Tasks
             }
 
             Console.WriteLine("Welcome to Ditto's Task App");
-            
+
             // 3.
             // highlight-start
             liveQuery = ditto.Store["tasks"].FindAll().Observe((docs, _event) => {
@@ -119,7 +119,7 @@ namespace Tasks
             });
             // highlight-end
         }
-        
+
         public static void ListCommands() {
           // omitted for brevity
         }

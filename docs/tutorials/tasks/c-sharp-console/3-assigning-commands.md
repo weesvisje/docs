@@ -2,13 +2,13 @@
 title: '3 - Assigning Commands'
 ---
 
-In this section we need to map the 
+In this section we need to map the
 
 ## 3-1 Setting up the `while` loop.
 
-Our application will continually ask for commands that we setup in the last section. For a console application, this is generally a `while` loop. 
+Our application will continually ask for commands that we setup in the last section. For a console application, this is generally a `while` loop.
 
-1. To determine whether or not the while loop should run, we need an addition `static bool isAskedToExit = false`. If the user turns this to `true` via the `--exit` command, the while loop will stop and the application will exit. 
+1. To determine whether or not the while loop should run, we need an addition `static bool isAskedToExit = false`. If the user turns this to `true` via the `--exit` command, the while loop will stop and the application will exit.
 2. In each iteration of the while loop, we will need read the command from the user. In C#, we can use the `Console.ReadLine` API, which will prompt the user for a string entry. We can store this into `string command`.
 3. We can add a `switch` statement which will parse the correct command and react to the command.
 4. If the user types in `--insert`, we will parse out the string without the `--insert` command. We assume this string is the `body` for a new document. So we will call the `.insert` command with ditto via:
@@ -43,7 +43,7 @@ namespace Tasks
         public static void Main(params string[] args)
         {
             ditto = new Ditto(identity: DittoIdentity.Development(appName: "live.ditto.tasks"));
-            
+
             /**
             * Omitted for brevity
             */
@@ -56,7 +56,7 @@ namespace Tasks
 
             while (!isAskedToExit)
             {
-                
+
                 // 2.
                 // highlight-start
                 Console.Write("\nYour command: ");
@@ -65,7 +65,7 @@ namespace Tasks
 
                 switch (command)
                 {
-                    
+
                     // 3. 4.
                     // highlight-start
                     case string s when command.StartsWith("--insert"):
@@ -165,13 +165,13 @@ namespace Tasks
 
             while (!isAskedToExit)
             {
-                
+
                 Console.Write("\nYour command: ");
                 string command = Console.ReadLine();
 
                 switch (command)
                 {
-                    
+
                     case string s when command.StartsWith("--insert"):
                         string taskBody = s.Replace("--insert ", "");
                         ditto.Store["tasks"].Insert(new Task(taskBody, false).ToDictionary());
