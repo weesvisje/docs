@@ -14,7 +14,7 @@ When the user selects the task in the table view, we want to mark the task compl
     let task = tasks[indexPath.row]
     // Update the task to mark completed
     collection.findByID(task.id).update({ (newTask) in
-        newTask?["isComplete"].set(!task["isComplete"].boolValue)
+        newTask?["isCompleted"].set(!task["isCompleted"].boolValue)
     })
 }
 
@@ -24,7 +24,7 @@ override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexP
 }
 ```
 
-This action makes use of Ditto's `update()` API where we are able to find the existing task and set the `isComplete` value to the opposite of its current value.
+This action makes use of Ditto's `update()` API where we are able to find the existing task and set the `isCompleted` value to the opposite of its current value.
 
 ## 4-2 Swipe To Delete Task
 

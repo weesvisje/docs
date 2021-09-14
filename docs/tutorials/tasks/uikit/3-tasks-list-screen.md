@@ -20,9 +20,6 @@ class TaskTableViewController: UITableViewController {
     var liveQuery: DittoLiveQuery?
     var collection: DittoCollection!
 
-    // We need to format the task creation date into a UTC string
-    var dateFormatter = ISO8601DateFormatter()
-
     // This is the UITableView data source
     var tasks: [DittoDocument] = []
 
@@ -51,9 +48,9 @@ class TaskTableViewController: UITableViewController {
     }
 
     func setupTaskList() {
-        // Query for all tasks and sort by dateCreated
+        // Query for all tasks
         // Observe changes with a live-query and update the UITableView
-        liveQuery = collection.findAll().sort("dateCreated", direction: .ascending).observe { [weak self] docs, event in
+        liveQuery = collection.findAll().observe { [weak self] docs, event in
             guard let `self` = self else { return }
             switch event {
             case .update(let changes):
@@ -110,9 +107,6 @@ var store: DittoStore!
 var liveQuery: DittoLiveQuery?
 var collection: DittoCollection!
 
-// We need to format the task creation date into a UTC string
-var dateFormatter = ISO8601DateFormatter()
-
 // This is the UITableView data source
 var tasks: [DittoDocument] = []
 
@@ -150,7 +144,7 @@ Note, that we are using the `observe` API in Ditto. This API performs two functi
 
 ```swift
 func setupTaskList() {
-    liveQuery = collection.findAll().sort("dateCreated", direction: .ascending).observe { [weak self] docs, event in
+    liveQuery = collection.findAll().observe { [weak self] docs, event in
         guard let `self` = self else { return }
         switch event {
         case .update(let changes):
@@ -215,14 +209,12 @@ To allow the user to create a task we want to display an alert view in response 
     // Add a "OK" button to the alert.
     alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self] (_) in
         guard let self = self else { return }
-        if let text = alert.textFields?[0].text
+        if let body = alert.textFields?[0].text
         {
-            let dateString = self.dateFormatter.string(from: Date())
             // Insert the data into Ditto
             _ = try! self.collection.insert([
-                "text": text,
-                "dateCreated": dateString,
-                "isComplete": false
+                "body": body,
+                "isCompleted": false
             ])
         }
     }))
@@ -237,9 +229,8 @@ Take note that this logic is using the Ditto `insert()` API to create a task doc
 
 ```swift
 _ = try! self.collection.insert([
-    "text": text,
-    "dateCreated": dateString,
-    "isComplete": false
+    "body": body,
+    "isCompleted": false
 ])
 ```
 
@@ -267,8 +258,8 @@ override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexP
 
     // Configure the cell...
     let task = tasks[indexPath.row]
-    cell.textLabel?.text = task["text"].stringValue
-    let taskComplete = task["isComplete"].boolValue
+    cell.textLabel?.text = task["body"].stringValue
+    let taskComplete = task["isCompleted"].boolValue
     if taskComplete {
         cell.accessoryType = .checkmark
     }
