@@ -4,7 +4,7 @@ title: '4 - Editing Tasks'
 
 Our final screen will be the `EditScreen` and it's ViewModel. The `EditScreen` will be in charge of 3 functions:
 
-* Editing an existing `Task` 
+* Editing an existing `Task`
 * Creating a `Task` and inserting into the tasks collection
 * Deleting an existing `Task`
 
@@ -14,8 +14,8 @@ Like before, we need to create an `EditScreenViewModel` for the `EditScreen`. Si
 
 1. The `EditScreenViewModel` needs to be initialized with `ditto` and an optional `task: Task?` value. If the task value is `nil` we need to set the `canDelete` variable to `false`. This means that the user is attempting _create_ a new `Task`. We will use this value to show a delete `Button` in the `EditScreen` later. We will store the `_id: String?` from the `task` parameter and use it later in the `save()` function.
 2. We need two `@Published` variables to bind to a `TextField` and `Toggle` SwiftUI views for the task's `isCompleted` and `body` values. If the `task == nil`, we will set some default values like an empty string and a false `isCompleted` value.
-3. When the user wants to click a save `Button`, we need to `save()` and handle either an `.insert` or `.update` function appropriately. If the local `_id` variable is `nil`, we assume the user is attempting to create a `Task` and will call ditto's `.insert` function. Otherwise, we will attempt to `.update` an existing task with a known `_id`. 
-4. Finally if a delete button is clicked, we attempt to find the document and call `.remove` 
+3. When the user wants to click a save `Button`, we need to `save()` and handle either an `.insert` or `.update` function appropriately. If the local `_id` variable is `nil`, we assume the user is attempting to create a `Task` and will call ditto's `.insert` function. Otherwise, we will attempt to `.update` an existing task with a known `_id`.
+4. Finally if a delete button is clicked, we attempt to find the document and call `.remove`
 
 ```swift title="EditScreenViewModel.swift"
 import SwiftUI
@@ -45,7 +45,7 @@ class EditScreenViewModel: ObservableObject {
     }
     // highlight-end
 
-    // 3. 
+    // 3.
     // highlight-start
     func save() {
         if let _id = _id {
@@ -64,7 +64,7 @@ class EditScreenViewModel: ObservableObject {
     }
     // highlight-end
 
-    // 4. 
+    // 4.
     // highlight-start
     func delete() {
         guard let _id = _id else { return }
@@ -78,7 +78,7 @@ class EditScreenViewModel: ObservableObject {
 ## 4-3 Create the `EditScreen`:
 
 Like the `TasksListScreen.swift` in the previous section, we will create an `EditScreen.swift`.
-This screen will use SwiftUI's Form and Section wrapper. 
+This screen will use SwiftUI's Form and Section wrapper.
 
 1. An `TextField` which we use to edit the `Task.body`
 2. A `Switch` which is used to edit the `Task.isCompleted`
@@ -94,8 +94,8 @@ This screen will use SwiftUI's Form and Section wrapper.
 3. We now can bind the `TextField` for the `$viewModel.body` and `Toggle` to the `$viewModel.isCompleted`. Notice the `$`, this allows SwiftUI fields to bi-directionally edit these `@Published` values and trigger efficient view reloading.
 4. Bind the save button's `action:` handler to the `viewModel.save()` function and dismiss the view. Whenever the user clicks the save button, they will save the current data and return back to the `TasksListScreen`
 5. If the `viewModel.canDelete` is `true`, we can show a delete `Button`. Notice how we don't need the `$` since we are only reading the value once. Moreover, we do not need to tell SwiftUI to re-render on `canDelete` since it will never change during the `EditScreen`'s life cycle.
-6. Bind the delete button's `action:` to the `viewModel.delete()` function and dismiss the view. 
-7. Finally we add a `EditScreen_Previews` so that you can easily watch the view's final rendering as you develop. 
+6. Bind the delete button's `action:` to the `viewModel.delete()` function and dismiss the view.
+7. Finally we add a `EditScreen_Previews` so that you can easily watch the view's final rendering as you develop.
 
 ```swift title="EditScreen.swift"
 struct EditScreen: View {
@@ -103,7 +103,7 @@ struct EditScreen: View {
     // 1.
     // highlight-next-line
     @Environment(\.presentationMode) private var presentationMode
-    
+
     // 2.
     // highlight-start
     @ObservedObject var viewModel: EditScreenViewModel
@@ -168,7 +168,7 @@ struct EditScreen_Previews: PreviewProvider {
         EditScreen(ditto: Ditto(), task: Task(body: "Get Milk", isCompleted: true))
     }
 }
-// highlight-end 
+// highlight-end
 ```
 
 ## 4-4 Run the app!

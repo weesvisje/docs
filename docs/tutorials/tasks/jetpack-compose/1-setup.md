@@ -2,13 +2,13 @@
 title: '1 - Setup'
 ---
 
-The following guide will show you how to build a Task list application with [Android Jetpack Compose](https://developer.android.com/jetpack/getting-started). The Jetpack Compose is a modern set of libraries to build Android apps with a declarative UI with Kotlin code and without writing any XML. 
+The following guide will show you how to build a Task list application with [Android Jetpack Compose](https://developer.android.com/jetpack/getting-started). The Jetpack Compose is a modern set of libraries to build Android apps with a declarative UI with Kotlin code and without writing any XML.
 
 Before getting started, you will need the latest version of [Android Studio Arctic Fox](https://developer.android.com/studio). In addition, for this tutorial, you should have a decent familiarity with Kotlin.
 
 ## 1-1 Create the App
 
-Once you've had [Android Studio Arctic Fox](https://developer.android.com/studio) installed, Click __File > New Project__ and 
+Once you've had [Android Studio Arctic Fox](https://developer.android.com/studio) installed, Click __File > New Project__ and
 
 ![](./new-project.png)
 
@@ -19,7 +19,7 @@ Fill out the information on the form similar to the screenshot below. These are 
 * Save location: choose a directory
 * Minimum SDK: `"API 25: Android 7.1.1 (Nougat)"`
 
-And finally click "Finish" and wait for Android Studio to setup the project. 
+And finally click "Finish" and wait for Android Studio to setup the project.
 
 ![](./new-project-2.png)
 
@@ -30,9 +30,9 @@ In your application's Module __build.gradle__ file add the additional dependenci
 ```groovy title=build.gradle
 dependencies {
   // ... existing dependencies
-  
+
   // Add the following dependencies below
-  
+
   // Ditto
   implementation "live.ditto:ditto:latest.release"
   // Jetpack Compose View Model
@@ -40,7 +40,7 @@ dependencies {
   // Live Data
   implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
   // JetPack Compose Navigation
-  implementation "androidx.navigation:navigation-compose:2.4.0-alpha07"  
+  implementation "androidx.navigation:navigation-compose:2.4.0-alpha07"
 }
 
 ```
@@ -49,7 +49,7 @@ dependencies {
 
 We will need a couple of additional icons to show the tasks' completed, incompleted states. We will reference these vector resources in our code later. You will need to add 3 icons
 
-1. Right click on the __res > drawable__ package and add a new __Vector Asset__ 
+1. Right click on the __res > drawable__ package and add a new __Vector Asset__
 
 ![Add Vector Icons Menu](./add-icon-add.png)
 

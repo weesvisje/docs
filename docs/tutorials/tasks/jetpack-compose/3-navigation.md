@@ -4,14 +4,14 @@ title: 3 - Navigation
 
 ## 3-1 Creating a Root Navigation
 
-This application will have two _Screens_ which are just Jetpack Compose views. 
+This application will have two _Screens_ which are just Jetpack Compose views.
 
 1. `TasksListScreen.kt` - A list where we can show the tasks.
 2. `EditScreen.kt` - Where we can edit, create, and delete the Task
 
-Create a file called __Root.kt__ file and add a Navigation Controller and a `NavHost` to the Root of our application. 
+Create a file called __Root.kt__ file and add a Navigation Controller and a `NavHost` to the Root of our application.
 
-You'll notice references to `TasksListScreen` and `EditScreen`, don't worry we will add them there. 
+You'll notice references to `TasksListScreen` and `EditScreen`, don't worry we will add them there.
 
 The `Root` of our application hosts a `navController` which we use to switch between each Screen. There are __3__ routes:
 
