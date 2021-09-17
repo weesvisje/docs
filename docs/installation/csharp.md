@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 
 ## Installation
 
-> Currently, the C# SDK runs on macOS, Windows, and Linux. Xamarin iOS and Android Support are coming soon. Please email us at [contact@ditto.live](mailto:contact@ditto.live) if these other platforms are essential for you. 
+> Currently, the C# SDK runs on macOS, Windows, and Linux. Currently, there is no peer to peer capabilites of the C# SDK, however we are working on it. Xamarin iOS and Android Support are coming soon. Please email us at [contact@ditto.live](mailto:contact@ditto.live) if these other platforms are essential for you. 
 
 The C# SDK is available as part of [NuGet](https://nuget.org). The common ways to install the SDK is with either the NuGet Package Manager, the .NET CLI, or by adding a reference to the CSProj XML file.
 
