@@ -15,7 +15,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
 import androidx.fragment.app.DialogFragment
-import java.time.format.DateTimeFormatter
 import java.time.Instant
 
 import kotlinx.android.synthetic.main.activity_main.*
@@ -51,8 +50,7 @@ We will add a function and override two now that `MainActivity` is an abstract c
 ```kotlin title=MainActivity
 override fun onDialogSave(dialog: DialogFragment, task:String) {
     // Add the task to Ditto
-    val currentDateString = DateTimeFormatter.ISO_INSTANT.format(Instant.now())
-    this.collection!!.insert(mapOf("text" to task, "isComplete" to false, "dateCreated" to currentDateString))
+    this.collection!!.insert(mapOf("body" to task, "isCompleted" to false))
 }
 
 override fun onDialogCancel(dialog: DialogFragment) { }
@@ -163,8 +161,8 @@ class TasksAdapter: RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val task = tasks[position]
-        holder.itemView.taskTextView.text = task["text"].stringValue
-        holder.itemView.taskCheckBox.isChecked = task["isComplete"].booleanValue
+        holder.itemView.taskTextView.text = task["body"].stringValue
+        holder.itemView.taskCheckBox.isChecked = task["isCompleted"].booleanValue
         holder.itemView.setOnClickListener {
             // NOTE: Cannot use position as this is not accurate based on async updates
             onItemClick?.invoke(tasks[holder.adapterPosition])

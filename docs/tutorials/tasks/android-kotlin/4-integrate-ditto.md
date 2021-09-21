@@ -60,7 +60,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
     // Listen for clicks to mark tasks [in]complete
     tasksAdapter.onItemClick = { task ->
         ditto.store.collection("tasks").findByID(task.id).update { newTask ->
-            newTask!!["isComplete"].set(!newTask["isComplete"].booleanValue)
+            newTask!!["isCompleted"].set(!newTask["isCompleted"].booleanValue)
         }
     }
 
@@ -91,7 +91,7 @@ fun setupTaskList() {
     this.collection = this.ditto!!.store.collection("tasks")
 
     // We use observe to create a live query with a subscription to sync this query with other devices
-    this.liveQuery = collection!!.findAll().sort("dateCreated", DittoSortDirection.Ascending).observe { docs, event ->
+    this.liveQuery = collection!!.findAll().observe { docs, event ->
         val adapter = (this.viewAdapter as TasksAdapter)
         when (event) {
             is DittoLiveQueryEvent.Update -> {
@@ -160,8 +160,6 @@ import kotlinx.android.synthetic.main.task_view.view.*
 import live.ditto.*
 import live.ditto.android.DefaultAndroidDittoDependencies
 import java.time.Instant
-import java.time.format.DateTimeFormatter
-
 ```
 
 ## 4-5 Build and Run!
