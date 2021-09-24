@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import useIsBrowser from '@docusaurus/useIsBrowser';
 import clsx from "clsx";
 import Layout from "@theme/Layout";
 import Tabs from "@theme/Tabs";
@@ -34,9 +35,10 @@ export interface SDKInfo {
   languageOrPlatform?: string;
 }
 
-const dittoChangeLog = require("../../ditto-changelog.json");
+const endpoint = "https://software.ditto.live/releases/releases.json"
+const downloadedFrameworks: {[key: string]: any} = parseFrameworks(require("../../ditto-changelog.json") || {});
 
-function getFrameworks(): {
+function parseFrameworks(dittoChangeLog: {[key: string]: any}): {
   [framework: string]: SDKInfo[];
 } {
   const md = markdownIt();
@@ -155,9 +157,9 @@ interface TabContentProps {
 function TabContents({ sdkInfos, title }: TabContentProps) {
   return (
     <div>
-      {sdkInfos.map((sdkInfo) => {
+      {sdkInfos.map((sdkInfo, i) => {
         return (
-          <div key={sdkInfo.version} className="margin-bottom--md">
+          <div key={i} className="margin-bottom--md">
             <h3>
               {title} Version {sdkInfo.version}{" "}
             </h3>
@@ -176,8 +178,22 @@ function TabContents({ sdkInfos, title }: TabContentProps) {
 
 export default function Changelog() {
   const { siteConfig } = useDocusaurusContext();
-
-  const frameworks = getFrameworks();
+  
+  const [frameworks, setFrameworks] = useState<{[framework: string]: SDKInfo[]}>(downloadedFrameworks);
+  
+  const isBrowser = useIsBrowser();
+  
+  useEffect(() => {
+    if (isBrowser) {
+      (async () => {
+        const response = await fetch(endpoint)
+        const fetchedJSON = await response.json();
+        setFrameworks(parseFrameworks(fetchedJSON));
+      })();
+    } else {
+      setFrameworks(downloadedFrameworks)
+    }
+  }, [isBrowser])
 
   return (
     <Layout
