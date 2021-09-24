@@ -12,7 +12,9 @@
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids"
+    "write-heading-ids": "docusaurus write-heading-ids",
+    "download-changelog": "curl https://software.ditto.live/releases/releases.json > ditto-changelog.json",
+    "postinstall": "npm run download-changelog"
   },
   "dependencies": {
     "@docusaurus/core": "^2.0.0-beta.5",
@@ -20,15 +22,21 @@
     "@heroicons/react": "^1.0.4",
     "@mdx-js/react": "^1.6.21",
     "@svgr/webpack": "^5.5.0",
+    "axios": "^0.21.4",
     "clsx": "^1.1.1",
+    "common-tags": "^1.8.0",
     "file-loader": "^6.2.0",
+    "markdown-it": "^12.2.0",
     "mdx-mermaid": "^1.1.0",
     "mermaid": "^8.11.5",
+    "moment": "^2.29.1",
     "prism-react-renderer": "^1.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-force-graph-2d": "^1.23.8",
     "react-sizeme": "^3.0.2",
+    "semver": "^7.3.5",
+    "twin.macro": "^2.7.0",
     "url-loader": "^4.1.1"
   },
   "browserslist": {
@@ -45,10 +53,23 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^2.0.0-beta.5",
+    "@headlessui/react": "^1.4.1",
+    "@tailwindcss/aspect-ratio": "^0.2.1",
+    "@tailwindcss/forms": "^0.3.3",
+    "@tailwindcss/line-clamp": "^0.2.1",
+    "@tailwindcss/typography": "^0.4.1",
     "@tsconfig/docusaurus": "^1.0.4",
+    "@types/markdown-it": "^12.2.1",
     "@types/react": "^17.0.19",
     "@types/react-helmet": "^6.1.2",
     "@types/react-router-dom": "^5.1.8",
+    "@types/semver": "^7.3.8",
+    "autoprefixer": "^10.3.5",
+    "postcss": "^8.3.7",
+    "postcss-import": "^14.0.2",
+    "postcss-loader": "^6.1.1",
+    "postcss-preset-env": "^6.7.0",
+    "tailwindcss": "^2.2.15",
     "typescript": "^4.3.5"
   }
 }

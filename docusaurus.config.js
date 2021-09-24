@@ -10,7 +10,7 @@ module.exports = {
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
-  favicon: "img/favicon.ico/favicon.ico",
+  favicon: "img/favicon.ico/favicon.ico", 
   organizationName: "getditto", // Usually your GitHub org/user name.
   projectName: "docs", // Usually your repo name.
   themeConfig: {
@@ -34,7 +34,7 @@ module.exports = {
         },
         {
           label: "Changelog",
-          href: "https://www.ditto.live/changelog",
+          href: "/changelog",
         },
       ],
     },
@@ -87,7 +87,14 @@ module.exports = {
       copyright: `Copyright © ${new Date().getFullYear()} DittoLive, Inc. Built with Docusaurus.`,
     },
     prism: {
-      additionalLanguages: ["csharp", "swift", "java", "kotlin", "cpp", "groovy"],
+      additionalLanguages: [
+        "csharp",
+        "swift",
+        "java",
+        "kotlin",
+        "cpp",
+        "groovy",
+      ],
       theme: lightCodeTheme,
       darkTheme: darkCodeTheme,
     },
@@ -122,9 +129,6 @@ module.exports = {
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
           editUrl: "https://github.com/getditto/docs/edit/master/",
-        },
-        theme: {
-          customCss: require.resolve("./src/css/custom.css"),
         },
       },
     ],
