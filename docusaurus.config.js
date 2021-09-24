@@ -58,7 +58,7 @@ module.exports = {
             },
             {
               label: "Changelog",
-              href: "https://www.ditto.live/changelog",
+              href: "/changelog",
             },
           ],
         },
