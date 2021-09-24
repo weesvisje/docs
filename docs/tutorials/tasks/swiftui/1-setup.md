@@ -2,7 +2,7 @@
 title: '1 - Setup'
 ---
 
-The following guide will show you how to build a Task list application with [Android Jetpack Compose](https://developer.android.com/jetpack/getting-started). The Jetpack Compose is a modern set of libraries to build Android apps with a declarative UI with Kotlin code and without writing any XML.
+The following guide will show you how to build a task list application for iOS using [SwiftUI](https://developer.apple.com/documentation/swiftui/).
 
 Before getting started, you will need the latest version of [Xcode](https://apps.apple.com/us/app/xcode/id497799835). This tutorial was written with Xcode 12.5.1. In addition, you should have a decent familiarity with Swift.
 
