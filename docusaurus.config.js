@@ -32,6 +32,10 @@ module.exports = {
           label: "GitHub",
           position: "right",
         },
+        {
+          label: "Changelog",
+          href: "https://www.ditto.live/changelog",
+        },
       ],
     },
     footer: {
@@ -51,6 +55,10 @@ module.exports = {
             {
               label: "Samples Apps",
               href: "https://github.com/getditto/samples",
+            },
+            {
+              label: "Changelog",
+              href: "https://www.ditto.live/changelog",
             },
           ],
         },
