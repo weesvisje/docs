@@ -2,14 +2,12 @@
 title: 'Big Peer Internals'
 ---
 
+HyDRA is Ditto's cloud database. It is designed to work in conjunction
+with the Ditto SDK, and also has an HTTP API.
+
 export function ImageHolder(props) {
   return <div style={{padding: '2rem', margin: '2rem', borderRadius: '8px', background: 'white'}}>{props.children}</div>
 }
-
-# Big Peer Internal Architecture - HyDRA 
-
-HyDRA is Ditto's cloud database. It is designed to work in conjunction
-with the Ditto SDK, and also has an HTTP API.
 
 ## What Is It?
 
@@ -29,7 +27,7 @@ purposes.
 
 There exist many distributed databases, but HyDRA is specifically
 designed for Ditto: It stores Ditto's CRDTs by default; it can store
-and merge Ditto [CRDT](https://ditto.live/docs/architecture/crdt) Diffs; it "speaks"
+and merge Ditto [CRDT](https://docs.ditto.live/advanced/architecture/crdt) Diffs; it "speaks"
 Ditto's mesh replication protocol, meaning it appears as just another
 peer to Ditto mesh devices; and it provides causally consistent
 transactions.
@@ -56,7 +54,7 @@ The following drawing is a rough overview of the architecture.
 ### Ditto CRDTs
 
 The core data type in Ditto is the CRDT. It is documented in detail
-[here](https://ditto.live/docs/architecture/crdt). Understanding some
+[here](https://docs.ditto.live/advanced/architecture/crdt). Understanding some
 of how the CRDT works helps understand the concepts below.  It is
 enough to know that if the same CRDT is modified by multiple Ditto
 mesh SDK devices concurrently there is a way to deterministically
@@ -64,7 +62,7 @@ _merge_ the conflicting versions into a single meaningful value.
 
 ### Ditto Mesh Replication
 
-This is also covered in [other documents](https://ditto.live/docs/architecture/mesh-network). All we need know
+This is also covered in [other documents](https://docs.ditto.live/advanced/architecture/mesh-network). All we need know
 here is that Ditto Mesh SDK devices replicate with HyDRA by sending
 CRDT Documents, and CRDT Diffs to HyDRA's Subscription Server API, and
 receive in return Documents and Diffs that they are subscribed to. A
