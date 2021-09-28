@@ -2,14 +2,12 @@
 title: 'Big Peer Internals'
 ---
 
+HyDRA is Ditto's cloud database. It is designed to work in conjunction
+with the Ditto SDK, and also has an HTTP API.
+
 export function ImageHolder(props) {
   return <div style={{padding: '2rem', margin: '2rem', borderRadius: '8px', background: 'white'}}>{props.children}</div>
 }
-
-# Big Peer Internal Architecture - HyDRA 
-
-HyDRA is Ditto's cloud database. It is designed to work in conjunction
-with the Ditto SDK, and also has an HTTP API.
 
 ## What Is It?
 
