@@ -13,7 +13,12 @@ module.exports = {
   favicon: "img/favicon.ico/favicon.ico", 
   organizationName: "getditto", // Usually your GitHub org/user name.
   projectName: "docs", // Usually your repo name.
+  plugins: ['@docusaurus/plugin-google-gtag'],
   themeConfig: {
+    gtag: {
+      // You can also use your "G-" Measurement ID here.
+      trackingID: 'G-0PDX043H6Z',
+    },
     navbar: {
       title: "Ditto",
       logo: {
