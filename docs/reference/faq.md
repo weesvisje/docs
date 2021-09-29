@@ -63,6 +63,12 @@ Ditto can be used in Airplane Mode. If Bluetooth or WiFi is manually toggled on 
 * P2P WiFi: similar to WiFi speeds
 * Bluetooth LE: typically 4 kB/second (higher speeds currently in development)
 
+### How much data can Ditto hold? How big can a Ditto document be?
+
+There isn't a size limit to a Ditto document or store. Like other databases, Ditto will use as much data as you insert into the device. Controlling the size of Ditto in your app is completely up to your descretion.
+### Are there any limits to the number of collections?
+
+No there are no limits to the number of collections. While there is no limit, try to keep the names shorter than 30 characters. The collection names are stored with each document. This is merely a suggestion. 
 ## __Bluetooth__
 
 ### What is the difference between Bluetooth Classic and Bluetooth Low Energy?

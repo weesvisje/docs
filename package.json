@@ -17,9 +17,9 @@
     "postinstall": "npm run download-changelog"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0-beta.5",
+    "@docusaurus/core": "^2.0.0-beta.6",
     "@docusaurus/plugin-google-gtag": "^2.0.0-beta.6",
-    "@docusaurus/preset-classic": "^2.0.0-beta.5",
+    "@docusaurus/preset-classic": "^2.0.0-beta.6",
     "@heroicons/react": "^1.0.4",
     "@mdx-js/react": "^1.6.21",
     "@svgr/webpack": "^5.5.0",
