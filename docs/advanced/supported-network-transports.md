@@ -1,6 +1,6 @@
 ---
-title: "Network Transports"
-sidebar_position: 2
+title: "Supported Network Transports"
+sidebar_position: 4
 ---
 
 import { CheckIcon } from '@heroicons/react/solid'
@@ -13,8 +13,6 @@ export function Check() {
 export function Clock() {
   return <ClockIcon style={{width: 20, height: 20, margin: 'auto', display: 'block'}} />
 }
-
-# Network Transport Support
 
 The following are the network transports supported by Ditto. By default Ditto will attempt to use all available transports if permissions are given.
 

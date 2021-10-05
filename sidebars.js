@@ -24,7 +24,7 @@ module.exports = {
       type: "category",
       label: "API Reference",
       collapsible: true,
-      collapsed: false,
+      collapsed: true,
       items: [
         {
           type: "link",

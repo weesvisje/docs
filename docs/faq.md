@@ -1,6 +1,6 @@
 ---
 title: "Frequently Asked Questions"
-sidebar_position: 3
+sidebar_position: 14
 ---
 
 ## __General SDK__
