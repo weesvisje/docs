@@ -16,7 +16,7 @@ module.exports = {
   themeConfig: {
     gtag: {
       // You can also use your "G-" Measurement ID here.
-      trackingID: 'G-0PDX043H6Z',
+      trackingID: 'G-D8PMW3CCL2',
     },
     navbar: {
       title: "Ditto",
