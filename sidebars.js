@@ -59,7 +59,7 @@ module.exports = {
         {
           type: "link",
           label: "C++", // The link label
-          href: downloadedChangelog['cpp-ios'].Ditto.latest.api_reference_docs_url, // The external URL
+          href: downloadedChangelog.cpp.Ditto.latest.api_reference_docs_url, // The external URL
         },
       ],
     },
