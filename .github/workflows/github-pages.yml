@@ -5,10 +5,13 @@ on:
     branches: [master]
   push:
     branches: [master]
+  # Whenever there is a new `ditto` release and, with it, an update of the `releases.json` file.
+  repository_dispatch:
+    types: ['new-ditto-release']
 
 jobs:
   checks:
-    if: github.event_name != 'push'
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
