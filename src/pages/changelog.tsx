@@ -44,7 +44,7 @@ function parseFrameworks(dittoChangeLog: {[key: string]: any}): {
   const md = markdownIt();
   // We maintain an allowlist to ensure that we're only showing the frameworks
   // that we want to be public at any given time
-  const frameworkAllowlist = ["android", "cocoa", "cpp-ios", "dotnet", "js"];
+  const frameworkAllowlist = ["android", "cocoa", "cpp", "dotnet", "js"];
   let frameworks: { [framework: string]: SDKInfo[] } = {};
   Object.keys(dittoChangeLog).forEach((framework) => {
     // Ensure we're dealing with an allowed framework
@@ -108,7 +108,7 @@ function parseFrameworks(dittoChangeLog: {[key: string]: any}): {
               sdkInfo["friendlyName"] = "Android";
               sdkInfo["friendlyDescription"] = "Android v7.1 and higher";
             }
-            if (framework === "cpp-ios") {
+            if (framework === "cpp") {
               sdkInfo["friendlyName"] = "C++";
               sdkInfo["friendlyDescription"] = "C++11 and higher";
             }
@@ -257,7 +257,7 @@ export default function Changelog() {
                 <TabItem value="cpp">
                   <TabContents
                     title="C++ Linux / iOS"
-                    sdkInfos={frameworks["cpp-ios"]}
+                    sdkInfos={frameworks["cpp"]}
                   />
                 </TabItem>
               </Tabs>
