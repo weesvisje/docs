@@ -16,11 +16,11 @@ This allows you to decouple actions in your applications with UI updates. You ca
 
 Ditto's synchronization system is query-based, which means, that by default the SDK will not sync data with other devices. Instead, the app creates query-based subscriptions that define which data it wants to sync. When the device is subscribed to a query, then other devices will share data matching that query with it:
 
-![](../.gitbook/assets/image%20%2832%29.png)
+![Query-based Subscriptions](subscriptions.png)
 
 Given that Ditto works peer-to-peer, devices can form into arbitrary groups based on the proximity to one another, or rather they create an ad-hoc mesh network. Ditto's synchronization system allows for devices to share data through another device, called "multi-hop" sync. The only requirement for this to occur is that all devices in the chain must be subscribed to the same data, as shown below:
 
-![](../.gitbook/assets/image%20%2822%29.png)
+![Multi-hop Subscriptions](multi-hop-subscriptions.png)
 
 ## Enabling Sync
 
@@ -127,7 +127,7 @@ try {
 
 Ditto will only sync data with other peers when it has an active `LiveQuery`. A `LiveQuery` is a long-running subscription to a constructed Ditto query. Use a query to specify what types of data to sync with other devices. [Learn more about how to create queries](./querying)
 
-The easiest way to create a `LiveQuery`, simply add `.observe` to a query cursor. This API combines two different actions related to observing changes. First, it registers an observer which will fire a callback whenever any data changes related to this query. Second, it also creates a subscription for data from other devices based off the query. For simple applications, using `.observe` is easier. However, for more complex applications, where you might want to subscribe to a larger query of data from other devices whenever the app is running, but then have specific live queries for subsets of the data tied to certain views, you can separate the two actions, as described further down.
+The easiest way to create a `LiveQuery`, simply add `.observe` to a query cursor. This API combines two different actions related to observing changes. First, it registers an observer which will fire a callback whenever any data changes related to this query. Second, it also creates a subscription for data from other devices based off the query. For simple applications, using `.observe` is easier. However, for more complex applications, where you might want to subscribe to a larger query of data from other devices whenever the app is running, but then have specific live queries for subsets of the data tied to certain views. You can separate the two actions, as described in [`Subscriptions`](#subscriptions) below.
 
 To create a LiveQuery, add `.observe` to a query cursor like so:
 
@@ -238,7 +238,7 @@ Here are some quick facts about the `LiveQuery` behavior.
 
 ## Live Queries without Syncing Data
 
-There are many situations where your app needs to observe live queries _without_ initiating syncing with other devices. For example, this is useful if your app intends to treat certain documents and collections as local-only data. In addition, for complex apps, it can be helpful to seperate the observer from the underlying query `Subscription` (_see more below_). 
+There are many situations where your app needs to observe live queries _without_ initiating syncing with other devices. For example, this is useful if your app intends to treat certain documents and collections as local-only data. In addition, for complex apps, it can be helpful to seperate the observer from the underlying query [`Subscription`](#subscriptions). 
   
 Instead of `.observe`, call `.observeLocal` like so:
 
@@ -339,7 +339,7 @@ public void userDidInsertCar() {
 // --- Register live query to update UI
 this.liveQuery = ditto.store.collection("cars")
     .findAll()
-    .observe((docs, event) -> {
+    .observeLocal((docs, event) -> {
         // Do something...
     });
 ```
@@ -391,13 +391,13 @@ std::shared_ptr<LiveQuery> query = collection
 </TabItem>
 </Tabs>
 
-Note: if your ditto instance has not called `tryStartSync`, there will be no difference between `.observe` and `.observeLocal`.
+Note: if your Ditto instance has not called `tryStartSync`, there will be no difference between `.observe` and `.observeLocal`.
   
 ## Subscriptions
   
-In developing more complex applications, it might make sense to decouple your `LiveQuery` observer callbacks with the query `Subscription`. For example, if you want the app to always be subscribing to data during the entire life-cycle of the app, but only create an observer when the user navigates to the UI for that data. In this case, you would use the `observeLocal` API while registering a `Subscription` for the query in a global area of the app.
+In developing more complex applications, it might make sense to decouple your `LiveQuery` observer callbacks with the query `Subscription`. For example, if you want the app to always be subscribing to data during the entire life-cycle of the app, but only create an observer when the user navigates to the UI for that data. In this case, you would use the `.observeLocal` API while registering a `Subscription` for the query in a global area of the app.
 
-To create subscriptions is similar to, or can also be combined with, observations \(as described above\):
+To create subscriptions is similar to, or can also be combined with, [local observers](#live-queries-without-syncing-data):
 
 <Tabs
   groupId="programming-language"
@@ -488,7 +488,7 @@ this.subscription = ditto.store.collection("cars").
 // Register a local observer to update UI
 this.liveQuery = ditto.store.collection("cars")
     .findAll()
-    .observe((docs, event) -> {
+    .observeLocal((docs, event) -> {
         // Do something...
     });
 ```
@@ -528,4 +528,4 @@ std::shared_ptr<LiveQuery> query = collection
 </TabItem>
 </Tabs>
 
-Note: if your ditto instance has not called `tryStartSync`, there will be no difference between `.observe` and `.observeLocal`.
+Note: if your Ditto instance has not called `tryStartSync`, `.subscribe` will not enable sync.
