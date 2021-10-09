@@ -6,6 +6,21 @@ sidebar_position: 4
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
+## Overview
+
+The most important API, which is fundamental to working with Ditto, is the ability to observe data changes. This allows your app to be reactive, simplifying your architecture, and abstracting the timing complexity of data synchronization that is occurring in the background. Instead of performing, point-in-time queries, you app can simply register a query to observe, which is called a **"live query"**, and you will receive callbacks whenever data changes related to it.
+
+This allows you to decouple actions in your applications with UI updates. You can bind your UI elements to live queries and then simply perform writes to Ditto from your actions elsewhere in the app. The live query will fire in response to those other actions and whenever data is received from other devices as well.
+
+### Query-Based Sync
+
+Ditto's synchronization system is query-based, which means, that by default the SDK will not sync data with other devices. Instead, the app creates query-based subscriptions that define which data it wants to sync. When the device is subscribed to a query, then other devices will share data matching that query with it:
+
+![](../.gitbook/assets/image%20%2832%29.png)
+
+Given that Ditto works peer-to-peer, devices can form into arbitrary groups based on the proximity to one another, or rather they create an ad-hoc mesh network. Ditto's synchronization system allows for devices to share data through another device, called "multi-hop" sync. The only requirement for this to occur is that all devices in the chain must be subscribed to the same data, as shown below:
+
+![](../.gitbook/assets/image%20%2822%29.png)
 
 ## Enabling Sync
 
@@ -110,9 +125,11 @@ try {
 
 ## Syncing Data with Live Queries
 
-Ditto will only sync data with other peers when it has an active `LiveQuery`. With Ditto, syncing a _pull_ mechanism. Your app will sync by subscribing to a query, this is what we call a `LiveQuery`. A `LiveQuery` is a long-running subscription to a constructed Ditto query. Use a query to specify what types of data to sync with other devices. [Learn more about how to create queries](./querying)
+Ditto will only sync data with other peers when it has an active `LiveQuery`. A `LiveQuery` is a long-running subscription to a constructed Ditto query. Use a query to specify what types of data to sync with other devices. [Learn more about how to create queries](./querying)
 
-To create a `LiveQuery`, simply add `.observe` to a query cursor like so:
+The easiest way to create a `LiveQuery`, simply add `.observe` to a query cursor. This API combines two different actions related to observing changes. First, it registers an observer which will fire a callback whenever any data changes related to this query. Second, it also creates a subscription for data from other devices based off the query. For simple applications, using `.observe` is easier. However, for more complex applications, where you might want to subscribe to a larger query of data from other devices whenever the app is running, but then have specific live queries for subsets of the data tied to certain views, you can separate the two actions, as described further down.
+
+To create a LiveQuery, add `.observe` to a query cursor like so:
 
 <Tabs
   groupId="programming-language"
@@ -221,7 +238,9 @@ Here are some quick facts about the `LiveQuery` behavior.
 
 ## Live Queries without Syncing Data
 
-There are many situations where your app needs to observe live queries _without_ initiating syncing with other devices. For example, this is useful if your app intends to treat certain documents and collections as local-only data. Instead of `.observe`, call `.observeLocal` like so:
+There are many situations where your app needs to observe live queries _without_ initiating syncing with other devices. For example, this is useful if your app intends to treat certain documents and collections as local-only data. In addition, for complex apps, it can be helpful to seperate the observer from the underlying query `Subscription` (_see more below_). 
+  
+Instead of `.observe`, call `.observeLocal` like so:
 
 <Tabs
   groupId="programming-language"
@@ -361,6 +380,143 @@ void user_did_insert_car() {
 }
 
 // --- Register live query to update UI
+std::shared_ptr<LiveQuery> query = collection
+  .find("color == 'red'")
+  .observe_local(LiveQueryEventHandler{
+    [&](std::vector<Document> docs, LiveQueryEvent event) {
+      
+    }});
+```
+
+</TabItem>
+</Tabs>
+
+Note: if your ditto instance has not called `tryStartSync`, there will be no difference between `.observe` and `.observeLocal`.
+  
+## Subscriptions
+  
+In developing more complex applications, it might make sense to decouple your `LiveQuery` observer callbacks with the query `Subscription`. For example, if you want the app to always be subscribing to data during the entire life-cycle of the app, but only create an observer when the user navigates to the UI for that data. In this case, you would use the `observeLocal` API while registering a `Subscription` for the query in a global area of the app.
+
+To create subscriptions is similar to, or can also be combined with, observations \(as described above\):
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+// Register a subscription globally in the app
+const subscription = ditto.store.collection('cars')
+    .find("color == 'red'")
+    .subscribe()
+
+// Register a local observer to update UI
+const liveQuery = ditto.store.collection('cars')
+    .find("color == 'red'")
+    .observeLocal((cars, event) => {
+        // do something
+    })
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift  
+// Register a subscription globally in the app
+let subscription = ditto.store.collection("cars")
+    .find("color == 'red'")
+    .subscribe()
+
+// Register a local observer to update UI
+let liveQuery = ditto.store.collection("cars").find("color == 'red'")
+  .observeLocal { cars, event in
+    // do something
+  }
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+// Register a subscription globally in the app
+DITSubscription *subscription = [[collection find:@"color == 'red'"] subscribe];
+
+// Register a local observer to update UI
+DITLiveQuery *liveQuery = [[collection find:@"color == 'red'"]
+    observeLocal:^(NSArray<DITDocument *> *docs, DITLiveQueryEvent *event) {
+
+    }
+}];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+// Register a subscription globally in the app
+this.subscription = ditto.store.collection("cars").
+    .findAll()
+    .subscribe()
+
+// Register a local observer to update UI
+this.liveQuery = ditto.store.collection("cars").
+    .findAll()
+    .observeLocal { docs, event ->
+    // Do something...
+}
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+// Register a subscription globally in the app
+this.subscription = ditto.store.collection("cars").
+    .findAll()
+    .subscribe();
+
+// Register a local observer to update UI
+this.liveQuery = ditto.store.collection("cars")
+    .findAll()
+    .observe((docs, event) -> {
+        // Do something...
+    });
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+// Register a subscription globally in the app
+var subscription = ditto.Store.Collection("cars").Find("color == 'red'").Subscribe();
+
+// Register a local observer to update UI
+var localLiveQuery = ditto.Store.Collection("cars").Find("color == 'red'").ObserveLocal((docs, DittoLiveQueryEvent) =>
+{
+    // Do something...
+});
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+// Register a subscription globally in the app
+Subscription subscription = collection
+  .find("color == 'red'")
+  .subscribe();
+
+// Register a local observer to update UI
 std::shared_ptr<LiveQuery> query = collection
   .find("color == 'red'")
   .observe_local(LiveQueryEventHandler{
