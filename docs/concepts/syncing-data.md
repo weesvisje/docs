@@ -8,17 +8,17 @@ import TabItem from '@theme/TabItem';
 
 ## Overview
 
-The most important API, which is fundamental to working with Ditto, is the ability to observe data changes. This allows your app to be reactive, simplifying your architecture, and abstracting the timing complexity of data synchronization that is occurring in the background. Instead of performing, point-in-time queries, you app can simply register a query to observe, which is called a **"live query"**, and you will receive callbacks whenever data changes related to it.
+The most important API, which is fundamental to working with Ditto, is the ability to observe data changes. This allows your app to be reactive, simplifying your architecture, and abstracting the timing complexity of data sync that is occurring in the background. Instead of performing, point-in-time queries, your app can simply register a query to observe, which is called a `LiveQuery`, and you will receive callbacks whenever data changes related to it.
 
-This allows you to decouple actions in your applications with UI updates. You can bind your UI elements to live queries and then simply perform writes to Ditto from your actions elsewhere in the app. The live query will fire in response to those other actions and whenever data is received from other devices as well.
+This allows you to decouple actions in your applications with UI updates. You can bind your UI to a `LiveQuery` and then simply perform writes to Ditto from your actions elsewhere in the app. The `LiveQuery` will fire in response to those other actions and whenever data is received from other devices as well.
 
 ### Query-Based Sync
 
-Ditto's synchronization system is query-based, which means, that by default the SDK will not sync data with other devices. Instead, the app creates query-based subscriptions that define which data it wants to sync. When the device is subscribed to a query, then other devices will share data matching that query with it:
+Ditto's sync system is query-based, which means, that by default the SDK will not sync data with other devices. Instead, the app creates query-based subscriptions that define which data it wants to sync. When the device is subscribed to a query, then other devices will share data matching that query with it:
 
 ![Query-based Subscriptions](subscriptions.png)
 
-Given that Ditto works peer-to-peer, devices can form into arbitrary groups based on the proximity to one another, or rather they create an ad-hoc mesh network. Ditto's synchronization system allows for devices to share data through another device, called "multi-hop" sync. The only requirement for this to occur is that all devices in the chain must be subscribed to the same data, as shown below:
+Given that Ditto works peer-to-peer, devices can form into arbitrary groups based on the proximity to one another, or rather they create an ad-hoc mesh network. Ditto's sync system allows for devices to share data through another device, called "multi-hop" sync. The only requirement for this to occur is that all devices in the chain must be subscribed to the same data, as shown below:
 
 ![Multi-hop Subscriptions](multi-hop-subscriptions.png)
 
