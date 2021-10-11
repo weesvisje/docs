@@ -808,7 +808,15 @@ Once the value in the document is a counter, you can proceed to increment or dec
 <TabItem value="javascript">
 
 ```js
-// This feature is not yet supported for JavaScript
+let docID = ditto.store["people"].insert({
+    name: 'Frank',
+    ownedCars: 0 // here 0 is a number
+})
+
+ditto.store.collection('people').findByID(docID).update((mutableDoc) => {
+  mutableDoc._replaceWithCounterAt('ownedCars')
+  mutableDoc._incrementCounterAt('ownedCars', 1)
+})
 ```
 
 </TabItem>
