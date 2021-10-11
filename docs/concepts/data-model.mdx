@@ -548,7 +548,40 @@ Attachments do not get synced between devices by default, even if they are part 
 <TabItem value="javascript">
 
 ```js
-// This feature is coming soon
+const collection = ditto.store.collection('foo')
+
+const myImageBase64 = 'iVBORw0KGgoAAAANSU...SUVORK5CYII='
+const myImageBytes = Uint8Array.from(myImageBase64, (character) => character.charCodeAt(0))
+const metadata = { name: 'my_image.png' }
+
+// On Node, you can also pass a file path (string) instead of image data and
+// the attachment will be created from that file.
+const attachment = collection.newAttachment(myImageBytes, metadata)
+
+const docID = collection.insert({ some: 'string', my_attachment: attachment })
+
+// Later, find the document and then fetch the attachment
+
+const doc = await collection.findByID(docID)
+const attachmentToken = doc.my_attachment.attachmentToken
+
+const attachmentFetcher = collection.fetchAttachment(attachmentToken,  async (attachmentFetchEvent) => {
+  switch attachmentFetchEvent.type {
+  case 'Completed':
+    const fetchedAttachment = event.attachment
+    // Do something with attachment
+    break
+
+  default:
+    console.log('Unable to fetch attachment')
+    break
+  }
+})
+
+// There is also a more convenient way of fetching the attachment
+// (AttachmentFetcher implements the `PromiseLike` protocol):
+const attachment = await collection.fetchAttachment(attachmentToken)
+// Do something with attachment
 ```
 
 </TabItem>
