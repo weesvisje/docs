@@ -1,4 +1,10 @@
 {
+  "markdown-image-with-class":{
+    "prefix": "img",
+    "body": [
+      "<img src={require(\"$1\").default} className=\"max-h-72 m-auto py-4\" />"
+    ]
+  },
   "programming-language-tabs": {
     "prefix": "programming-language-tabs",
     "body": [

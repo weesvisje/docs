@@ -3,10 +3,6 @@ title: "Mesh Network"
 sidebar_position: 2
 ---
 
-export function ImageHolder(props) {
-  return <div style={{padding: '2rem', margin: '2rem', borderRadius: '8px', background: 'white'}}>{props.children}</div>
-}
-
 When you use Ditto in your app you don’t have to think about how your devices will connect to each other. A device like an iPhone will build an interconnected mesh all on its own. As soon as you call `tryStartSync()` it fires up Bluetooth LE, scans for peers on the WiFi, and activates AWDL to create high-speed connections with nearby Apple devices—all this with one line of code.
 
 <img src={require("./diagram1_basic_sync.png").default} className="max-h-72 m-auto py-4" />
