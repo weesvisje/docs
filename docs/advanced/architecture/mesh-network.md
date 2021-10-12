@@ -9,11 +9,7 @@ export function ImageHolder(props) {
 
 When you use Ditto in your app you don’t have to think about how your devices will connect to each other. A device like an iPhone will build an interconnected mesh all on its own. As soon as you call `tryStartSync()` it fires up Bluetooth LE, scans for peers on the WiFi, and activates AWDL to create high-speed connections with nearby Apple devices—all this with one line of code.
 
-<ImageHolder>
-
-![](diagram1_basic_sync.png)
-
-</ImageHolder>
+<img src={require("./diagram1_basic_sync.png").default} className="max-h-72 m-auto py-4" />
 
 The mesh is an underlay for data sync. It operates independently of your queries and subscriptions. Data updates will propagate through the mesh automatically, [provided your subscriptions match](/concepts/syncing-data).
 
@@ -58,39 +54,23 @@ The Network ID is randomised each time Ditto starts up. It enables peers to iden
 
 ## Making and Breaking Connections
 
-<ImageHolder>
-
-![](diagram2_new_peer.png)
-
-</ImageHolder>
+<img src={require("./diagram2_new_peer.png").default} className="max-h-72 m-auto" />
 
 When a user opens your app the first thing they will see is how quickly it syncs the latest information. Ditto understands this. When sync begins it uses all the transports aggressively to locate and connect to multiple potential peers concurrently. At the same time the existing peers will notice the newcomer’s arrival. If they have capacity they will also establish connections to the new device. Together, these processes ensure that a new peer is integrated into the mesh as quickly as possible.
 
 After this initial burst Ditto must become more efficient. A mobile phone has a finite battery. Each extra LAN connection consumes more CPU time and more radio energy. Bluetooth is particularly constrained: devices can manage only a handful of concurrent connections and each connection can take several seconds to initiate. Therefore in larger meshes Ditto must limit the number of interconnections, and choose wisely.
 
-<ImageHolder>
-
-![](diagram3_two_islands.png)
-
-</ImageHolder>
+<img src={require("./diagram3_two_islands.png").default} className="max-h-72 m-auto" />
 
 At the same time Ditto must not have too _few_ connections: otherwise islanding can occur, where different groups of devices in the same room are connected in individual clusters. If there is no connection between those groups they will not sync data with each other.
 
 Ditto avoids islanding using two techniques, neither of which require central coordination. First, a reasonably dense mesh is preferred so that islanding is improbable. Second, a random churn means that devices will slowly change which peers they are connected to. This ensures that even if an island did form, it will likely only last a few seconds.
 
-<ImageHolder>
-
-![](diagram4_bluetooth_case1.png)
-
-</ImageHolder>
+<img src={require("./diagram4_bluetooth_case1.png").default} className="max-h-72 m-auto" />
 
 Next, certain optimisations are possible. Imagine there are two candidate peers for a Bluetooth connection but you only have capacity for one. If you are already connected to one of those peers via WiFi, then we should spend our Bluetooth connection on the other peer, to improve the diversity of the mesh.
 
-<ImageHolder>
-
-![](diagram5_bluetooth_case2.png)
-
-</ImageHolder>
+<img src={require("./diagram5_bluetooth_case2.png").default} className="max-h-72 m-auto" />
 
 Now, imagine the same scenario except we have capacity for two Bluetooth connections. This time we should connect to _both_ of them. The Bluetooth connection where we have WiFi will sit idle for now, but if that WiFi connection goes away in the future then we can immediately failover to the pre-established Bluetooth connection. The user won't even notice that anything happened.
 
