@@ -108,6 +108,7 @@ module.exports = {
         "kotlin",
         "cpp",
         "groovy",
+        "rust",
       ],
       theme: lightCodeTheme,
       darkTheme: darkCodeTheme,

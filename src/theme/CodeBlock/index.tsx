@@ -257,12 +257,12 @@ export default function CodeBlock({
               onClick={handleCopyCode}>
               {showCopied ? (
                 <div>
-                  <ClipboardCheckIcon className="w-4 h-4 inline"/>
+                  <ClipboardCheckIcon className="w-4 h-4 inline mr-1"/>
                   <span className="text-xs">Copied</span>
                 </div>
               ) : (
                 <div>
-                  <ClipboardIcon className="w-4 h-4 inline"/>
+                  <ClipboardIcon className="w-4 h-4 inline mr-1"/>
                   <span className="text-xs">Copy</span>
                 </div>
               )}

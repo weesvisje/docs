@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import useIsBrowser from '@docusaurus/useIsBrowser';
+import useIsBrowser from "@docusaurus/useIsBrowser";
 import clsx from "clsx";
 import Layout from "@theme/Layout";
 import Tabs from "@theme/Tabs";
@@ -35,10 +35,12 @@ export interface SDKInfo {
   languageOrPlatform?: string;
 }
 
-const endpoint = "https://software.ditto.live/releases/releases.json"
-const downloadedFrameworks: {[key: string]: any} = parseFrameworks(require("../../ditto-changelog.json") || {});
+const endpoint = "https://software.ditto.live/releases/releases.json";
+const downloadedFrameworks: { [key: string]: any } = parseFrameworks(
+  require("../../ditto-changelog.json") || {}
+);
 
-function parseFrameworks(dittoChangeLog: {[key: string]: any}): {
+function parseFrameworks(dittoChangeLog: { [key: string]: any }): {
   [framework: string]: SDKInfo[];
 } {
   const md = markdownIt();
@@ -165,10 +167,19 @@ function TabContents({ sdkInfos, title }: TabContentProps) {
             </h3>
             <p>Released: {sdkInfo.dateReleased}</p>
             <p className="">Release Notes:</p>
-            <div dangerouslySetInnerHTML={{__html: sdkInfo.description}} />
+            <div dangerouslySetInnerHTML={{ __html: sdkInfo.description }} />
             <p>Installation: </p>
-            <div dangerouslySetInnerHTML={{__html: sdkInfo.installationSnippet}} />
-            <a className="button button--outline button--primary" href={sdkInfo.apiReferenceDocsURL}>API Reference URL</a>
+            <div
+              dangerouslySetInnerHTML={{ __html: sdkInfo.installationSnippet }}
+            />
+            <a
+              role="button"
+              style={{color: 'white', textDecoration: 'none'}}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-white"
+              href={sdkInfo.apiReferenceDocsURL}
+            >
+              API Reference URL
+            </a>
           </div>
         );
       })}
@@ -178,31 +189,32 @@ function TabContents({ sdkInfos, title }: TabContentProps) {
 
 export default function Changelog() {
   const { siteConfig } = useDocusaurusContext();
-  
-  const [frameworks, setFrameworks] = useState<{[framework: string]: SDKInfo[]}>(downloadedFrameworks);
-  
+
+  const [frameworks, setFrameworks] =
+    useState<{ [framework: string]: SDKInfo[] }>(downloadedFrameworks);
+
   const isBrowser = useIsBrowser();
-  
+
   useEffect(() => {
     if (isBrowser) {
       (async () => {
-        const response = await fetch(endpoint)
+        const response = await fetch(endpoint);
         const fetchedJSON = await response.json();
         setFrameworks(parseFrameworks(fetchedJSON));
       })();
     } else {
-      setFrameworks(downloadedFrameworks)
+      setFrameworks(downloadedFrameworks);
     }
-  }, [isBrowser])
+  }, [isBrowser]);
 
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />"
+      title={`Changelog ${siteConfig.title}`}
+      description="Ditto list of updates and changelogs"
     >
       <HomepageHeader />
       <main>
-        <div className="container">
+        <div className="prose max-w-none">
           <div className="row" style={{ justifyContent: "center" }}>
             <div className="col margin-vert--lg" style={{ maxWidth: "800px" }}>
               <Tabs
@@ -219,10 +231,7 @@ export default function Changelog() {
                 ]}
               >
                 <TabItem value="javascript">
-                  <TabContents
-                    title="JavaScript"
-                    sdkInfos={frameworks["js"]}
-                  />
+                  <TabContents title="JavaScript" sdkInfos={frameworks["js"]} />
                 </TabItem>
                 <TabItem value="swift">
                   <TabContents

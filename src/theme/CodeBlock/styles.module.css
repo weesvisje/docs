@@ -36,7 +36,7 @@
   color: var(--ifm-color-white);
   opacity: 0;
   user-select: none;
-  padding: 0.4rem 0.5rem;
+  padding: 0.2rem 0.5rem;
   position: absolute;
   right: calc(var(--ifm-pre-padding) / 2);
   top: calc(var(--ifm-pre-padding) / 2);
