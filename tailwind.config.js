@@ -1,11 +1,32 @@
 const siteDir = process.env.DOCUSAURUS_SITE_DIR;
 
 module.exports = {
+  mode: 'jit',
   purge: [
-    `${siteDir}/docs/**/*.{js,jsx,ts,tsx,mdx,md}`,
-    `${siteDir}/src/**/*.{js,jsx,ts,tsx,mdx,md}`,
+    `./docs/**/*.md`,
+    `./docs/**/*.mdx`,
+    `./src/**/*.{js,jsx,ts,tsx,mdx,md}`,
   ],
-  mode: "jit",
+  darkMode: false, // or 'media' or 'class'
+  variants: {
+    extend: {},
+  },
+  theme: {
+    extend: {
+      typography: {
+        DEFAULT: {
+          css: {
+            'code::before': {
+              content: '""'
+            },
+            'code::after': {
+              content: '""'
+            }
+          }
+        }
+      },
+    },
+  },
   plugins: [
     require("@tailwindcss/typography"),
     require("@tailwindcss/forms"),
