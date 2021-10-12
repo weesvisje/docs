@@ -18,5 +18,3 @@ In short, Ditto enables:
 * Replicating structured data and even small or large binary files
 
 <Lottie path="/animations/intro/data.json" />
-
-<button className="bg-green-500">Button</button>
