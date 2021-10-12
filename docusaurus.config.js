@@ -10,13 +10,23 @@ module.exports = {
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
-  favicon: "img/favicon.ico/favicon.ico", 
+  favicon: "img/favicon.ico/favicon.ico",
   organizationName: "getditto", // Usually your GitHub org/user name.
   projectName: "docs", // Usually your repo name.
+  plugins: [path.resolve(__dirname, "plugins/postcss-tailwindcss-loader")],
   themeConfig: {
+    colorMode: {
+      defaultMode: 'light',
+      disableSwitch: true,
+      respectPrefersColorScheme: false,
+    },
+    prism: {
+      additionalLanguages: ['objectivec', 'java', 'csharp'],
+      theme: require('prism-react-renderer/themes/vsDark'),
+    },
     gtag: {
       // You can also use your "G-" Measurement ID here.
-      trackingID: 'G-D8PMW3CCL2',
+      trackingID: "G-D8PMW3CCL2",
     },
     navbar: {
       title: "Ditto",
@@ -107,6 +117,9 @@ module.exports = {
     [
       "@docusaurus/preset-classic",
       {
+        theme: {
+          customCss: [require.resolve("./src/css/custom.css")],
+        },
         docs: {
           remarkPlugins: [
             [

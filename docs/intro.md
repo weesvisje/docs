@@ -19,3 +19,4 @@ In short, Ditto enables:
 
 <Lottie path="/animations/intro/data.json" />
 
+<button className="bg-green-500">Button</button>
