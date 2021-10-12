@@ -27,7 +27,6 @@ Ditto provides a robust query engine that supports different filter operations. 
 ```js
 const collection = await ditto.store.collection('people')
     .find("favoriteBooks[0].title == 'The Great Gatsby'")
-    .exec()
 
 ```
 
@@ -139,10 +138,10 @@ Often, you will query with runtime variables. Instead of building or interpolati
 <TabItem value="javascript">
 
 ```js
-const documents = ditto.store.collection('users').find("name == $args.name && age <= $args.age", {
+const documents = await ditto.store.collection('users').find("name == $args.name && age <= $args.age", {
   age: 32,
   name: "Max"
-}).exec()
+})
 ```
 
 </TabItem>
@@ -361,7 +360,6 @@ The following example will sort on documents that have a mileage property
 const sortedRedCars = await ditto.store.collection('cars')
     .find("color == 'red'")
     .sort('miles', 'ascending')
-    .exec()
 ```
 
 </TabItem>

@@ -28,7 +28,8 @@ Insert data into a collection with the insert function. It will return the `_id`
 
 ```js
 const docID = await ditto.store.collection('people').insert({
-    value: {name: "Susan", age: 31}
+    name: "Susan",
+    age: 31
 })
 ```
 
@@ -226,10 +227,10 @@ In the above example, both Device A and B want to preserve the change by Device 
 
 ```js
 const docID = await ditto.store.collection('people').insert({
-    id: new DocumentID(123),
-    value: {name: "Susan", age: 31},
-    isDefault: true
-})
+    _id: new DocumentID(123),
+    name: "Susan",
+    age: 31
+}, { isDefault: true })
 ```
 
 </TabItem>
@@ -335,21 +336,18 @@ Arrays
 
 ```js
 const docID = await ditto.store.collection('people').insert({
-    value: {
-        name: "Frank",
-        age: 31,
-        ownedCars: 0,
-        friends: []
-    }
+  name: "Frank",
+  age: 31,
+  ownedCars: 0,
+  friends: []
 })
 
 await ditto.store.collection('people').findByID(docID).update((mutableDoc) => {
     mutableDoc['age'] = 32
     mutableDoc['friends'].push('Susan')
     
-    // Counters aren't supported by the JS SDK yet but will be soon:
-    mutableDoc['ownedCars'].replaceWithCounter()
-    mutableDoc['ownedCars'].increment(amount: 1)    
+    mutableDoc._replaceWithCounterAt('ownedCars')
+    mutableDoc._incrementCounterAt('ownedCars', 1)
 })
 ```
 
