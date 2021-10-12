@@ -30,11 +30,10 @@ import { init, Ditto } from '@dittolive/ditto'
 ## Important regarding browser setup
 
 Notice the `init()` call above. Ditto is powered by a WebAssembly core when
-running in the browser. By default, when running in the browser, Ditto will
-fetch the corresponding WebAssembly file from the web. That same file is
-contained within the NPM package under `web/ditto.wasm` so you can serve it
-yourself. Simply make the file accessible somewhere on your server and pass the
-URL to `init()`:
+running in the browser. By default, Ditto will fetch the corresponding
+WebAssembly file from the web. That same file is contained within the NPM
+package under `web/ditto.wasm` so you can serve it yourself. Simply make the
+file accessible somewhere on your server and pass the URL to `init()`:
 
 ```js
 import { init, Ditto } from '@dittolive/ditto'
