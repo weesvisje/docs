@@ -59,7 +59,7 @@ The values like `<string>Uses WiFi to connect and sync with nearby devices</stri
 import DittoSwift
 
 let ditto = Ditto()
-ditto.setLicenseToken("my license token")
+try! ditto.setLicenseToken("my license token")
 try! ditto.tryStartSync()
 ```
 
@@ -71,9 +71,15 @@ try! ditto.tryStartSync()
 
 
 DITDitto *ditto = [[DITDitto alloc] init];
-[ditto setLicenseToken: @"my license token"];
 NSError *error = nil;
-[ditto tryStartSync:&error];
+
+if (![ditto setLicenseToken:@"my license token": error:&error]) {
+  NSLog(@"Error setting license token: %@", error);
+}
+
+if (![ditto tryStartSync:&error]) {
+  NSLog(@"Error starting sync: %@", error);
+}
 ```
 
 </TabItem>
