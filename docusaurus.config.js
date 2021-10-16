@@ -32,18 +32,26 @@ module.exports = {
       title: "Ditto",
       logo: {
         href: "/",
-        alt: "My Site Logo",
+        alt: "Ditto Logo",
         src: "img/logo.png",
       },
       items: [
-        { href: "https://www.ditto.live", label: "Home", position: "left" },
+        { href: "/", label: "Home", position: "left" },
         {
           label: "Samples Apps",
           href: "https://github.com/getditto/samples",
         },
         {
-          href: "https://github.com/getditto/docs",
-          label: "GitHub",
+          label: "Issues",
+          href: "https://github.com/getditto/docs/issues",
+        },
+        {
+          label: "Discussions",
+          href: "https://github.com/getditto/docs/discussions",
+        },
+        {
+          href: "https://portal.ditto.live",
+          label: "Get Started",
           position: "right",
         },
         {
