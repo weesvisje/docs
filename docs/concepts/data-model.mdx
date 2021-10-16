@@ -301,6 +301,131 @@ DocumentId doc_id = ditto.store
 </TabItem>
 </Tabs>
 
+### Composite Primary Keys
+
+You may have a data model where documents are considered unique due to two or more values. Ditto's `_id` field allows for a map of values. For example, we may have a person document with a unique identifier as a combination of a string `userId` and an int `workId`. We can insert each document as a composite key as a nested map structure under the `_id` field:
+
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+let docId = ditto.store.collection("people").insert({
+    "_id": { "userId": "456abc", "workId": 789 }
+    "name": "Susan",
+    "age": 31
+})
+console.log(docId) // "{ "userId": "456abc", "workId": 789 }"
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+let docId = ditto.store["people"].insert([
+    "_id": [ "userId": "456abc", "workId": 789 ]
+    "name": "Susan",
+    "age": 31
+])
+print(docId) // "[ "userId": "456abc", "workId": 789 ]"
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+NSString *docId = [[ditto.store collection:@"people"]
+                    insert:@{ 
+                      @"_id": @{ @"userId": "456abc": @"workId": @789 }
+                      @"name": @"Susan", 
+                      @"age": @31 }
+                    isDefault:false
+                    error:nil];
+NSLog(@"%@", docId); // => "NSDictionary @{ @"userId": "456abc": @"workId": @789 }"
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+val docId = ditto.store["people"].insert(
+    mapOf(
+        "_id": mapOf( "userId": "456abc", "workId": 789),
+        "name" to "Susan",
+        "age" to 31
+    )
+)
+docId // => "507f191e810c19729de860ea"
+
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Map<String, Object> _id = new HashMap<>();
+_id.put("userId", "456abc");
+_id.put("workId", 789);
+
+Map<String, Object> content = new HashMap<>();
+content.put("_id", _id)
+content.put("name", "Susan");
+content.put("age", 31);
+DittoDocumentID docId = ditto.store.collection("people").insert(content);
+Log.d("Debug", docId); // => "_id.put("userId", "456abc"); _id.put("workId", 789);"
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+// Insert JSON-compatible data into Ditto
+var content = new Dictionary<string, object>
+{
+    { "_id", {{ "userId", "456abc" }, { "workId": 789 }}}
+    { "name", "Susan" },
+    { "age", 31 }
+};
+ditto.Store.Collection("people").Insert(content);
+docId; // => "{{ "userId", "456abc" }, { "workId": 789 }}"
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+json person = json({
+    {"_id", {
+      {"userId", "456abc"},
+      {"workId", 789}
+    }},
+    {"name", "Susan"},
+    {"age", 31}
+});
+DocumentId doc_id = ditto.store
+                         .collection("people")
+                         .insert(person);
+```
+
+</TabItem>
+</Tabs>
+
+
+Note: `_id`s with the same key and values will be equal regardless of their defined order. Thus,  `{a: "foo", b: 1} == { b: "foo", b: 1 }`. This is because Ditto maps check for equality of key and value combinations and do not consider for literal order.
+
+
 ## Allowed Document Data Types
 
 Like JSON, Ditto only supports strings as keys in documents. That means attempting to insert a document like the following will throw an error:
@@ -314,7 +439,7 @@ Like JSON, Ditto only supports strings as keys in documents. That means attempti
 
 Document values support all JSON compatible values like `string`, `boolean`, `number`, `null` and arrays or nested maps. In addition, document values can also support special types like binary or counter types. These special types will be discussed below.
 
-<table>
+<table class="table-auto">
   <tbody>
     <tr>
       <th>Data Type</th>
