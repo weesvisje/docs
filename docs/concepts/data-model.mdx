@@ -423,7 +423,7 @@ DocumentId doc_id = ditto.store
 </Tabs>
 
 
-Note: `_id`s with the same key and values will be equal regardless of their defined order. Thus,  `{a: "foo", b: 1} == { b: "foo", b: 1 }`. This is because Ditto maps check for equality of key and value combinations and do not consider for literal order.
+Note: `_id`s with the same key and values will be equal regardless of their defined order. Thus,  `{a: "foo", b: 1} == { b: 1, a: "foo" }`. This is because Ditto maps check for equality of key and value combinations and do not consider for literal order.
 
 
 ## Allowed Document Data Types
