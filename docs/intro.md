@@ -14,7 +14,7 @@ In short, Ditto enables:
 * Blazing fast peer-to-peer and client-server sync
 * Concurrent edits and conflict resolution
 * Offline Caching with an embedded database 
-* Cross platform suppport on Web Browsers, iOS, Android, IoT, and server side apps.
+* Cross platform support on Web Browsers, iOS, Android, IoT, and server side apps.
 * Replicating structured data and even small or large binary files
 
 <Lottie path="/animations/intro/data.json" />

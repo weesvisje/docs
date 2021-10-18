@@ -22,37 +22,7 @@ import { init, Ditto } from '@dittolive/ditto'
 
 (async () => {
   await init() // you need to call this at least once before using any of the Ditto API
-  const identity = { type: 'development', appName: 'com.example.ditto' }
+  const identity = { type: 'onlinePlayground', appID: 'com.example.ditto' }
   const ditto = new Ditto(identity, 'playground')
 })()
 ```
-
-## Important regarding browser setup
-
-Notice the `init()` call above. Ditto is powered by a WebAssembly core when
-running in the browser. By default, Ditto will fetch the corresponding
-WebAssembly file from the web. That same file is contained within the NPM
-package under `web/ditto.wasm` so you can serve it yourself. Simply make the
-file accessible somewhere on your server and pass the URL to `init()`:
-
-```js
-import { init, Ditto } from '@dittolive/ditto'
-
-(async () => {
-  // Pass the URL to the ditto.wasm file:
-  await init({ webAssemblyModule: 'https://my-app/assets/ditto.wasm' })
-
-  // Then use Ditto as you normally would:
-  const identity = { type: 'development', appID: 'live.ditto.playground' }
-  const ditto = new Ditto(identity, 'playground')
-
-  // ...
-})
-```
-
-This may be useful for development or production environments without a
-reliable internet connection. Make sure to properly configure the server to
-return the correct MIME type (`application/wasm`) and the
-[`Access-Control-Allow-Origin`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin)
-header if the `.wasm` file is served from a different domain. For production
-environments, make sure to use compression (`gzip`) and proper caching headers.
