@@ -40,3 +40,14 @@ sidebar_position: 3
 |---|---|
 | iOS | 11 and higher |
 | Android | Version 7.1 and higher |
+
+## RustSDK Supported Targets
+
+| LLVM Triple | Support Level |
+|---|---|
+| `x86_64-apple-darwin` | Full sdk support, partial transport support  |
+| `x86_64_unknown-linux-gnu` | glibc > 2.18 supported, partial transport support |
+| `x86_64_unknown-linux-musl` | Tested, no official release |
+| `aarch64-apple-darwin` | Tested, partial transport support |
+| `armv7-unknown-linux-gnueabihf` | Tested, no official release |
+| `arm-unknown-linux-gnueabihf` | Full sdk support, partial transport support |

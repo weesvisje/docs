@@ -37,6 +37,7 @@ To enable Ditto to sync data, you'll need to call `ditto.tryStartSync()`. Prefer
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -121,6 +122,19 @@ try {
 ```
 
 </TabItem>
+<TabItem>
+
+```rust
+fn main() -> Result<(), Box<dyn Error>> {
+    ditto.try_start_sync()?;
+}
+// Or ...
+if let Err(e) = ditto.try_start_sync() {
+    eprintln!("Error starting Ditto sync: {:?}", e);
+}
+```
+
+</TabItem>
 </Tabs>
 
 ## Syncing Data with Live Queries
@@ -142,6 +156,7 @@ To create a LiveQuery, add `.observe` to a query cursor like so:
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -225,6 +240,34 @@ std::shared_ptr<LiveQuery> query = collection
 ```
 
 </TabItem>
+<TabItem value="rust">
+
+```rust
+let store = ditto.store(); // Ditto must have a longer lifetime than all live queries
+let (tx, rx) = channel();
+{
+    let live_query = store.collection("cars")?.find("color == \'red\'")
+       .observe(move |docs, event| {
+           match event {
+               LiveQueryEvent::Initial {..} => {.. },
+               LiveQueryEvent::Update {insertions, ..} => {
+                   for idx in insertions.iter() {
+                        if let Some(doc) = docs.get(*idx) {
+                            let _ = tx.send(doc);
+                        }
+                   }
+               },
+               _ => () // do nothing
+           }
+       })?; 
+    for doc in rx.iter() {
+        println!("Updated Doc: {:?}", &doc);
+    }
+
+} // IMPORTANT: LiveQuery goes out of scope and is Dropped and terminated here.
+```
+
+</TabItem>
 </Tabs>
 
 
@@ -253,6 +296,7 @@ Instead of `.observe`, call `.observeLocal` like so:
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -373,7 +417,7 @@ var localLiveQuery = ditto.Store.Collection("cars").Find("color == 'red'").Obser
 ```cpp
 // --- Action somewhere in your application
 void user_did_insert_car() {
-    ditto.tore.collection("cars").insert({
+    ditto.store.collection("cars").insert({
         {"model", "Ford"},
         {"color", "black"}
     });
@@ -386,6 +430,32 @@ std::shared_ptr<LiveQuery> query = collection
     [&](std::vector<Document> docs, LiveQueryEvent event) {
       
     }});
+```
+
+</TabItem>
+<TabItem value="rust">
+
+```rust
+// Some action in your app ...
+let store = ditto.store();
+let mut doc_id;
+{
+    let doc_id = store.collection("cars")?.insert(car_1, None, false)?;
+}
+// Elsewhere register handlers for data changes
+{
+    let shared_element = RwLock::new(my_element);
+    let element_copy = shared_element.clone();
+    let live_query = store.collection("cars")
+        .find("color == \'red\'")
+        .observe_local(move |cars, event|{
+            let element = element_copy.write().unwrap();
+            // do something when data changes
+            // BUT this closure must be permitted to take ownership
+        })?;
+    // stash your live query in something with a long lifetime
+    // or it will be dropped
+}
 ```
 
 </TabItem>
@@ -410,6 +480,7 @@ To create subscriptions is similar to, or can also be combined with, [local obse
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -523,6 +594,18 @@ std::shared_ptr<LiveQuery> query = collection
     [&](std::vector<Document> docs, LiveQueryEvent event) {
       
     }});
+```
+
+</TabItem>
+<TabItem value="rust">
+
+```rust
+// subscription triggers sync behavior, asks remote peers to push data
+// you need to be able to store this data
+let subscription = ditto.store().collection("cars").find("color == \'red\'").subscribe()?;
+
+// Observe local changes to data to update UI
+let query = ditto.store().collection("cars").find("color == \'red\'").observe_local()?;
 ```
 
 </TabItem>

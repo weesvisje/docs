@@ -20,6 +20,7 @@ Ditto provides a robust query engine that supports different filter operations. 
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -90,6 +91,14 @@ std::vector<Document> results = ditto.store.collection("people")
 ```
 
 </TabItem>
+
+<TabItem value="rust">
+```rust
+let docs = ditto.store().collection("people")
+.find("favoriteBooks[0].title == \'The Great Gatsby\'")
+.exec()?;
+```
+</TabItem>
 </Tabs>
 
 ## Navigating Document Properties
@@ -133,6 +142,7 @@ Often, you will query with runtime variables. Instead of building or interpolati
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -204,6 +214,17 @@ var docs = ditto.store
 std::vector<json> big_c_values =
       ditto.store.collection.find("name == $args.name && age <= $args.age", json({{"age", 32}, {"name", "max"}}))
           .exec();
+```
+
+</TabItem>
+
+<TabItem value="rust">
+
+```rust
+let query_args = QueryArgs{...};
+let docs = ditto.store().collection("people")?
+  .find_with_args("name == $args.name && arg <= $args.age", &args)
+  .exec()?;
 ```
 
 </TabItem>
@@ -352,6 +373,7 @@ The following example will sort on documents that have a mileage property
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -423,6 +445,16 @@ std::vector<Document> sorted_and_limited_red_cars = ditto.store.collection("cars
 ```
 
 </TabItem>
+
+<TabItem value="rust">
+
+```rust
+let results = ditto.store().collection("cars").find("color == \'red\'")
+  .sort("miles", SortDirection::Ascending)
+  .limit(100)
+  .exec();
+```
+</TabItem>
 </Tabs>
 
 ## Limit 
@@ -440,6 +472,7 @@ There are times where you need to limit the number of results that a query. Call
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -515,5 +548,14 @@ std::vector<Document> sorted_and_limited_red_cars = ditto.store.collection("cars
     .exec();
 ```
 
+</TabItem>
+
+<TabItem value="rust">
+```rust
+let results = ditto.store().collection("cars").find("color == \'red\'")
+  .sort("miles", SortDirection::Ascending)
+  .limit(100)
+  .exec();
+```
 </TabItem>
 </Tabs>
