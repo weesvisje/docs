@@ -17,7 +17,7 @@ export function Clock() {
 The following are the network transports supported by Ditto. By default Ditto will attempt to use all available transports if permissions are given.
 
 * <CheckIcon style={{width: 18, height: 18}} /> Means already supported in our current releases.
-* <ClockIcon style={{width: 18, height: 18}} /> Means that the feature is under development and will be release soon.
+* <ClockIcon style={{width: 18, height: 18}} /> Means that the feature is under development and will be released soon.
 
 <table class="table table-bordered reference-document-table">
   <thead class="thead-dark">
@@ -141,9 +141,14 @@ In general most Google Pixel, Samsung, and LG phones built after 2018 can suppor
 
 ### Local Area Network
 
-If devices are connected over the same Wi-Fi access point or via some other means like an ethernet cord, they can take advantage of communicating over the LAN or Local Area Network.
+If devices are connected over the same Wi-Fi access point or via some other means like an ethernet cable, they can take advantage of communicating over the LAN or Local Area Network.
 
 Many enterprise or educational networks may have Client Isolation Mode turned **ON**. If the network has this setting **ON** then devices are unable to discover each other and form a connection. Almost all "home" settings have this setting turned **OFF**.
+
+There are some limitations affecting LAN sync on **iOS devices**.
+
+* iOS devices and desktop platforms like Windows will only sync if you have [requested the multicast entitlement from Apple and applied it to your iOS app](https://developer.apple.com/forums/thread/663858). Work is on the roadmap which will allow iOS devices to sync with all platforms, even without this entitlement.
+* iOS can always sync with other mobile devices like iOS and Android.
 
 ### WebSockets
 
