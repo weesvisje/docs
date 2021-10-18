@@ -148,7 +148,7 @@ At time of writing, this command works on Linux machines with an up-to-date Open
 
 ```swift
 let p256DerB64 = "<base64 DER string>"
-let identity = DittoIdentity.sharedKey(appName: "app", sharedKey: p256DerB64)
+let identity = DittoIdentity.sharedKey(appID: "app", sharedKey: p256DerB64)
 Ditto(identity: identity)
 ```
 
@@ -157,7 +157,7 @@ Ditto(identity: identity)
 
 ```objc
 NSString *p256_der_b64 = @"<base64 DER string>";
-DITIdentity *identity = [[DITIdentity alloc] initWithAppName:@"app" sharedKey:p256_der_b64 siteID:nil];
+DITIdentity *identity = [[DITIdentity alloc] initWithAppId:@"app" sharedKey:p256_der_b64 siteID:nil];
 DITDitto *ditto = [[DITDitto alloc] initWithIdentity:identity];
 ```
 

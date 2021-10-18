@@ -11,8 +11,6 @@
 
 const downloadedChangelog = require('./ditto-changelog.json')
 
-const latestSwift = downloadedChangelog.cocoa.DittoSwift.latest.api_reference_docs_url;
-
 module.exports = {
   // By default, Docusaurus generates a sidebar from the docs folder structure
   tutorialSidebar: [
@@ -30,6 +28,11 @@ module.exports = {
           type: "link",
           label: "JavaScript", // The link label
           href: downloadedChangelog.js.Ditto.latest.api_reference_docs_url, // The external URL
+        },
+        {
+          type: "link",
+          label: "React", // The link label
+          href: "https://getditto.github.io/react-ditto/", // The external URL
         },
         {
           type: "link",
