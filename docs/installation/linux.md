@@ -2,7 +2,7 @@
 sidebar_position: 7
 ---
 
-# Linux
+# Linux (Raspberry Pi)
 
 If you would like to run Ditto on a Linux device and leverage Bluetooth Low Energy please follow the instructions. __These instructions are required to run on Linux regardless of the programming language.__ This means that if you are running the JavaScript (Node/Electron), C#, or C++ SDKs on Linux and need to use Bluetooth Low Energy, then you should follow these additional instructions.
 

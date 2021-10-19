@@ -42,12 +42,16 @@ module.exports = {
           href: "https://github.com/getditto/samples",
         },
         {
-          label: "Issues",
+          label: "GitHub Issues",
           href: "https://github.com/getditto/docs/issues",
         },
         {
           label: "Discussions",
           href: "https://github.com/getditto/docs/discussions",
+        },
+        {
+          label: "Roadmap",
+          href: "https://github.com/getditto/docs/discussions/categories/roadmap-and-ideas",
         },
         {
           href: "https://portal.ditto.live",

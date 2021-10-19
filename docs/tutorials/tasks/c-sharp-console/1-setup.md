@@ -72,7 +72,7 @@ using System.Collections.Generic;
 ```
 
 4. Now we'll need to hold a reference to our Ditto instance as a `static` variable and also add a `static DittoLiveQuery` variable. These variables must be `static` because the console program's `Main` function is also `static`.
-5. Instantiate the `ditto` static variable by constructing it with a development identity with an `appName: "live.ditto.tasks"`. If you want to sync with other tutorial app types like iOS or Android, you'll need to match the `appName` to enable sync. Also ensure to add your license token to `ditto.SetLicenseToken` to properly
+5. Instantiate the `ditto` static variable by constructing it with a development identity with an `appID: "live.ditto.tasks"`. If you want to sync with other tutorial app types like iOS or Android, you'll need to match the `appID` to enable sync. Also ensure to add your license token to `ditto.SetLicenseToken` to properly
 
 
 ```csharp title="Program.cs"
@@ -90,7 +90,7 @@ namespace Tasks
         {
           // 5.
           // highlight-start
-          ditto = new Ditto(identity: DittoIdentity.Development(appName: "live.ditto.tasks"));
+          ditto = new Ditto(identity: DittoIdentity.Development(appID: "live.ditto.tasks"));
 
           try
           {
