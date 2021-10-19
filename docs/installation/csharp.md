@@ -52,7 +52,7 @@ Now in your code you can call:
 using DittoSDK;
 using System.Collections.Generic;
 
-var ditto = new Ditto(identity: DittoIdentity.Development(appName: "live.ditto.tasks"));
+var ditto = new Ditto(identity: DittoIdentity.OnlinePlayground(appId: "live.ditto.tasks"));
 
 ditto.SetLicenseToken("my token");
 ditto.TryStartSync();
