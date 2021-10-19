@@ -71,6 +71,16 @@ module.exports = {
       label: "Changelog", // The link label
       href: "/changelog", // The external URL
     },
+    {
+      type: "link",
+      label: "GitHub Issues", // The link label
+      href: "https://github.com/getditto/docs/issues", // The external URL
+    },
+    {
+      type: "link",
+      label: "Roadmap", // The link label
+      href: "https://github.com/getditto/docs/discussions/categories/roadmap-and-ideas", // The external URL
+    },
   ],
 
   // But you can create a sidebar manually
