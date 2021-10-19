@@ -61,6 +61,11 @@ module.exports = {
           label: "C++", // The link label
           href: downloadedChangelog.cpp.Ditto.latest.api_reference_docs_url, // The external URL
         },
+        {
+            type: "link",
+            label: "Rust",
+            href: "https://software.ditto.live/rust/Ditto/1.0.13/x86_64-unknown-linux-gnu/docs/dittolive_ditto/index.html"
+        }
       ],
     },
     {
