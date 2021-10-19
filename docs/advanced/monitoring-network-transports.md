@@ -20,6 +20,7 @@ First, while configuring Ditto, assign a delegate or a callback to receive notif
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -92,6 +93,13 @@ ditto.tryStartSync();
 ```
 
 </TabItem>
+<TabItem value="rust">
+
+```rust
+// API coming soon
+```
+
+</TabItem>
 </Tabs>
 
 Now you can observe real time changes to the transport conditions:
@@ -107,6 +115,7 @@ Now you can observe real time changes to the transport conditions:
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -222,6 +231,13 @@ public class MainActivity extends AppCompatActivity implements DittoCallback {
 
 ```cpp
 // API Not yet available
+```
+
+</TabItem>
+<TabItem value="rust">
+
+```rust
+// API coming soon
 ```
 
 </TabItem>

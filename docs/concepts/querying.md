@@ -91,13 +91,14 @@ std::vector<Document> results = ditto.store.collection("people")
 ```
 
 </TabItem>
-
 <TabItem value="rust">
+
 ```rust
 let docs = ditto.store().collection("people")
 .find("favoriteBooks[0].title == \'The Great Gatsby\'")
 .exec()?;
 ```
+
 </TabItem>
 </Tabs>
 
@@ -452,7 +453,7 @@ std::vector<Document> sorted_and_limited_red_cars = ditto.store.collection("cars
 let results = ditto.store().collection("cars").find("color == \'red\'")
   .sort("miles", SortDirection::Ascending)
   .limit(100)
-  .exec();
+  .exec()?;
 ```
 </TabItem>
 </Tabs>
@@ -549,13 +550,14 @@ std::vector<Document> sorted_and_limited_red_cars = ditto.store.collection("cars
 ```
 
 </TabItem>
-
 <TabItem value="rust">
+
 ```rust
 let results = ditto.store().collection("cars").find("color == \'red\'")
   .sort("miles", SortDirection::Ascending)
   .limit(100)
-  .exec();
+  .exec()?;
 ```
+
 </TabItem>
 </Tabs>

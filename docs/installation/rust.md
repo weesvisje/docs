@@ -1,4 +1,4 @@
-----
+---
 title: "Rust"
 sidebar_position: 8
 ---
@@ -12,25 +12,25 @@ Create a new project with `cargo init --bin` and add the following to your `Carg
 
 ```toml
 [dependencies.dittolive-ditto]
-version = "1.0.13"
+version = "1.0"
 ```
 
-```bash
+```console
 cargo build
 ```
 
 ## Suggested App Filesystem Structure
 
-```
-AppRoot/AppExecutable (i.e. `std::env::current_exe()`) + optional statically linked libdittoffi.a (default)
-AppRoot/libdittoffi.dll (aka `@executable_path/../libdittoffi.dylib`) - Suggested location for distribution of libdittoffi dynamic library 
-AppRoot/ditto_data/.. - Location of locally Ditto Data stores
-```
+Rust doesn't not prescribe any particular structure for your projects layout on the end user's device filesystem. The following is one recommendation
+
+* `AppRoot/AppExecutable` - The path of your app's executable. Everything else should be relative to this. The binary component of Ditto may optionally be statically linked into this executable (default).
+* `AppRoot/libdittoffi.dll` -  The path to the binary ditto library if using the shared library version. Configure your app's linker to search for the library here (e.g. `@executable_path/../libdittoffi.dylib`). You will need to copy this shared library from `target/<profile>/build/dittolive-ditto-sys<hash>/out` when distributing your app.
+* `AppRoot/ditto_data/` - Base directory for all locally stored Ditto data.
 
 
+## Cross Compiling with the Ditto Rust SDK
 
-## Cargo/Config.toml 
-
+The rust compiler is natively capable of cross-compiling for a wide range of targets. You will need to configure a local `.cargo/config.toml` file in the root of your project directory to provide the necessary `rustc`, linker, and potentially C compiler arguements. For most targets you will need to provide an alternative sysroot for your target (not host) platform, often exposing a POSIX C library, header files, binutils, and a linker. 
 
 ## Common Issues
 

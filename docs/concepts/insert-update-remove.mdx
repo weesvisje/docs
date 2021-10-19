@@ -108,7 +108,7 @@ DocumentId doc_id = ditto.store.collection("people").insert(content);
     "name": "Susan",
     "age": 31
   });
-  let doc_id = ditto.store().collection("people")?.insert(content, None, false);
+  let doc_id = ditto.store().collection("people")?.insert(content, None, false)?;
 
   ```
 
@@ -213,7 +213,7 @@ ditto.store.collection("people").insert({{"_id", "123abc"}, { "name", "Susan" },
 <TabItem value="rust">
 
   ```rust
-  ditto.store().collection("people")?.insert(json!({"_id": DocumentId::new("123abc")?, "name": "Susan", "age": 31}), None, false);
+  ditto.store().collection("people")?.insert(json!({"_id": DocumentId::new("123abc")?, "name": "Susan", "age": 31}), None, false)?;
   ```
 
 </TabItem>
@@ -323,7 +323,7 @@ DocumentId doc_id = ditto.store.collection("people")
 <TabItem value="rust">
 
   ```rust
-  ditto.store().collection("people")?.insert(json!({"_id": DocumentId::new("123abc")?, "name": "Susan", "age": 31}), None, true);
+  ditto.store().collection("people")?.insert(json!({"_id": DocumentId::new("123abc")?, "name": "Susan", "age": 31}), None, true)?;
   ```
 
 </TabItem>
@@ -535,7 +535,7 @@ ditto.store().collection("people")?.update(|x|{
       doc.increment("owned_cars", 1).unwrap();
       doc.push("friends", "Susan").unwrap();
   }
-});
+})?;
 ```
 
 </TabItem>
@@ -692,7 +692,7 @@ ditto.store.collection("people").find("age <= 32").remove();
 <TabItem value="rust">
 
   ```rust
-  ditto.store().collection("people")?.find("age <= 32").remove();
+  ditto.store().collection("people")?.find("age <= 32").remove()?;
   ```
 
 </TabItem>
@@ -774,7 +774,7 @@ ditto.store.collection("people").find("age <= 32").evict();
 <TabItem value="rust">
 
   ```rust
-  ditto.store().collection("people")?.find("age <= 32").evict();
+  ditto.store().collection("people")?.find("age <= 32").evict()?;
   ```
 
 </TabItem>
