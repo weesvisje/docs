@@ -23,8 +23,7 @@ import useWindowSize from '@theme/hooks/useWindowSize';
 import {useActivePlugin} from '@theme/hooks/useDocs';
 import NavbarItem, {Props as NavbarItemConfig} from '@theme/NavbarItem';
 import Logo from '@theme/Logo';
-import IconMenu from '@theme/IconMenu';
-import { XIcon } from "@heroicons/react/outline"
+import { XIcon, MenuIcon } from "@heroicons/react/outline"
 
 import styles from './styles.module.css';
 
@@ -254,7 +253,7 @@ function Navbar(): JSX.Element {
               tabIndex={0}
               onClick={mobileSidebar.toggle}
               onKeyDown={mobileSidebar.toggle}>
-              <IconMenu />
+              <MenuIcon width={25} height={25} />
             </button>
           )}
           <Logo
