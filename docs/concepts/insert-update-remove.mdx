@@ -22,6 +22,7 @@ Insert data into a collection with the insert function. It will return the `_id`
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {lable: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -99,6 +100,19 @@ DocumentId doc_id = ditto.store.collection("people").insert(content);
 ```
 
 </TabItem>
+<TabItem value="rust">
+
+  ```rust
+  use serde_json::json;
+  let content = json!({
+    "name": "Susan",
+    "age": 31
+  });
+  let doc_id = ditto.store().collection("people")?.insert(content, None, false)?;
+
+  ```
+
+</TabItem>
 </Tabs>
 
 ### Inserting with a specific `_id`
@@ -116,6 +130,7 @@ There are times where you want to specify the `_id` of the document before inser
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -195,6 +210,13 @@ ditto.store.collection("people").insert({{"_id", "123abc"}, { "name", "Susan" },
 ```
 
 </TabItem>
+<TabItem value="rust">
+
+  ```rust
+  ditto.store().collection("people")?.insert(json!({"_id": DocumentId::new("123abc")?, "name": "Susan", "age": 31}), None, false)?;
+  ```
+
+</TabItem>
 </Tabs>
 
 ### Default Data
@@ -221,6 +243,7 @@ In the above example, both Device A and B want to preserve the change by Device 
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -296,6 +319,12 @@ json content = json({{ "name", "Susan" }, { "age", 31 }}):
 DocumentId doc_id = ditto.store.collection("people")
                                .insert(content, DocumentId("doc-id"), true);
 ```
+</TabItem>
+<TabItem value="rust">
+
+  ```rust
+  ditto.store().collection("people")?.insert(json!({"_id": DocumentId::new("123abc")?, "name": "Susan", "age": 31}), None, true)?;
+  ```
 
 </TabItem>
 </Tabs>
@@ -330,6 +359,7 @@ Arrays
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -478,6 +508,37 @@ ditto.store
 ```
 
 </TabItem>
+<TabItem value="rust">
+
+```rust
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize,Deserialize)]
+struct Person {
+  name: String,
+  age: u32,
+  friends: Vec<String>, 
+};
+
+let frank = Person {
+  name: "Frank".to_string(),
+  age: 31,
+  owned_cars: 0,
+  friends: Vec::with_capacity(0)
+};
+
+let doc_id = ditto.store().collection("people")?.insert(frank, None, false)?;
+ditto.store().collection("people")?.update(|x|{
+  if let Some(doc) = x {
+      doc.set("age", 32).unwrap();
+      doc.replace_with_counter("owned_cars").unwrap();
+      doc.increment("owned_cars", 1).unwrap();
+      doc.push("friends", "Susan").unwrap();
+  }
+})?;
+```
+
+</TabItem>
 </Tabs>
 
 ## Removing Documents
@@ -497,6 +558,7 @@ Removes will delete or remove one or more documents from the collection. These r
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -549,6 +611,13 @@ ditto.store.collection("people").find_by_id(docId).remove();
 ```
 
 </TabItem>
+<TabItem value="rust">
+
+  ```rust
+  ditto.store().collection("people")?.find_by_id(doc_id).remove()?;
+  ```
+
+</TabItem>
 </Tabs>
 
 ### Removing by query
@@ -567,6 +636,7 @@ You can also remove several documents with a query string. This example will rem
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -619,6 +689,13 @@ ditto.store.collection("people").find("age <= 32").remove();
 ```
 
 </TabItem>
+<TabItem value="rust">
+
+  ```rust
+  ditto.store().collection("people")?.find("age <= 32").remove()?;
+  ```
+
+</TabItem>
 </Tabs>
 
 ## Evicting Data
@@ -641,6 +718,7 @@ The API is extremely similar to the `remove()` API, however it uses `evict()` in
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -691,6 +769,13 @@ ditto.Store.Collection("people").Find("age <= 32").evict();
 ```cpp
 ditto.store.collection("people").find("age <= 32").evict();
 ```
+
+</TabItem>
+<TabItem value="rust">
+
+  ```rust
+  ditto.store().collection("people")?.find("age <= 32").evict()?;
+  ```
 
 </TabItem>
 </Tabs>

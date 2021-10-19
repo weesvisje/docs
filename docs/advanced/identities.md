@@ -50,7 +50,7 @@ This certificate may then be presented to other Ditto peers to mutually establis
 * `Development` - An *unsecured* identity suitable for local testing, CI/CD pipelines, and peer-to-peer sync. Cloud sync is not permitted. All peers are automatically trusted and no authentication takes place. Do *not* use this Identity in production.
 
 
-## Configuring a Ditto Identity
+## Configuring an Online Ditto Identity
 
 Below find example code for how to set up a Ditto `Online` Identity for each SDK language. 
 This is the most complex Identity to configure.
@@ -288,5 +288,56 @@ let mut ditto = Ditto::builder()
 ditto.set_license_from_env("DITTO_LICENSE")?; // May also be provided as a string
 ditto.try_start_sync()?; // Automatically triggers initial Authentication
 ```
+</TabItem>
+</Tabs>
+
+## Configuring an OnlinePlayground Ditto Identity
+
+When first experimenting with Ditto, you can also use a simpler `OnlinePlayground` Identity as shown below. 
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
+  ]
+}>
+<TabItem value="rust">
+
+```rust
+use dittolive_ditto::prelude::*;
+use std::sync::Arc;
+use std::time::Duration;
+
+let mut ditto = Ditto::builder()
+    // creates a `ditto_data` folder in the directory containing the executing process
+    .with_root(Arc::new(PersistentRoot::current_exe()?))
+    .with_identity(|ditto_root| {
+      // Provided as an env var, may also be provided as hardcoded string
+      let app_id = AppId::from_env("DITTO_APP_ID")?;
+      let enable_cloud_sync = true;
+      let custom_auth_url = None;
+      // return the Result<Identity, _> at the end of this closure
+      OnlinePlayground::new(ditto_root, app_id, enable_cloud_sync, custom_auth_url)
+    })
+    .with_transport_config(|_identity| {
+        let mut config = TransportConfig::enable_all_peer_to_peer()
+    })
+    .build()?;
+// You may use Ditto locally at this point, but
+// The Builder will NOT automatically set your license or try to start sync
+// Both must be done explicitly
+
+ditto.set_license_from_env("DITTO_LICENSE")?; // May also be provided as a string
+ditto.try_start_sync()?; // Automatically triggers initial Authentication
+```
+
 </TabItem>
 </Tabs>

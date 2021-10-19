@@ -27,6 +27,7 @@ To get a reference to a collection:
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -83,6 +84,14 @@ Collection cars_collection = ditto.store.collection("cars");
 ```
 
 </TabItem>
+<TabItem value="rust">
+
+```rust
+let store = ditto.store();
+let cars_collection = store.collection("cars")?;
+```
+
+</TabItem>
 </Tabs>
 
 ## Documents
@@ -104,6 +113,7 @@ You can supply your own unique identifier when creating a document:
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -197,6 +207,19 @@ DocumentId doc_id = ditto.store
 ```
 
 </TabItem>
+<TabItem value="rust">
+
+```rust
+let doc_id = DocumentId::new("123abc")?;
+let person = Person { // Person implements serde::Serialize
+  name: "Susan".to_string(),
+  age: 31,
+};
+let is_default = false;
+let _doc_id = ditto.store().collection("people")?.insert(person, Some(&doc_id), is_default)?;
+```
+
+</TabItem>
 </Tabs>
 
 The id parameter is optional during insertion. If you do not supply a document `_id`, Ditto will automatically generate a random, unique string and use that as the document's `_id` instead.
@@ -212,6 +235,7 @@ The id parameter is optional during insertion. If you do not supply a document `
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -299,6 +323,18 @@ DocumentId doc_id = ditto.store
 ```
 
 </TabItem>
+<TabItem value="rust">
+
+```rust
+let person = Person { // Person implements serde::Serialize
+  name: "Susan".to_string(),
+  age: 31,
+};
+let is_default = false;
+let doc_id = ditto.store().collection("people")?.insert(person, None, is_default)?;
+```
+
+</TabItem>
 </Tabs>
 
 ### Composite Primary Keys
@@ -317,6 +353,7 @@ You may have a data model where documents are considered unique due to two or mo
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -418,6 +455,25 @@ DocumentId doc_id = ditto.store
                          .collection("people")
                          .insert(person);
 ```
+
+</TabItem>
+<TabItem value="rust">
+
+  ```rust
+  use serde::Serialize;
+
+  let person_id = PersonId { // Implements serde::Serialize
+    user_id: "456abc",
+    work_id: 789
+  };
+
+  let person = Person {
+    name: "Susan".to_string(),
+    age: 31
+  };
+
+  let _doc_id = ditto.store().collection("people")?.insert(person, Some(&person_id), false)?;
+  ```
 
 </TabItem>
 </Tabs>
@@ -534,6 +590,7 @@ The following snippets show a various set of data types
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -649,6 +706,30 @@ ditto.store.collection("foo").insert({
 ```
 
 </TabItem>
+<TabItem value="rust">
+
+```rust
+  use serde_json::json;
+
+  let doc_id = ditto.store().collection("foo")?.insert(
+    json!({
+      "boolean": true,
+      "string": "Hello World",
+      "number": 10,
+      "map": {
+        "key": "value"
+      },
+      "array": [1,2,3],
+      "null": None,
+    },
+    None,
+    false
+    )
+  )?;
+```
+
+</TabItem>
+
 </Tabs>
 
 ## Binary Data - Attachments
@@ -668,6 +749,7 @@ Attachments do not get synced between devices by default, even if they are part 
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -904,6 +986,39 @@ std::unique_ptr<AttachmentFetcher> fetcher = collection.fetch_attachment(
 ```
 
 </TabItem>
+
+<TabItem value="rust">
+
+  ```rust
+
+  use serde_json::json;
+
+  let store = ditto.store();
+  let collection = store.collection("foo")?;
+  let attachment_file_path = "/image.png";
+  let metadata = json!({
+     "some": "string"
+  });
+  let attachment = collection.new_attachment(attachment_file_path, metadata)?;
+  let doc_id = DocumentId::new("123abc");
+  let content = json!({"some": "string", "my_attachment": attachment});
+  let _ = collection.insert(content, Some(&doc_id), false)?;
+  // Later or on another peer ...
+  let mut doc: Document = collection.find_by_id(doc_id).exec()?;
+  let attachment_token = doc.get::<DittoAttachmentToken>("my_attachment")?;
+  let (tx, rx) = sync::unbounded_channel();
+  let _fetcher = collection.fetch_attachment(attachment_token, move |event| {
+      // completion handler
+      if let DittoAttachmentFetchEvent::Completed {attachment} = event {
+        let _ = tx.send(attachment);
+      }
+  })?;
+  let fetched_attachment = rx.recv()?; // may also use an async version or other sync strategy
+  let attachment_file_path = fetched_attachment.path();
+  std::fs::read(attachment_file_path)?;
+  ```
+
+</TabItem>
 </Tabs>
 
 
@@ -928,6 +1043,7 @@ Once the value in the document is a counter, you can proceed to increment or dec
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -1041,6 +1157,29 @@ ditto.store
          doc["ownedCars"].increment(1);
      };
 ```
+
+</TabItem>
+<TabItem value="rust">
+
+  ```rust
+  use serde_json::json;
+
+  let doc_id = ditto.store.collection("people")?.insert(
+    json!({
+      "name": "Frank",
+      "owned_cars": 0
+    }),
+    None,
+    false
+  )?;
+
+  ditto.store.colelction("people")?.find_by_id(doc_id).update(|x| {
+    if let Some(doc) = x {
+      let _ = doc.replace_with_counter("owned_cars").unwrap();
+      doc.increment("owned_cars", 1).unwrap();
+    }
+  });
+  ```
 
 </TabItem>
 </Tabs>

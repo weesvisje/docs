@@ -30,6 +30,7 @@ In the example below, we know of two other Ditto instances located on:
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'}
   ]
 }>
 <TabItem value="javascript">
@@ -145,6 +146,20 @@ ditto->try_start_sync()
 ```
 
 </TabItem>
+<TabItem value="rust">
+
+```rust
+let mut config = TransportConfig::new(); // empty
+
+config.connect.tcp_servers.insert("135.1.5.5:12345"); // Custom TCP Listener
+config.connect.tcp_servers.insert("185.1.5.5:12345"); // Custom TCP Listener
+config.connect.websocket_urls.insert("wss://example.com"); // Custom WS endpoint
+
+ditto.set_transport_config(config);
+ditto.try_start_sync()?;
+```
+
+</TabItem>
 </Tabs>
 
 
@@ -152,7 +167,7 @@ Feel free to add as many known remote `host:port` strings.
 
 ### Listening for Connections on a Specific Port
 
-You can enable the C# Ditto instance to listen for incoming connections from other remotes Ditto instances on a specific port. 
+You can enable the Ditto instance to listen for incoming connections from other remotes Ditto instances on a specific port. 
 
 In this example, we would like our Ditto instance to listen to _incoming_ connections on port `4000` on `localhost`. 
 
@@ -171,6 +186,7 @@ To be safe, please do not use `localhost` when setting the IP interface. Use `"0
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -287,6 +303,21 @@ ditto->try_start_sync()
 ```
 
 </TabItem>
+<TabItem value="rust">
+
+```rust
+let mut config = TransportConfig::new(); // empty
+
+config.listen.tcp.enabled = true;
+config.listen.tcp.interface_ip = "0.0.0.0";
+config.listen.tcp.port = 4000;
+config.listen.http.enabled = false;
+
+ditto.set_transport_config(config);
+ditto.try_start_sync()?;
+```
+
+</TabItem>
 </Tabs>
 
 Incoming connections from other Ditto instances will be able to connect only if the port is accessible. Depending on your deployment _be sure to check that external connections can reach the port_ that you have specified in your configuration. You may need to set up port forwarding if external ports map differently to your host.
@@ -314,6 +345,7 @@ You can specify several modes of transport configuration within `DittoTransportC
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -472,6 +504,29 @@ config.connect.tcp_servers.insert("185.1.5.5:12345");
 
 ditto->set_transport_config(config);
 ditto->try_start_sync()
+```
+
+</TabItem>
+<TabItem value="rust">
+
+```rust
+let mut config = TransportConfig::new(); // empty
+
+// 1. Enable auto-discovery of peer to peer connections
+config.enable_all_peer_to_peer(); // Auto-connect via lan and bluetooth
+
+// 2. Configure TCP Listener
+config.listen.tcp.enabled = true;
+config.listen.tcp.interface_ip = "0.0.0.0";
+config.listen.tcp.port = 4000;
+config.listen.http.enabled = false;
+
+// 3. Configure explicit, hard coded connections
+config.connect.tcp_servers.insert("135.1.5.5:12345"); // Custom TCP Listener
+config.connect.websocket_urls.insert("wss://example.com"); // Custom WS endpoint
+
+ditto.set_transport_config(config);
+ditto.try_start_sync()?;
 ```
 
 </TabItem>

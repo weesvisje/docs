@@ -135,6 +135,7 @@ At time of writing, this command works on Linux machines with an up-to-date Open
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -197,6 +198,25 @@ Ditto ditto = new Ditto(identity);
 std::string p256_der_b64 = "<base64 DER string>";
 Identity identity = Identity("app", p256_der_b64);
 Ditto ditto = Ditto(identity);
+```
+</TabItem>
+
+<TabItem value="rust">
+
+```rust
+let p256_der_b64: &str = "<base64 DER string>";
+let mut ditto = Ditto::builder() 
+  .with_root(Arc::new(PersistentRoot::current_exe()?))
+  .with_identity(|ditto_root| {
+      // Provided as an env var, may also be provided as hardcoded string
+      let app_id = AppId::from_env("DITTO_APP_ID")?;
+      // return the Result<Identity, _> at the end of this closure
+      SharedKey::new(ditto_root, app_id, shared_key)
+    })
+    .with_transport_config(|_identity| {
+        let mut config = TransportConfig::enable_all_peer_to_peer()
+    })
+    .build()?;
 ```
 
 </TabItem>
