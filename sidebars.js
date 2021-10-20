@@ -73,11 +73,6 @@ module.exports = {
     },
     {
       type: "link",
-      label: "Changelog", // The link label
-      href: "/changelog", // The external URL
-    },
-    {
-      type: "link",
       label: "GitHub Issues", // The link label
       href: "https://github.com/getditto/docs/issues", // The external URL
     },
