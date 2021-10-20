@@ -182,6 +182,13 @@ In order to handle this situation, we recommend that you use __an additional lib
 
 Our favorite library to help prevent runtime errors of mismatched keys and values is [BetterCodable](https://github.com/marksands/BetterCodable). 
 
+You can install `BetterCodable` along `DittoSwift` by adding the dependency in your Podfile:
+
+```ruby title="Podfile"
+pod 'DittoSwift', '>=1.0.14'
+pod 'BetterCodable'
+```
+
 To prevent a runtime error with a missing `mileage` key, we can create a `DefaultCodableStrategy` and attach it as an annotation to the mileage property. The strategy will default to a `Double` value of `0` if the key is either missing or mismatched.
 
 ```swift
