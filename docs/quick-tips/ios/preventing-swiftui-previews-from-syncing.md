@@ -1,6 +1,6 @@
 ---
 title: 'Preventing SwiftUI Previews from Syncing'
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 When developing with SwiftUI, you may notice that data from a regular simulator or physical device will sync with a mysterious "other" device. This mysterious device is most likely the SwiftUI Preview Simulator. Simply closing XCode doesn't guarantee that this preview simulator closes. In order to stop this from happening, you'll need to prevent SwiftUI preview simulator from calling `tryStartSync`. 
