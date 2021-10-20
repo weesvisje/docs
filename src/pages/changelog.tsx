@@ -35,7 +35,6 @@ export interface SDKInfo {
   languageOrPlatform?: string;
 }
 
-const endpoint = "https://software.ditto.live/releases/releases.json";
 const downloadedFrameworks: { [key: string]: any } = parseFrameworks(
   require("../../ditto-changelog.json") || {}
 );
@@ -190,22 +189,7 @@ function TabContents({ sdkInfos, title }: TabContentProps) {
 export default function Changelog() {
   const { siteConfig } = useDocusaurusContext();
 
-  const [frameworks, setFrameworks] =
-    useState<{ [framework: string]: SDKInfo[] }>(downloadedFrameworks);
-
-  const isBrowser = useIsBrowser();
-
-  useEffect(() => {
-    if (isBrowser) {
-      (async () => {
-        const response = await fetch(endpoint);
-        const fetchedJSON = await response.json();
-        setFrameworks(parseFrameworks(fetchedJSON));
-      })();
-    } else {
-      setFrameworks(downloadedFrameworks);
-    }
-  }, [isBrowser]);
+  const frameworks = downloadedFrameworks
 
   return (
     <Layout
