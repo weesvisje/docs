@@ -3,6 +3,15 @@ title: 'Using Ditto with Codable Support'
 sidebar_position: 1
 ---
 
+:::info
+This section requires DittoSwift version 1.0.14 or higher. To install a higher version use the following line in your Podfile
+
+```ruby title="Podfile"
+pod 'DittoSwift', '>=1.0.14'
+```
+
+:::
+
 By default `DittoSwift` adds support for Foundaton Framework's [`Codable`](https://developer.apple.com/documentation/foundation/archives_and_serialization/encoding_and_decoding_custom_types) types. This means that it's extremely easy to use static typed structs and classes to serialize and deserialized `DittoDocument` types in your Swift application.
 
 For example, let's say we have a `Car` struct that represents a `DittoDocument` in the `cars` collection. First, ensure that the `struct Car` adheres to `Codable`. Then add your properties that you know you'll use throughout your application.
@@ -138,14 +147,14 @@ ditto.store["orderLineItems"].findByID(_id).remove()
 ditto.store["orderLineItems"].findByID(_id).evict()
 ```
 
-<!-- ## Dealing with mismatched, missing, or defaulting to certain values.
+## Dealing with mismatched, missing, or defaulting to certain values.
 
-Since Ditto is an eventually consistent database, keys may or may not exist since multiple peers can edit the data over the lifetime of a Document's existence. This can cause problems with decoding values. 
+Since Ditto is an eventually consistent database, keys may or may not exist since multiple peers can edit the data over the lifetime of a Document's existence. This can cause throw errors with decoding values in Swift. `DittoSwift` uses the default `Foundation` API's Decoding behavior which will fail if any keys are mismatched on type or existence.
 
 For example it's very possible that __peer A creates a document like so:__
 
 ```swift title=Peer A insertion
-ditto.store["cars"].insert([
+try! ditto.store["cars"].insert([
   "_id": "123abc",
   "name": "Honda",
   "mileage": 4500,
@@ -156,10 +165,42 @@ ditto.store["cars"].insert([
 And __peer B creates a document without the mileage key:__
 
 ```swift title=Peer B insertion
-ditto.store["cars"].insert([
+try! ditto.store["cars"].insert([
   "_id": "123abc",
   "name": "Honda",
   "tags": ["a", "z", "g"]
 ])
-``` -->
+```
+
+In order to handle this situation, we recommend that you use __an additional library__ to handle key mismatches. Some of these libraries are:
+
+* [BetterCodable](https://github.com/marksands/BetterCodable)
+* [DefaultCodable](https://github.com/gonzalezreal/DefaultCodable)
+* [CodableWrappers](https://github.com/GottaGetSwifty/CodableWrappers)
+
+### Example with [`BetterCodable`](https://github.com/marksands/BetterCodable) library.
+
+Our favorite library to help prevent runtime errors of mismatched keys and values is [BetterCodable](https://github.com/marksands/BetterCodable). 
+
+To prevent a runtime error with a missing `mileage` key, we can create a `DefaultCodableStrategy` and attach it as an annotation to the mileage property. The strategy will default to a `Double` value of `0` if the key is either missing or mismatched.
+
+```swift
+import BetterCodable
+
+struct NoMileage: DefaultCodableStrategy {
+    static var defaultValue: Double { return 0 }
+}
+
+struct Car: Codable {
+  var _id: String
+  var name: String
+  @DefaultCodable<NoMileage> var mileage: Double
+  var tags: [String]
+}
+```
+
+For more information visit https://github.com/marksands/BetterCodable and read the documentation for more functionality.
+
+
+
 
