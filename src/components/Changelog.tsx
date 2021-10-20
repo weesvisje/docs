@@ -1,27 +1,13 @@
-import React, { useEffect, useState } from "react";
-import useIsBrowser from "@docusaurus/useIsBrowser";
+import React from "react";
 import clsx from "clsx";
 import Layout from "@theme/Layout";
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import styles from "./index.module.css";
 import semver from "semver";
 import { stripIndent } from "common-tags";
 import moment from "moment";
 import markdownIt from "markdown-it";
-
-function HomepageHeader() {
-  const { siteConfig } = useDocusaurusContext();
-  return (
-    <header className={clsx("hero", styles.heroBanner)}>
-      <div className="container">
-        <h1 className="hero__title">Changelog</h1>
-        <p className="hero__subtitle">SDK Release Information</p>
-      </div>
-    </header>
-  );
-}
 
 export interface SDKInfo {
   framework: string;
@@ -173,7 +159,7 @@ function TabContents({ sdkInfos, title }: TabContentProps) {
             />
             <a
               role="button"
-              style={{color: 'white', textDecoration: 'none'}}
+              style={{ color: "white", textDecoration: "none" }}
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-white"
               href={sdkInfo.apiReferenceDocsURL}
             >
@@ -189,75 +175,56 @@ function TabContents({ sdkInfos, title }: TabContentProps) {
 export default function Changelog() {
   const { siteConfig } = useDocusaurusContext();
 
-  const frameworks = downloadedFrameworks
+  const frameworks = downloadedFrameworks;
 
   return (
-    <Layout
-      title={`Changelog ${siteConfig.title}`}
-      description="Ditto list of updates and changelogs"
-    >
-      <HomepageHeader />
-      <main>
-        <div className="prose max-w-none">
-          <div className="row" style={{ justifyContent: "center" }}>
-            <div className="col margin-vert--lg" style={{ maxWidth: "800px" }}>
-              <Tabs
-                defaultValue="swift"
-                groupId="framework"
-                values={[
-                  { label: "JavaScript", value: "javascript" },
-                  { label: "Swift", value: "swift" },
-                  { label: "Obj-C", value: "objc" },
-                  { label: "Kotlin", value: "kotlin" },
-                  { label: "Java", value: "java" },
-                  { label: "C#", value: "csharp" },
-                  { label: "C++", value: "cpp" },
-                ]}
-              >
-                <TabItem value="javascript">
-                  <TabContents title="JavaScript" sdkInfos={frameworks["js"]} />
-                </TabItem>
-                <TabItem value="swift">
-                  <TabContents
-                    title="DittoSwift"
-                    sdkInfos={frameworks["cocoa"]}
-                  />
-                </TabItem>
-                <TabItem value="objc">
-                  <TabContents
-                    title="DittoObjC"
-                    sdkInfos={frameworks["cocoa"]}
-                  />
-                </TabItem>
-                <TabItem value="java">
-                  <TabContents
-                    title="Java Android"
-                    sdkInfos={frameworks["android"]}
-                  />
-                </TabItem>
-                <TabItem value="kotlin">
-                  <TabContents
-                    title="Kotlin Android"
-                    sdkInfos={frameworks["android"]}
-                  />
-                </TabItem>
-                <TabItem value="csharp">
-                  <TabContents
-                    title="C# / .NET"
-                    sdkInfos={frameworks["dotnet"]}
-                  />
-                </TabItem>
-                <TabItem value="cpp">
-                  <TabContents
-                    title="C++ Linux / iOS"
-                    sdkInfos={frameworks["cpp"]}
-                  />
-                </TabItem>
-              </Tabs>
-            </div>
-          </div>
+    <div className="prose prose-lg max-w-none">
+        <div className="col margin-vert--lg" style={{ maxWidth: "800px" }}>
+          <Tabs
+            defaultValue="swift"
+            groupId="framework"
+            values={[
+              { label: "JavaScript", value: "javascript" },
+              { label: "Swift", value: "swift" },
+              { label: "Obj-C", value: "objc" },
+              { label: "Kotlin", value: "kotlin" },
+              { label: "Java", value: "java" },
+              { label: "C#", value: "csharp" },
+              { label: "C++", value: "cpp" },
+            ]}
+          >
+            <TabItem value="javascript">
+              <TabContents title="JavaScript" sdkInfos={frameworks["js"]} />
+            </TabItem>
+            <TabItem value="swift">
+              <TabContents title="DittoSwift" sdkInfos={frameworks["cocoa"]} />
+            </TabItem>
+            <TabItem value="objc">
+              <TabContents title="DittoObjC" sdkInfos={frameworks["cocoa"]} />
+            </TabItem>
+            <TabItem value="java">
+              <TabContents
+                title="Java Android"
+                sdkInfos={frameworks["android"]}
+              />
+            </TabItem>
+            <TabItem value="kotlin">
+              <TabContents
+                title="Kotlin Android"
+                sdkInfos={frameworks["android"]}
+              />
+            </TabItem>
+            <TabItem value="csharp">
+              <TabContents title="C# / .NET" sdkInfos={frameworks["dotnet"]} />
+            </TabItem>
+            <TabItem value="cpp">
+              <TabContents
+                title="C++ Linux / iOS"
+                sdkInfos={frameworks["cpp"]}
+              />
+            </TabItem>
+          </Tabs>
         </div>
-      </main>
-    </Layout>
+    </div>
   );
 }
