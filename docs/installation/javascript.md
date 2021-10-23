@@ -1,6 +1,8 @@
 ---
 title: 'JavaScript'
 sidebar_position: 1
+pagination_prev: intro
+pagination_next: concepts/data-model
 ---
 
 # JavaScript Installation Instructions

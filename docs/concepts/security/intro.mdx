@@ -1,0 +1,20 @@
+---
+title: "Intro"
+sidebar_position: 1
+slug: '/concepts/security'
+---
+
+Most applications need way to control which users can write or read certain data. For example, you might build an application where senior staff members can `READ` and `WRITE` documents in the `"menuItems"` collection while junior staff members can only `READ`. This section will describe how you can:
+
+1. Identify users 
+2. Give users read or write control 
+3. Integrate with your existing authentication systems
+
+Ditto security is controlled by __identities__. An identity is a combination of a `userID` and a set of `permissions` that identifies how a Ditto instance behaves with other ditto instances. 
+
+There are several types of identities, but for the vast majority of applications you should be familiar with two in particular:
+
+* [Online Playground](/concepts/security/online-playground) - great for prototyping with Ditto. Beginners should start here!
+* [Online With Authentication](/concepts/security/online-with-authentication) - for apps that you'll deploy with authentication and customized permissioning
+
+There are other identities geared towards peer-to-peer only scenarios. [You can read more about them here.](/advanced/identities)

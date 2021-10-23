@@ -139,7 +139,6 @@ module.exports = {
               require("mdx-mermaid"),
               {
                 mermaid: {
-                  theme: "dark",
                   themeVariables: {
                     fontFamily: "Helvetica",
                   },

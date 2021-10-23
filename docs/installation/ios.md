@@ -1,6 +1,8 @@
 ---
 title: 'iOS'
 sidebar_position: 2
+pagination_prev: intro
+pagination_next: concepts/data-model
 ---
 
 import Tabs from '@theme/Tabs';
@@ -10,23 +12,79 @@ import TabItem from '@theme/TabItem';
 
 1. [Ensure you have CocoaPods 1.1.0 or later](https://guides.cocoapods.org/using/getting-started.html)
 2. Ensure you have `use_frameworks!` in your Podfile
-3. Add `DittoSwift` to your __Podfile__ like so:
+3. Add the following to your __Podfile__ like so:
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="swift"
+  values={[
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+  ]
+}>
+<TabItem value="swift">
 
 ```ruby
 pod 'DittoSwift'
 ```
 
-If you are installing for an Objective-C project use the following CocoaPod instead.
+</TabItem>
+<TabItem value="objc">
 
 ```ruby
 pod 'DittoObjC'
 ```
 
-4. Add the following permissions in your `Info.plist` so that your app can use all the necessary communication channels. Right click on your project's `Info.plist` file, click `Open As > Source Code`.
+</TabItem>
+</Tabs>
 
-![Example banner](./xcode-info-plist-open-as-source.png)
+And run `pod install --repo-update` to install the latest versions.
 
-5. _Add_ the following keys. 
+4. Navigate to your App's __Target__ and go to the __Info__ tab and right click on any row and __Add Row__.
+
+![XCode 13 Info Plist Edit](./xcode13-infoplist.png)
+
+5. _Add_ the following keys to your Info.plist. 
+
+<Tabs
+groupId="info-plist"
+  defaultValue="info-tab"
+  values={[
+    {label: "From Info Tab", value: 'info-tab'},
+    {label: "From Source Code", value: 'source-code'},
+  ]
+}>
+
+<TabItem value="info-tab">
+
+Add the following values to your Info tab.
+
+```
+Key: NSBluetoothAlwaysUsageDescription
+Type: String
+Value: Uses Bluetooth to connect and sync with nearby devices
+
+Key: NSBluetoothPeripheralUsageDescription
+Type: String
+Value: Uses Bluetooth to connect and sync with nearby devices
+
+Key: NSLocalNetworkUsageDescription
+Type: String
+Value: Uses WiFi to connect and sync with nearby devices
+
+Key: NSBluetoothPeripheralUsageDescription
+Type: String
+Value: Uses Bluetooth to connect and sync with nearby devices
+
+Key: NSBonjourServices
+Type: String
+Value: _http-alt._tcp.
+```
+
+</TabItem>
+<TabItem value="source-code">
+
+If your app already has an __Info.plist__ file, you can right click on it and __Open As Source__ and add the following values.
 
 ```xml title=Info.plist
 <key>NSBluetoothAlwaysUsageDescription</key>
@@ -41,7 +99,11 @@ pod 'DittoObjC'
 </array>
 ```
 
-The values like `<string>Uses WiFi to connect and sync with nearby devices</string>` will be displayed in a prompt. Replace it with whatever language is best for your users.
+</TabItem>
+
+</Tabs>
+
+The values like `Uses WiFi to connect and sync with nearby devices` will be displayed in a prompt. Replace it with whatever language is best for your users.
 
 6. You can now use Ditto in your application:
 

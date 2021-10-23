@@ -1,6 +1,8 @@
 ---
 title: 'C#'
 sidebar_position: 6
+pagination_prev: intro
+pagination_next: concepts/data-model
 ---
 
 import Tabs from '@theme/Tabs';

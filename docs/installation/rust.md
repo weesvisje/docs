@@ -1,6 +1,8 @@
 ---
 title: "Rust"
 sidebar_position: 8
+pagination_prev: intro
+pagination_next: concepts/data-model
 ---
 
 import Tabs from '@theme/Tabs';
