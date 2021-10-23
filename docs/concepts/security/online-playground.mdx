@@ -1,0 +1,137 @@
+---
+title: 'Online Playground'
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+:::caution
+__DO NOT__ publish an app with Ditto to an end customer with an Online Playground configuration. We call this a Playground because it's meant for learning without having to implement any true security. For production deployments, use __With Authentication__.
+:::
+
+Experimental, demos, proof of concept apps, or beginners should really start with an online playground application. Online playground apps are simply apps that can sync with nearby peer to peer devices and with the cloud that have the same `appID`. Online playground identities have __no restrictions restrictions to data__ and each peer is randomly assigned a unique `userID`. Online playground identities are perfect for learning about how to use Ditto's APIs without worrying about security architecture.
+
+* Apps with Online Playground can read and write to all collections.
+* Apps with Online Playground will connect to other peer devices or a cloud app with __same appID__. 
+
+To use Online Playground, go to your app in the Ditto portal and find the __Authentication Mode & Webhook Settings__ section. Ensure that __"Playground"__ is selected like so:
+
+![Online Playground enabled in the Ditto Portal](./portal-playground-setting.png)
+
+Now in your client app, construct your Ditto instance with an online playground identity:
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+import { init, Ditto } from "@dittolive/ditto"
+(async () => {
+  await init() // you need to call this at least once before using any of the Ditto API
+  const identity = { type: 'onlinePlayground', appID: 'REPLACE_ME_WITH_YOUR_APP_ID' }
+  const ditto = new Ditto(identity, '/persistence/file/path')
+  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
+  ditto.tryStartSync()
+})()
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+let ditto = Ditto(identity: DittoIdentity.onlinePlayground(appID: "REPLACE_ME_WITH_YOUR_APP_ID"))
+ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
+try! ditto.tryStartSync()
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+
+DITIdentity *onlinePlaygroundIdentity = [[DITIdentity alloc] initOnlinePlaygroundWithAppID:@"REPLACE_ME_WITH_YOUR_APP_ID"];
+DITDitto *ditto = [[DITDitto alloc] initWithIdentity:identity];
+[ditto setLicenseToken: @"REPLACE_ME_WITH_YOUR_LICENSE_TOKEN"];
+NSError *error = nil;
+[ditto tryStartSync:&error];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+try {
+  val androidDependencies = AndroidDittoDependencies(context)
+  val identity = DittoIdentity.OnlinePlayground(androidDependencies, appID = "REPLACE_ME_WITH_YOUR_APP_ID")
+  val ditto = Ditto(androidDependencies, identity)
+  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
+} catch(e: RuntimeException) {
+  Log.e("Ditto error", e.message!!)
+}
+
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+DittoDependencies androidDependencies = new DefaultAndroidDittoDependencies(this.context);
+DittoIdentity identity = new DittoIdentity.OnlinePlayground(androidDependencies, "REPLACE_ME_WITH_YOUR_APP_ID");
+Ditto ditto = new Ditto(androidDependencies);
+
+try {
+  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN");  
+  ditto.tryStartSync();
+} catch(DittoError e) {
+  Log.e("Ditto Error", e.getMessage())
+}
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+try
+{
+    var ditto = new Ditto(DittoIdentity.OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID"));
+    ditto.SetLicenseToken(tamperedLicense);
+    ditto.tryStartSync();
+}
+catch (DittoException ex)
+{
+    Console.WriteLine("Ditto Error ${0}", ex.Message);
+}
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+auto identity = Identity::OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID");
+try {
+  Ditto ditto = Ditto(identity, "/your-persistence-path");
+  ditto.set_license_token(invalid_license);
+  ditto.tryStartSync();
+} catch (const DittoError &err) {
+  std::cout << err.what();
+} catch (const std::exception &e) {
+  std::cout << "Incorrect license exception thrown";
+}
+```
+
+</TabItem>
+</Tabs>
+
+Now your application will automatically sync with any near by peers and cloud apps with the same `appID`.

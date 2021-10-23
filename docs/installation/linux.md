@@ -1,5 +1,7 @@
 ---
 sidebar_position: 7
+pagination_prev: intro
+pagination_next: concepts/data-model
 ---
 
 # Linux (Raspberry Pi)

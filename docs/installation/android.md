@@ -1,6 +1,8 @@
 ---
 title: 'Android'
 sidebar_position: 3
+pagination_prev: intro
+pagination_next: concepts/data-model
 ---
 
 import Tabs from '@theme/Tabs';

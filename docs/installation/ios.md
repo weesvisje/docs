@@ -1,6 +1,8 @@
 ---
 title: 'iOS'
 sidebar_position: 2
+pagination_prev: intro
+pagination_next: concepts/data-model
 ---
 
 import Tabs from '@theme/Tabs';
