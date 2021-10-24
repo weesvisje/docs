@@ -1,26 +1,8 @@
 ---
-title: 'Online Playground'
-sidebar_position: 2
+title: 'Setup Client Side'
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
-
-:::caution
-__DO NOT__ publish an app with Ditto to an end customer with an Online Playground configuration. We call this a Playground because it's meant for learning without having to implement any true security. For production deployments, use __With Authentication__.
-:::
-
-Experimental, demos, proof of concept apps, or beginners should really start with an online playground application. Online playground apps are simply apps that can sync with nearby peer to peer devices and with the cloud that have the same `appID`. Online playground identities have __no restrictions restrictions to data__ and each peer is randomly assigned a unique `userID`. Online playground identities are perfect for learning about how to use Ditto's APIs without worrying about security architecture.
-
-* Apps with Online Playground can read and write to all collections.
-* Apps with Online Playground will connect to other peer devices or a cloud app with __same appID__. 
-
-To use Online Playground, go to your app in the Ditto portal and find the __Authentication Mode & Webhook Settings__ section. Ensure that __"Playground"__ is selected like so:
-
-![Online Playground enabled in the Ditto Portal](./portal-playground-setting.png)
-
-Now in your client app, construct your Ditto instance with an online playground identity:
+## Configure your Client App
 
 <Tabs
   groupId="programming-language"
@@ -104,35 +86,13 @@ try {
 <TabItem value="csharp">
 
 ```csharp
-try
-{
-    var ditto = new Ditto(DittoIdentity.OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID"));
-    ditto.SetLicenseToken(tamperedLicense);
-    ditto.tryStartSync();
-}
-catch (DittoException ex)
-{
-    Console.WriteLine("Ditto Error ${0}", ex.Message);
-}
 ```
 
 </TabItem>
 <TabItem value="cpp">
 
 ```cpp
-auto identity = Identity::OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID");
-try {
-  Ditto ditto = Ditto(identity, "/your-persistence-path");
-  ditto.set_license_token(invalid_license);
-  ditto.tryStartSync();
-} catch (const DittoError &err) {
-  std::cout << err.what();
-} catch (const std::exception &e) {
-  std::cout << "Incorrect license exception thrown";
-}
 ```
 
 </TabItem>
 </Tabs>
-
-Now your application will automatically sync with any near by peers and cloud apps with the same `appID`.

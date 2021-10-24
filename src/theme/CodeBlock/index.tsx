@@ -228,14 +228,14 @@ export default function CodeBlock({
                   }
 
                   const lineProps = getLineProps({line, key: i});
-
-                  if (highlightLines.includes(i + 1)) {
-                    lineProps.className += 'bg-gray-800 docusaurus-highlight-code-line';
-                    // lineProps.style= 
-                  }
+                  const shouldHighlight = highlightLines.includes(i + 1)
+                  // if (highlightLines.includes(i + 1)) {
+                  //   lineProps.className += 'bg-gray-800 docusaurus-highlight-code-line';
+                  //   // lineProps.style= 
+                  // }
 
                   return (
-                    <span key={i} {...lineProps}>
+                    <span key={i} {...lineProps} className={clsx(lineProps.className, shouldHighlight && 'bg-gray-700')}>
                       {line.map((token, key) => (
                         <span key={key} {...getTokenProps({token, key})} />
                       ))}
