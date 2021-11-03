@@ -10,9 +10,9 @@ import TabItem from '@theme/TabItem';
 > With the cloud platform, most use cases will not need to learn about this section. Instead, this is an advanced discussion of Ditto's underlying certificate, identity, and encryption implementation. However, if you are deploying an enterprise on-premise deployment of Ditto, you may be required to reference the following material.
 
 All communications are consistently protected by modern and robust encryption for all of Ditto's communication methods. Cryptographically-signed business rules ensure users can only sync data that they are permitted to access. The app developer is in complete control of the keys, certificates, and rules.
- 
+
 The following details information about the certificates used to encrypt the communication channels.
- 
+
 <table>
 <tr>
   <th>Capability</th>
@@ -37,7 +37,7 @@ The following details information about the certificates used to encrypt the com
 <tr>
   <td>Access Rules</td>
   <td>
-  
+
     Query patterns on Document _id's describing read and or write access
 
   </td>
@@ -205,13 +205,13 @@ Ditto ditto = Ditto(identity);
 
 ```rust
 let p256_der_b64: &str = "<base64 DER string>";
-let mut ditto = Ditto::builder() 
+let mut ditto = Ditto::builder()
   .with_root(Arc::new(PersistentRoot::current_exe()?))
   .with_identity(|ditto_root| {
       // Provided as an env var, may also be provided as hardcoded string
       let app_id = AppId::from_env("DITTO_APP_ID")?;
       // return the Result<Identity, _> at the end of this closure
-      SharedKey::new(ditto_root, app_id, shared_key)
+      SharedKey::new(ditto_root, app_id, p256_der_b64)
     })
     .with_transport_config(|_identity| {
         let mut config = TransportConfig::enable_all_peer_to_peer()

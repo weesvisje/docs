@@ -14,7 +14,7 @@ __DO NOT__ publish an app with Ditto to an end customer with an Online Playgroun
 Experimental, demos, proof of concept apps, or beginners should really start with an online playground application. Online playground apps are simply apps that can sync with nearby peer to peer devices and with the cloud that have the same `appID`. Online playground identities have __no restrictions restrictions to data__ and each peer is randomly assigned a unique `userID`. Online playground identities are perfect for learning about how to use Ditto's APIs without worrying about security architecture.
 
 * Apps with Online Playground can read and write to all collections.
-* Apps with Online Playground will connect to other peer devices or a cloud app with __same appID__. 
+* Apps with Online Playground will connect to other peer devices or a cloud app with __same appID__.
 
 To use Online Playground, go to your app in the Ditto portal and find the __Authentication Mode & Webhook Settings__ section. Ensure that __"Playground"__ is selected like so:
 
@@ -33,6 +33,7 @@ Now in your client app, construct your Ditto instance with an online playground 
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
   ]
 }>
 <TabItem value="javascript">
@@ -53,7 +54,7 @@ import { init, Ditto } from "@dittolive/ditto"
 
 ```swift
 let ditto = Ditto(identity: DittoIdentity.onlinePlayground(appID: "REPLACE_ME_WITH_YOUR_APP_ID"))
-ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
+try! ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
 try! ditto.tryStartSync()
 ```
 
@@ -61,11 +62,10 @@ try! ditto.tryStartSync()
 <TabItem value="objc">
 
 ```objc
-
-DITIdentity *onlinePlaygroundIdentity = [[DITIdentity alloc] initOnlinePlaygroundWithAppID:@"REPLACE_ME_WITH_YOUR_APP_ID"];
+DITIdentity *identity = [[DITIdentity alloc] initOnlinePlaygroundWithAppID:@"REPLACE_ME_WITH_YOUR_APP_ID"];
 DITDitto *ditto = [[DITDitto alloc] initWithIdentity:identity];
-[ditto setLicenseToken: @"REPLACE_ME_WITH_YOUR_LICENSE_TOKEN"];
 NSError *error = nil;
+[ditto setLicenseToken: @"REPLACE_ME_WITH_YOUR_LICENSE_TOKEN" error:&error];
 [ditto tryStartSync:&error];
 ```
 
@@ -78,10 +78,10 @@ try {
   val identity = DittoIdentity.OnlinePlayground(androidDependencies, appID = "REPLACE_ME_WITH_YOUR_APP_ID")
   val ditto = Ditto(androidDependencies, identity)
   ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
-} catch(e: RuntimeException) {
+  ditto.tryStartSync()
+} catch(e: DittoError) {
   Log.e("Ditto error", e.message!!)
 }
-
 ```
 
 </TabItem>
@@ -90,10 +90,10 @@ try {
 ```java
 DittoDependencies androidDependencies = new DefaultAndroidDittoDependencies(this.context);
 DittoIdentity identity = new DittoIdentity.OnlinePlayground(androidDependencies, "REPLACE_ME_WITH_YOUR_APP_ID");
-Ditto ditto = new Ditto(androidDependencies);
+Ditto ditto = new Ditto(androidDependencies, identity);
 
 try {
-  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN");  
+  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN");
   ditto.tryStartSync();
 } catch(DittoError e) {
   Log.e("Ditto Error", e.getMessage())
@@ -108,11 +108,11 @@ try
 {
     var ditto = new Ditto(DittoIdentity.OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID"));
     ditto.SetLicenseToken(tamperedLicense);
-    ditto.tryStartSync();
+    ditto.TryStartSync();
 }
 catch (DittoException ex)
 {
-    Console.WriteLine("Ditto Error ${0}", ex.Message);
+    System.Console.WriteLine($"Ditto Error {ex.Message}");
 }
 ```
 
@@ -124,12 +124,41 @@ auto identity = Identity::OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID");
 try {
   Ditto ditto = Ditto(identity, "/your-persistence-path");
   ditto.set_license_token(invalid_license);
-  ditto.tryStartSync();
+  ditto.try_start_sync();
 } catch (const DittoError &err) {
-  std::cout << err.what();
+  std::cout << err.what() << std::endl;
 } catch (const std::exception &e) {
-  std::cout << "Incorrect license exception thrown";
+  std::cout << "Incorrect license exception thrown" << std::endl;
 }
+```
+
+</TabItem>
+
+<TabItem value="rust">
+
+```rust
+use dittolive_ditto::prelude::*;
+use std::sync::Arc;
+use std::time::Duration;
+
+let mut ditto = Ditto::builder()
+    // creates a `ditto_data` folder in the directory containing the executing process
+    .with_root(Arc::new(PersistentRoot::current_exe()?))
+    .with_identity(|ditto_root| {
+      // Provided as an env var, may also be provided as hardcoded string
+      let app_id = AppId::from_env("DITTO_APP_ID")?;
+      let enable_cloud_sync = true;
+      let custom_auth_url = None;
+      // return the Result<Identity, _> at the end of this closure
+      OnlinePlayground::new(ditto_root, app_id, enable_cloud_sync, custom_auth_url)
+    })
+    .with_transport_config(|_identity| {
+        let mut config = TransportConfig::enable_all_peer_to_peer()
+    })
+    .build()?;
+
+ditto.set_license_from_env("DITTO_LICENSE")?; // May also be provided as a string
+ditto.try_start_sync()?;
 ```
 
 </TabItem>
