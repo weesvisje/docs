@@ -109,35 +109,34 @@ NSError *error = nil;
 <TabItem value="kotlin">
 
 ```kotlin
+class AuthCallback: DittoAuthenticationCallback {
+    override fun authenticationRequired(authenticator: DittoAuthenticator) {
+        authenticator.loginWithToken(ThirdPartyAuth.getToken(), "third_party") { err ->
+            println("Login request completed. Error? $err")
+        }
+    }
+
+    override fun authenticationExpiringSoon(
+        authenticator: DittoAuthenticator,
+        secondsRemaining: Long
+    ) {
+        println("Auth token expiring in $secondsRemaining seconds")
+    }
+}
+
+val androidDependencies = AndroidDittoDependencies(context)
+val identity = DittoIdentity.OnlineWithAuthentication(
+    androidDependencies,
+    "REPLACE_ME_WITH_YOUR_APP_ID",
+    AuthCallback()
+)
+val ditto = Ditto(androidDependencies, identity)
 try {
-  class AuthCallback: DittoAuthenticationCallback {
-      override fun authenticationRequired(authenticator: DittoAuthenticator) {
-          authenticator.loginWithToken(ThirdPartyAuth.getToken(), "third_party") { err ->
-              println("Login request completed. Error? $err")
-          }
-      }
-
-      override fun authenticationExpiringSoon(
-          authenticator: DittoAuthenticator,
-          secondsRemaining: Long
-      ) {
-          println("Auth token expiring in $secondsRemaining seconds")
-      }
-  }
-
-  val androidDependencies = AndroidDittoDependencies(context)
-  val identity = DittoIdentity.OnlineWithAuthentication(
-      androidDependencies,
-      "REPLACE_ME_WITH_YOUR_APP_ID",
-      AuthCallback()
-  )
-  val ditto = Ditto(androidDependencies, identity)
   ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
   ditto.tryStartSync()
 } catch(e: DittoError) {
   Log.e("Ditto error", e.message!!)
 }
-
 ```
 
 </TabItem>
@@ -149,7 +148,6 @@ class AuthCallback implements DittoAuthenticationCallback {
     public void authenticationRequired(@NonNull DittoAuthenticator authenticator) {
         authenticator.loginWithToken(ThirdPartyAuth.getToken(), "third_party", err -> {
             System.out.println("Login request completed. Error? " + err.toString());
-            return null;
         });
     }
 

@@ -193,7 +193,6 @@ class AuthCallback implements DittoAuthenticationCallback {
     public void authenticationRequired(@NonNull DittoAuthenticator authenticator) {
         authenticator.loginWithToken(ThirdPartyAuth.getToken(), "third_party", err -> {
             System.out.println("Login request completed. Error? " + err.toString());
-            return null;
         });
     }
 
