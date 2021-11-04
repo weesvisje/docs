@@ -127,8 +127,6 @@ try {
   ditto.try_start_sync();
 } catch (const DittoError &err) {
   std::cout << err.what() << std::endl;
-} catch (const std::exception &e) {
-  std::cout << "Incorrect license exception thrown" << std::endl;
 }
 ```
 

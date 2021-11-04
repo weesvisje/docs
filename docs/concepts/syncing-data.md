@@ -24,7 +24,7 @@ Given that Ditto works peer-to-peer, devices can form into arbitrary groups base
 
 ## Enabling Sync
 
-To enable Ditto to sync data, you'll need to call `ditto.tryStartSync()`. Preferably, you should call `tryStartSync()` early on in your application's life cycle like in your `AppDelegate.application(_:didFinishLaunchingWithOptions:)` or `Application.onCreate` methods. Your application only needs to call this function once. 
+To enable Ditto to sync data, you'll need to call `ditto.tryStartSync()`. Preferably, you should call `tryStartSync()` early on in your application's life cycle like in your `AppDelegate.application(_:didFinishLaunchingWithOptions:)` or `Application.onCreate` methods. Your application only needs to call this function once.
 
 <Tabs
   groupId="programming-language"
@@ -45,9 +45,9 @@ To enable Ditto to sync data, you'll need to call `ditto.tryStartSync()`. Prefer
 ```js
 const ditto = new Ditto()
 try {
-    ditto.tryStartSync()    
+    ditto.tryStartSync()
 } catch(err) {
-    console.error(err)   
+    console.error(err)
 }
 ```
 
@@ -57,7 +57,7 @@ try {
 ```swift
 let ditto = new Ditto()
 try {
-    ditto.tryStartSync()    
+    ditto.tryStartSync()
 } catch(let err) {
     print(err.localizedDescription)
 }
@@ -115,8 +115,6 @@ catch (DittoException ex)
 try {
     ditto.try_start_sync();
 } catch (const DittoError &err) {
-    // handle exception  
-} catch (const std::exception &e) {
     std::cerr << e.what();
 }
 ```
@@ -259,7 +257,7 @@ let (tx, rx) = channel();
                },
                _ => () // do nothing
            }
-       })?; 
+       })?;
     for doc in rx.iter() {
         println!("Updated Doc: {:?}", &doc);
     }
@@ -274,15 +272,15 @@ let (tx, rx) = channel();
 Here are some quick facts about the `LiveQuery` behavior.
 
 * The `.observe` handler will always fire _immediately_ with the current set of documents matching the query.
-* Subsequent local and remote calls to `.observe` will be fired with the new set of documents that match the query. 
+* Subsequent local and remote calls to `.observe` will be fired with the new set of documents that match the query.
 * To stop the observe callback, either call `liveQuery.stop()` or deallocate the `liveQuery` object. Deallocation can by done simply by assigning it to `nil` or `null` depending on the language and platform.
 * You can create as many `LiveQuery` objects as you want.
 * Calling `.observe` on a query before calling `ditto.tryStartSync()`, will only fire changes for local updates.
 
 ## Live Queries without Syncing Data
 
-There are many situations where your app needs to observe live queries _without_ initiating syncing with other devices. For example, this is useful if your app intends to treat certain documents and collections as local-only data. In addition, for complex apps, it can be helpful to seperate the observer from the underlying query [`Subscription`](#subscriptions). 
-  
+There are many situations where your app needs to observe live queries _without_ initiating syncing with other devices. For example, this is useful if your app intends to treat certain documents and collections as local-only data. In addition, for complex apps, it can be helpful to seperate the observer from the underlying query [`Subscription`](#subscriptions).
+
 Instead of `.observe`, call `.observeLocal` like so:
 
 <Tabs
@@ -428,7 +426,7 @@ std::shared_ptr<LiveQuery> query = collection
   .find("color == 'red'")
   .observe_local(LiveQueryEventHandler{
     [&](std::vector<Document> docs, LiveQueryEvent event) {
-      
+
     }});
 ```
 
@@ -462,9 +460,9 @@ let mut doc_id;
 </Tabs>
 
 Note: if your Ditto instance has not called `tryStartSync`, there will be no difference between `.observe` and `.observeLocal`.
-  
+
 ## Subscriptions
-  
+
 In developing more complex applications, it might make sense to decouple your `LiveQuery` observer callbacks with the query `Subscription`. For example, if you want the app to always be subscribing to data during the entire life-cycle of the app, but only create an observer when the user navigates to the UI for that data. In this case, you would use the `.observeLocal` API while registering a `Subscription` for the query in a global area of the app.
 
 To create subscriptions is similar to, or can also be combined with, [local observers](#live-queries-without-syncing-data):
@@ -502,7 +500,7 @@ const liveQuery = ditto.store.collection('cars')
 </TabItem>
 <TabItem value="swift">
 
-```swift  
+```swift
 // Register a subscription globally in the app
 let subscription = ditto.store.collection("cars")
     .find("color == 'red'")
@@ -592,7 +590,7 @@ std::shared_ptr<LiveQuery> query = collection
   .find("color == 'red'")
   .observe_local(LiveQueryEventHandler{
     [&](std::vector<Document> docs, LiveQueryEvent event) {
-      
+
     }});
 ```
 
