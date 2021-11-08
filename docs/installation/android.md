@@ -71,6 +71,7 @@ android {
 val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
 val ditto = Ditto(androidDependencies)
 ditto.setLicenseToken("<ditto_license_token>")
+ditto.tryStartSync()
 ```
 
 </TabItem>
@@ -80,6 +81,7 @@ ditto.setLicenseToken("<ditto_license_token>")
 DefaultAndroidDittoDependencies androidDependencies = new DefaultAndroidDittoDependencies(applicationContext);
 Ditto ditto = new Ditto(androidDependencies);
 ditto.setLicenseToken("<ditto_license_token>");
+ditto.tryStartSync();
 ```
 
 </TabItem>
