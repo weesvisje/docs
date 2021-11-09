@@ -1,11 +1,10 @@
 ---
+title: 'Insert, Update and Remove'
 sidebar_position: 2
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-
-# Insert, Update, and Remove
 
 ## Inserting Documents
 
@@ -329,6 +328,7 @@ DocumentId doc_id = ditto.store.collection("people")
 </TabItem>
 </Tabs>
 
+
 ## Updating Documents
 
 Updating documents are categorized into 3 types of operations:
@@ -393,7 +393,7 @@ let docId = ditto.store["people"].insert([
 ])
 
 ditto.store["people"].findByID(docId).update { mutableDoc in
-    mutableDoc?["age"].set(32)
+    mutableDoc?["age"] = 32
     mutableDoc?["ownedCars"].replaceWithCounter()
     mutableDoc?["ownedCars"].increment(amount: 1)
     mutableDoc?["friends"].push("Susan")
@@ -540,6 +540,581 @@ ditto.store().collection("people")?.update(|x|{
 
 </TabItem>
 </Tabs>
+
+## Upserting Documents 
+
+Because Ditto is an eventually consistent system, you will definitely run into situations where you need to __upsert__ documents. __Upserting__ describes a behavior where you would want to insert a document into a collection if the document `_id` does not not exist. However if the `_id` does exist in your local store, Ditto will `.update` the document in place. 
+
+
+To upsert a document, use the `collection.insertWithStrategy` function. You will need to provide the payload of the document that you'd like upsert as well as a `DittoWriteStrategy`. We offer __4 strategies for upserting documents.  
+
+As an example, let's say we have a document in the `people` collection that looks like this:
+
+```jsonc
+{
+  "_id": "123abc",
+  "name": "Sam",
+  "age": 45,
+  "isOnline": false
+}
+```
+
+### Merge 
+
+An upsert with a merge strategy will set the properties on the document that match the existing document if it exists. Any properties that do not match are left alone.
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+await ditto.store.collection('people').insertWithStrategy({
+  "_id": "123abc",
+  "name": "Joe",
+  "isOnline": true
+}, { writeStrategy: 'merge' })
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+try ditto.store["people"].insertWithStrategy([
+  "_id": "123abc",
+  "name": "Joe",
+  "isOnline": true
+], writeStrategy: .merge)
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITCollection *collection = [ditto.store collection:@"people"];
+[collection insert:@{
+    @"_id": @"123abc",
+    @"name": @"Joe",
+    @"isOnline": YES
+  }
+  withID:customID
+  writeStrategy:DITWriteStrategyMerge
+  error:nil];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+ditto.store["people"].insertWithStrategy([
+  "_id" to "123abc",
+  "name" to "Joe",
+  "isOnline" to true
+], DittoWriteStrategy.Merge)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Map<String, Object> map = new HashMap();
+map.put('_id', "123abc")
+map.put('name', "Joe")
+map.put('isOnline', true)
+ditto.store.collection("people").insertWithStrategy(content, null, DittoWriteStrategy.Merge)
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+ditto.Store.Collection("people").InsertWithStrategy(
+  new Dictionary<string, object> { 
+      { "_id", "123abc" }, 
+      {"name", "Joe"}, 
+      {"isOnline", true} 
+    }, 
+    DittoWriteStrategy.Merge)
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+ditto.store.collection("people").insert_with_strategy(
+      {
+        {"_id", "123abc"},
+        {"name", "Joe"},
+        {"isOnline", true}
+      }, custom_id, WriteStrategy::merge);
+```
+
+</TabItem>
+<TabItem value="rust">
+
+```rust
+ditto.store().collection("people")?.insert_with_strategy(
+        json!({
+          "_id": "123abc",
+          "name": "Joe",
+          "isOnline": true
+        }),
+        None,
+        WriteStrategy::InsertIfAbsent,
+    )
+```
+
+</TabItem>
+</Tabs>
+
+Now the document will look like this:
+
+```jsonc
+// before
+{
+  "_id": "123abc",
+  "name": "Sam",
+  "age": 45,
+  "isOnline": false
+}
+
+// after
+{
+  "_id": "123abc",
+  "name": "Joe", // updated 
+  "age": 45, // left alone, because the payload did not include this key
+  "isOnline": true  // update
+}
+```
+
+### Overwrite
+
+An overwrite strategy will remove the document if it exists and recreate with it's exact payload. You can think of it as calling `.remove` and `.insert` in one transaction.
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+await ditto.store.collection('people').insertWithStrategy({
+  "_id": "123abc",
+  "name": "Joe",
+  "isOnline": true
+}, { writeStrategy: 'overwrite' })
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+try ditto.store["people"].insertWithStrategy([
+  "_id": "123abc",
+  "name": "Joe",
+  "isOnline": true
+], writeStrategy: .overwrite)
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITCollection *collection = [ditto.store collection:@"people"];
+[collection insert:@{
+    @"_id": @"123abc",
+    @"name": @"Joe",
+    @"isOnline": YES
+  }
+  withID:customID
+  writeStrategy:DITWriteStrategyOverwrite
+  error:nil];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+ditto.store["people"].insertWithStrategy([
+  "_id" to "123abc",
+  "name" to "Joe",
+  "isOnline" to true
+], DittoWriteStrategy.Overwrite)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Map<String, Object> map = new HashMap();
+map.put('_id', "123abc")
+map.put('name', "Joe")
+map.put('isOnline', true)
+ditto.store.collection("people").insertWithStrategy(content, null, DittoWriteStrategy.Overwrite)
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+ditto.Store.Collection("people").InsertWithStrategy(
+  new Dictionary<string, object> { 
+      { "_id", "123abc" }, 
+      {"name", "Joe"}, 
+      {"isOnline", true} 
+    }, 
+    DittoWriteStrategy.Overwrite)
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+ditto.store.collection("people").insert_with_strategy(
+      {
+        {"_id", "123abc"},
+        {"name", "Joe"},
+        {"isOnline", true}
+      }, custom_id, WriteStrategy::overwrite);
+```
+
+</TabItem>
+<TabItem value="rust">
+
+```rust
+ditto.store().collection("people")?.insert_with_strategy(
+            json!({
+              "_id": "123abc",
+              "name": "Joe",
+              "isOnline": true
+            }),
+            None,
+            WriteStrategy::Merge,
+        )
+```
+
+</TabItem>
+</Tabs>
+
+The final document will look like the following below. Since the `_id` matched, the document was removed and reinserted.
+
+```json
+// before
+{
+  "_id": "123abc",
+  "name": "Sam",
+  "age": 45,
+  "isOnline": false
+}
+
+// after
+{
+  "_id": "123abc",
+  "name": "Joe",
+  "isOnline": true
+}
+```
+
+### Insert If Absent
+
+The `.insertIfAbsent` strategy is quite straight forward. If the `_id` of the payload matched, then the document will not be inserted. If the document with the same `_id` does not exist, then the payload will be inserted. 
+
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+await ditto.store.collection('people').insertWithStrategy({
+  "_id": "123abc",
+  "name": "Joe",
+  "isOnline": true
+}, { writeStrategy: 'insertIfAbsent' })
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+try ditto.store["people"].insertWithStrategy([
+  "_id": "123abc",
+  "name": "Joe",
+  "isOnline": true
+], writeStrategy: .insertIfAbsent)
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITCollection *collection = [ditto.store collection:@"people"];
+[collection insert:@{
+    @"_id": @"123abc",
+    @"name": @"Joe",
+    @"isOnline": YES
+  }
+  withID:customID
+  writeStrategy:DITWriteStrategyInsertIfAbsent
+  error:nil];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+ditto.store["people"].insertWithStrategy([
+  "_id" to "123abc",
+  "name" to "Joe",
+  "isOnline" to true
+], DittoWriteStrategy.InsertIfAbsent)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Map<String, Object> map = new HashMap();
+map.put('_id', "123abc")
+map.put('name', "Joe")
+map.put('isOnline', true)
+ditto.store.collection("people").insertWithStrategy(content, null, DittoWriteStrategy.InsertIfAbsent)
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+ditto.Store.Collection("people").InsertWithStrategy(
+  new Dictionary<string, object> { 
+      { "_id", "123abc" }, 
+      {"name", "Joe"}, 
+      {"isOnline", true} 
+    }, 
+    DittoWriteStrategy.InsertIfAbsent)
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+ditto.store.collection("people").insert_with_strategy(
+      {
+        {"_id", "123abc"},
+        {"name", "Joe"},
+        {"isOnline", true}
+      }, custom_id, WriteStrategy::insertIfAbsent);
+```
+
+</TabItem>
+<TabItem value="rust">
+
+```rust
+ditto.store().collection("people")?.insert_with_strategy(
+          json!({
+            "_id": "123abc",
+            "name": "Joe",
+            "isOnline": true
+          }),
+          None,
+          WriteStrategy::InsertIfAbsent,
+      )
+```
+
+</TabItem>
+</Tabs>
+
+Thus using our example, the document is left unchanged. 
+
+```json
+// before
+{
+  "_id": "123abc",
+  "name": "Sam",
+  "age": 45,
+  "isOnline": false
+}
+
+// after
+{
+  "_id": "123abc",
+  "name": "Sam",
+  "age": 45,
+  "isOnline": false
+}
+```
+
+### Insert Default If Absent
+
+The `insertDefaultIfAbsent` is a strategy that is best for _placeholder_ data. If a document does not exist, the payload will be inserted that will not overwrite other peer's changes when they sync. 
+
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+await ditto.store.collection('people').insertWithStrategy({
+  "_id": "123abc",
+  "name": "Joe",
+  "isOnline": true
+}, { writeStrategy: 'insertDefaultIfAbsent' })
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+try ditto.store["people"].insertWithStrategy([
+  "_id": "123abc",
+  "name": "Joe",
+  "isOnline": true
+], writeStrategy: .insertDefaultIfAbsent)
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITCollection *collection = [ditto.store collection:@"people"];
+[collection insert:@{
+    @"_id": @"123abc",
+    @"name": @"Joe",
+    @"isOnline": YES
+  }
+  withID:customID
+  writeStrategy:DITWriteStrategyInsertDefaultIfAbsent
+  error:nil];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+ditto.store["people"].insertWithStrategy([
+  "_id" to "123abc",
+  "name" to "Joe",
+  "isOnline" to true
+], DittoWriteStrategy.InsertDefaultIfAbsent)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Map<String, Object> map = new HashMap();
+map.put('_id', "123abc")
+map.put('name', "Joe")
+map.put('isOnline', true)
+ditto.store.collection("people").insertWithStrategy(content, null, DittoWriteStrategy.InsertDefaultIfAbsent)
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+ditto.Store.Collection("people").InsertWithStrategy(
+  new Dictionary<string, object> { 
+      { "_id", "123abc" }, 
+      {"name", "Joe"}, 
+      {"isOnline", true} 
+    }, 
+    DittoWriteStrategy.InsertDefaultIfAbsent)
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+ditto.store.collection("people").insert_with_strategy(
+      {
+        {"_id", "123abc"},
+        {"name", "Joe"},
+        {"isOnline", true}
+      }, custom_id, WriteStrategy::insertDefaultIfAbsent);
+```
+
+</TabItem>
+<TabItem value="rust">
+
+```rust
+ditto.store().collection("people")?.insert_with_strategy(
+          json!({
+            "_id": "123abc",
+            "name": "Joe",
+            "isOnline": true
+          }),
+          None,
+          WriteStrategy::InsertDefaultIfAbsent,
+      )
+```
+
+</TabItem>
+</Tabs>
+
+Thus using our example, the document is left unchanged. 
+
+```json
+// before
+{
+  "_id": "123abc",
+  "name": "Sam",
+  "age": 45,
+  "isOnline": false
+}
+
+// after
+{
+  "_id": "123abc",
+  "name": "Sam",
+  "age": 45,
+  "isOnline": false
+}
+```
 
 ## Removing Documents
 

@@ -17,8 +17,8 @@
     "postinstall": "npm run download-changelog"
   },
   "dependencies": {
-    "@docusaurus/core": "=2.0.0-beta.8",
-    "@docusaurus/preset-classic": "=2.0.0-beta.8",
+    "@docusaurus/core": "=2.0.0-beta.9",
+    "@docusaurus/preset-classic": "=2.0.0-beta.9",
     "@heroicons/react": "^1.0.4",
     "@lottiefiles/react-lottie-player": "^3.4.1",
     "@mdx-js/react": "^1.6.21",
