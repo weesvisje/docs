@@ -1,11 +1,10 @@
 ---
+title: 'Querying'
 sidebar_position: 3
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-
-# Querying
 
 Ditto provides a robust query engine that supports different filter operations. At a high-level, all queries work on a specific collection and are used to filter the collection. In addition, since Ditto works with data represented in JSON-compatible documents, the query syntax offers dot notation to reference keys within the document tree as shown below:
 
