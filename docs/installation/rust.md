@@ -8,8 +8,6 @@ pagination_next: concepts/overview
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Rust SDK Installation Instructions (All platforms)
-
 Create a new project with `cargo init --bin` and add the following to your `Cargo.toml` file.
 
 ```toml
