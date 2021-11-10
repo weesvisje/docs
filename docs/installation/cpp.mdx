@@ -7,6 +7,7 @@ pagination_next: concepts/data-model
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import { InstallCode } from "../../src/components/Changelog.tsx"
 
 # C++ Installation Instructions
 
@@ -14,21 +15,17 @@ import TabItem from '@theme/TabItem';
 
 1. To start integrating Ditto into your app you need to download a copy of the libditto.a static library and the Ditto.h header. The following command will download and then unpack an archive containing the library and header. The URL in the following command will download a copy of the static library built to work on iOS:
 
-```
-curl -O https://software.ditto.live/cpp-ios/Ditto/1.0.9/dist/Ditto.tar.gz && tar xvfz Ditto.tar.gz
-```
+<InstallCode framework="cpp" variant="ios" />
 
 If you want to download the C++ SDK for usage on Linux x86_64 then use the following command, which uses a different URL:
 
-```
-curl -O https://software.ditto.live/cpp-linux-x86_64/Ditto/1.0.9/dist/Ditto.tar.gz && tar xvfz Ditto.tar.gz
-```
+<InstallCode framework="cpp" variant="linux-x86_64" />
 
 2. Configure your app to link to the Ditto static library. Usually, this will mean adding an -lditto to a compilation step for your app.
 
 <Tabs
   groupId="programming-language"
-  defaultValue="javascript"
+  defaultValue="linux"
   values={[
     {label: 'Linux', value: 'linux'},
     {label: 'macOS', value: 'macos'},

@@ -7,6 +7,7 @@ pagination_next: concepts/data-model
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import { InstallCode } from "../../src/components/Changelog.tsx"
 
 ## Installation
 
@@ -16,7 +17,7 @@ The C# SDK is available as part of [NuGet](https://nuget.org). The common ways t
 
 <Tabs
   groupId="dotnet-installation"
-  defaultValue="javascript"
+  defaultValue="package-manager"
   values={[
     {label: "Package Manager", value: 'package-manager'},
     {label: '.NET CLI', value: 'cli'},
@@ -25,23 +26,17 @@ The C# SDK is available as part of [NuGet](https://nuget.org). The common ways t
 }>
 <TabItem value="package-manager">
 
-```
-Install-Package Ditto
-```
+<InstallCode framework="dotnet" variant="package-manager" />
 
 </TabItem>
 <TabItem value="cli">
 
-```
-dotnet add package Ditto
-```
+<InstallCode framework="dotnet" variant="cli" />
 
 </TabItem>
 <TabItem value="package-reference">
 
-```xml
-<PackageReference Include="Ditto" Version="1.*" />
-```
+<InstallCode framework="dotnet" variant="package-reference" />
 
 </TabItem>
 </Tabs>

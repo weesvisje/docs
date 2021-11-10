@@ -7,8 +7,7 @@ pagination_next: concepts/data-model
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-
-# Android Installation Instructions
+import { InstallCode } from "../../src/components/Changelog.tsx"
 
 1. Ensure your device has Android 7.1 or higher
 2. Ensure that `mavenCentral()` is in the project-level __build.gradle__ file like so:
@@ -23,21 +22,7 @@ buildscript {
 
 3. In the individual module build.gradle file add:
 
-```groovy
-dependencies {
-    // ...
-    implementation "live.ditto:ditto:latest.release"
-}
-
-android {
-    // ...
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-}
-```
+<InstallCode framework="android" />
 
 4. Configure your manifest with the following permissions:
 

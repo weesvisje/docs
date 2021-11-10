@@ -38,6 +38,7 @@
     "react-force-graph-2d": "^1.23.8",
     "react-sizeme": "^3.0.2",
     "semver": "^7.3.5",
+    "ts-dedent": "^2.2.0",
     "twin.macro": "^2.7.0",
     "url-loader": "^4.1.1"
   },

@@ -7,8 +7,7 @@ pagination_next: concepts/data-model
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-
-# iOS Installation Instructions
+import { InstallCode } from "../../src/components/Changelog.tsx"
 
 1. [Ensure you have CocoaPods 1.1.0 or later](https://guides.cocoapods.org/using/getting-started.html)
 2. Ensure you have `use_frameworks!` in your Podfile
@@ -24,16 +23,12 @@ import TabItem from '@theme/TabItem';
 }>
 <TabItem value="swift">
 
-```ruby
-pod 'DittoSwift'
-```
+<InstallCode framework="cocoa" variant="swift" />
 
 </TabItem>
 <TabItem value="objc">
 
-```ruby
-pod 'DittoObjC'
-```
+<InstallCode framework="cocoa" variant="objc" />
 
 </TabItem>
 </Tabs>
