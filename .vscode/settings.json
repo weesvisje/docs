@@ -1,5 +1,7 @@
 {
   "editor.tabCompletion": "onlySnippets",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
   "[markdown]":  {
     "editor.quickSuggestions": true
   }

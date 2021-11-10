@@ -1,12 +1,11 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
+const defaultTheme = require("tailwindcss/defaultTheme");
 const siteDir = process.env.DOCUSAURUS_SITE_DIR;
 
 module.exports = {
-  mode: 'jit',
+  mode: "jit",
   purge: [
-    `./docs/**/*.md`,
     `./docs/**/*.mdx`,
-    `./src/**/*.tsx`,
+    "./components/**/*.{js,ts,jsx,tsx}",
     `./src/**/*.{js,jsx,ts,tsx,mdx,md}`,
   ],
   darkMode: false, // or 'media' or 'class'
@@ -16,19 +15,19 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+        sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       },
       typography: {
         DEFAULT: {
           css: {
-            'code::before': {
-              content: '""'
+            "code::before": {
+              content: '""',
             },
-            'code::after': {
-              content: '""'
-            }
-          }
-        }
+            "code::after": {
+              content: '""',
+            },
+          },
+        },
       },
     },
   },
