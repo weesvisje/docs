@@ -59,7 +59,7 @@ module.exports = {
           position: "right",
         },
         {
-          label: "Changelog",
+          label: `Changelog`,
           href: "/changelog",
         },
       ],
