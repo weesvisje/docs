@@ -5,7 +5,7 @@ sidebar_position: 14
 
 ## __General SDK__
 
-### How do Ditto enabled app sync without internet connectivity?
+### How do Ditto enabled apps sync without internet connectivity?
 
 There are 3 ways for Ditto enabled apps to sync without connectivity.
 
@@ -68,7 +68,7 @@ Ditto can be used in Airplane Mode. If Bluetooth or WiFi is manually toggled on 
 There isn't a size limit to a Ditto document or store. Like other databases, Ditto will use as much data as you insert into the device. Controlling the size of Ditto in your app is completely up to your descretion.
 ### Are there any limits to the number of collections?
 
-No there are no limits to the number of collections. While there is no limit, try to keep the names shorter than 30 characters. The collection names are stored with each document. This is merely a suggestion. 
+No there are no limits to the number of collections. While there is no limit, try to keep the names shorter than 30 characters. The collection names are stored with each document. This is merely a suggestion.
 ## __Bluetooth__
 
 ### What is the difference between Bluetooth Classic and Bluetooth Low Energy?
