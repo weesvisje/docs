@@ -1,5 +1,6 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
 const siteDir = process.env.DOCUSAURUS_SITE_DIR;
+const colors = require("tailwindcss/colors");
 
 module.exports = {
   mode: "jit",
@@ -14,20 +15,11 @@ module.exports = {
   },
   theme: {
     extend: {
+      colors: {
+        primary: colors.blue,
+      },
       fontFamily: {
         sans: ["Inter var", ...defaultTheme.fontFamily.sans],
-      },
-      typography: {
-        DEFAULT: {
-          css: {
-            "code::before": {
-              content: '""',
-            },
-            "code::after": {
-              content: '""',
-            },
-          },
-        },
       },
     },
   },
