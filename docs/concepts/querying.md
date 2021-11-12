@@ -350,14 +350,14 @@ Eg. `books[? length(authors) >= 2]` for the example document is `[{"title": "The
 find("books[? length(authors) >= 2] != []")
 ```
 
-Use `array[*].subpath` that collects the subpath of each array item in the result array.
+Use `array[*].subpath` to collect a subpath of each input array item in the result array.
 
 Eg. `books[*].authors[0]` for the example document is `["J. K. Rowling", "J. R. R. Tolkien", "George R. R. Martin", "Stephen King"]`
 
 Eg. `books[*].authors` for the example document is `[["J. K. Rowling"], ["J. R. R. Tolkien"], ["George R. R. Martin"], ["Stephen King", "Peter Straub"]]`
   
 ```js
-// finds documents with books whose Stephen King is the first author
+// finds documents with books whose first author is Stephen King 
 find("contains('Stephen King', books[*].authors[0])")
 ```
 
