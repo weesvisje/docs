@@ -341,7 +341,7 @@ Use `sum(propertyPath)` to return a summation float that represents the sum of t
 find("sum(scores) < 10")
 ```
 
-Use `array[? expression]` to return an array only containing the input array items that satisfy the expression.
+Use `array[? expression]` to return an array containing only the input array items that satisfy the expression.
   
 Eg. `books[? length(authors) >= 2]` for the example document is `[{"title": "The Talisman", "authors": ["Stephen King", "Peter Straub"]}]`.
 
