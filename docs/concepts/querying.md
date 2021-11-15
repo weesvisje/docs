@@ -271,14 +271,14 @@ find("theme == 'Dark' && name == 'Light'")
 
 Use `||` for a logical __or__ predicate; similar to SQL OR statements
 ```js
-// finds documents that are "Tom" or not "Arthur"
+// finds documents that are "Tom" or "Arthur"
 find("name == 'Tom' || name == 'Arthur'")
 ```
 
 Use `!` for a logical __not__ predicate; similar to SQL NOT statements
 
 ```js
-// finds documents that are not "Hamilton" or not "Morten"
+// finds documents that are neither "Hamilton" nor "Morten"
 find("!(name == 'Hamilton' || name == 'Morten')")
 ```
 
@@ -298,9 +298,22 @@ For the following examples assume a document structure like:
 {
   "_id": "123abc",
   "books": [
-    { "title": "Harry Potter" },
-    { "title": "Lord of the Rings" },
-    { "title": "Game of Thrones" }
+    {
+      "title": "Harry Potter",
+      "authors": ["J. K. Rowling"]
+    },
+    {
+      "title": "Lord of the Rings",
+      "authors": ["J. R. R. Tolkien"]
+    },
+    {
+      "title": "Game of Thrones",
+      "authors": ["George R. R. Martin"]
+    },
+    {
+      "title": "The Talisman",
+      "authors": ["Stephen King", "Peter Straub"]
+    }
   ],
   "tags": ["fantasy", "novel"],
   "scores": [12, 14]
@@ -326,6 +339,35 @@ Use `sum(propertyPath)` to return a summation float that represents the sum of t
 ```js
 // finds documents who have a sum of all their scores to be less than 10
 find("sum(scores) < 10")
+```
+
+Use `array[? expression]` to return an array containing only the input array items that satisfy the expression.
+  
+Eg. `books[? length(authors) >= 2]` for the example document is `[{"title": "The Talisman", "authors": ["Stephen King", "Peter Straub"]}]`.
+
+```js
+// finds documents with books that have 2 or more authors
+find("books[? length(authors) >= 2] != []")
+```
+
+Use `array[*].subpath` to collect a subpath of each input array item in the result array.
+
+Eg. `books[*].authors[0]` for the example document is `["J. K. Rowling", "J. R. R. Tolkien", "George R. R. Martin", "Stephen King"]`
+
+Eg. `books[*].authors` for the example document is `[["J. K. Rowling"], ["J. R. R. Tolkien"], ["George R. R. Martin"], ["Stephen King", "Peter Straub"]]`
+  
+```js
+// finds documents with books whose first author is Stephen King 
+find("contains('Stephen King', books[*].authors[0])")
+```
+
+Use `array[]` to flatten the input array by one level. Elements of the input array that are not arrays are pushed as-is to the result array.
+
+Eg. `(books[*].authors)[]` for the example document is `["J. K. Rowling", "J. R. R. Tolkien", "George R. R. Martin", "Stephen King", "Peter Straub"]`
+
+```js
+// finds documents with books authored or co-authored by Stephen King
+find("contains('Stephen King', (books[*].authors)[])")
 ```
 
 ### String Operations
