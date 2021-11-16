@@ -11,22 +11,28 @@ import { MDXComponents } from "mdx/types";
 import {
   docsStaticPaths,
   indexMenuItems,
+  MenuTree,
   Query,
 } from "../utils/documentation-indexer";
 
 interface Props {
   code: string;
   frontmatter: { [key: string]: any };
+  menuTree?: MenuTree;
 }
 
 const components: MDXComponents = {
   code: CodeBlock,
 };
 
-export default function DocPage({ code, frontmatter }: Props): ReactElement {
+export default function DocPage({
+  code,
+  frontmatter,
+  menuTree,
+}: Props): ReactElement {
   const Component = React.useMemo(() => getMDXComponent(code), [code]);
   return (
-    <Layout>
+    <Layout title={frontmatter.title} menuTree={menuTree}>
       <Component components={components} />
     </Layout>
   );
@@ -35,7 +41,7 @@ export default function DocPage({ code, frontmatter }: Props): ReactElement {
 export const getStaticProps: GetStaticProps<Props, Query> = async (context) => {
   const slug = context.params.slug || [];
 
-  console.log(await indexMenuItems());
+  const menuTree = await indexMenuItems();
 
   async function checkFileExists(filePath: string): Promise<boolean> {
     try {
@@ -57,6 +63,7 @@ export const getStaticProps: GetStaticProps<Props, Query> = async (context) => {
     return {
       props: {
         code: code,
+        menuTree: {},
         frontmatter: frontmatter,
       },
     };
@@ -65,6 +72,7 @@ export const getStaticProps: GetStaticProps<Props, Query> = async (context) => {
     return {
       props: {
         code: code,
+        menuTree: menuTree,
         frontmatter: frontmatter,
       },
     };

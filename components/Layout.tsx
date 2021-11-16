@@ -1,19 +1,4 @@
-/*
-  This example requires Tailwind CSS v2.0+ 
-  
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
+import Link from "next/link";
 import { Fragment, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
@@ -29,6 +14,7 @@ import {
 } from "@heroicons/react/outline";
 import { SearchIcon } from "@heroicons/react/solid";
 import classNames from "classnames";
+import { MenuTree } from "../utils/documentation-indexer";
 
 const navigation = [
   { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
@@ -38,15 +24,19 @@ const navigation = [
   { name: "Documents", href: "#", icon: InboxIcon, current: false },
   { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
 ];
+
 const userNavigation = [
   { name: "Your Profile", href: "#" },
   { name: "Settings", href: "#" },
   { name: "Sign out", href: "#" },
 ];
 
-interface Props extends React.PropsWithChildren<unknown> {}
+interface Props extends React.PropsWithChildren<unknown> {
+  title?: string | React.ReactNode | React.ReactElement | JSX.Element;
+  menuTree?: MenuTree;
+}
 
-export default function Layout({ children }: Props) {
+export default function Layout({ title, menuTree, children }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -111,27 +101,18 @@ export default function Layout({ children }: Props) {
                 </div>
                 <div className="mt-5 flex-1 h-0 overflow-y-auto">
                   <nav className="px-2 space-y-1">
-                    {navigation.map((item) => (
+                    {menuTree?.children?.map((tree) => (
                       <a
-                        key={item.name}
-                        href={item.href}
+                        key={tree.name}
+                        href={tree.href}
                         className={classNames(
-                          item.current
+                          true
                             ? "bg-gray-100 text-gray-900"
                             : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                           "group flex items-center px-2 py-2 text-base font-medium rounded-md"
                         )}
                       >
-                        <item.icon
-                          className={classNames(
-                            item.current
-                              ? "text-gray-500"
-                              : "text-gray-400 group-hover:text-gray-500",
-                            "mr-4 flex-shrink-0 h-6 w-6"
-                          )}
-                          aria-hidden="true"
-                        />
-                        {item.name}
+                        {tree.name}
                       </a>
                     ))}
                   </nav>
@@ -157,29 +138,31 @@ export default function Layout({ children }: Props) {
             </div>
             <div className="mt-5 flex-grow flex flex-col">
               <nav className="flex-1 px-2 pb-4 space-y-1">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className={classNames(
-                      item.current
-                        ? "bg-gray-100 text-gray-900"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                      "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-                    )}
-                  >
-                    <item.icon
-                      className={classNames(
-                        item.current
-                          ? "text-gray-500"
-                          : "text-gray-400 group-hover:text-gray-500",
-                        "mr-3 flex-shrink-0 h-6 w-6"
-                      )}
-                      aria-hidden="true"
-                    />
-                    {item.name}
-                  </a>
-                ))}
+                {menuTree?.children?.map((tree) => {
+                  if (tree.href !== undefined) {
+                    return (
+                      <Link key={tree.name} href={tree.href}>
+                        <a
+                          key={tree.name}
+                          href={tree.href}
+                          className={classNames(
+                            true
+                              ? "bg-gray-100 text-gray-900"
+                              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                            "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                          )}
+                        >
+                          {tree.name}
+                        </a>
+                      </Link>
+                    );
+                  }
+                  return (
+                    <div key={tree.name}>
+                      {tree.name} {tree.href}
+                    </div>
+                  );
+                })}
               </nav>
             </div>
           </div>
@@ -271,7 +254,7 @@ export default function Layout({ children }: Props) {
             <div className="py-6">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                 <h1 className="text-2xl font-semibold text-gray-900">
-                  Dashboard
+                  {title}
                 </h1>
               </div>
               <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
