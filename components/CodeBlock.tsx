@@ -1,22 +1,15 @@
-import React, { ReactElement } from "react";
-import Highlight, { defaultProps } from "prism-react-renderer";
-import theme from "prism-react-renderer/themes/okaidia";
-import { ClipboardCopyIcon } from "@heroicons/react/outline";
+import { ClipboardCopyIcon } from '@heroicons/react/outline'
+import React, { ReactElement } from 'react'
 
 interface Props
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLElement>,
     HTMLElement
   > {
-  children: string;
+  children: string
 }
 
-export default function CodeBlock({
-  children,
-}: React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLElement>,
-  HTMLElement
->): ReactElement {
+export default function CodeBlock({ children }: Props): ReactElement {
   return (
     <div className="relative">
       <div className="overflow-x-auto pr-20">{children}</div>
@@ -31,5 +24,5 @@ export default function CodeBlock({
         />
       </button>
     </div>
-  );
+  )
 }

@@ -1,34 +1,35 @@
+import lottie, { AnimationItem } from 'lottie-web'
 import React, {
-  ReactElement,
   DetailedHTMLProps,
   HTMLAttributes,
-  useRef,
+  ReactElement,
   useLayoutEffect,
-} from "react";
+  useRef,
+} from 'react'
 
-import lottie, { AnimationItem } from "lottie-web";
-
-type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
+type Props = DetailedHTMLProps<
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+> & {
   path: string
 }
 
 export default function Lottie(props: Props): ReactElement {
-  
-  const divRef = useRef<HTMLDivElement>(null);
-  
+  const divRef = useRef<HTMLDivElement>(null)
+
   useLayoutEffect(() => {
-    let htmlDivElement = divRef.current
-    let animationItem: AnimationItem;
+    const htmlDivElement = divRef.current
+    let animationItem: AnimationItem
     if (htmlDivElement) {
       animationItem = lottie.loadAnimation({
         container: htmlDivElement,
         path: props.path,
-      }) 
+      })
     }
     return () => {
-      animationItem?.destroy();
-    };
+      animationItem?.destroy()
+    }
   }, [props.path])
-  
-  return <div {...props} ref={divRef} ></div>;
+
+  return <div {...props} ref={divRef}></div>
 }

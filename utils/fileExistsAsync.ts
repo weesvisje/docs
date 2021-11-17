@@ -1,4 +1,4 @@
-import { promises as fs } from "fs";
+import { promises as fs } from 'fs'
 
 /**
  * Check if the file exists, funny that nodejs doesn't have this by default
@@ -7,9 +7,9 @@ import { promises as fs } from "fs";
  */
 export default async function exists(filePath: string): Promise<boolean> {
   try {
-    await fs.access(filePath);
-    return true;
+    await fs.access(filePath)
+    return true
   } catch {
-    return false;
+    return false
   }
 }
