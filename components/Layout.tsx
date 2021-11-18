@@ -28,7 +28,7 @@ interface Props extends React.PropsWithChildren<unknown> {
   menuTree?: Partial<MenuTree>
 }
 
-export default function Layout({ menuTree }: Props) {
+export default function Layout({ menuTree, title, children }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
@@ -42,20 +42,18 @@ export default function Layout({ menuTree }: Props) {
       <DesktopSidebar menuTree={menuTree} />
       <div className="md:pl-64 flex flex-col flex-1">
         <SearchBar onToggleOpen={setSidebarOpen} />
-        {/*<main className="flex-1">*/}
-        {/*  <div className="py-6">*/}
-        {/*    <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">*/}
-        {/*      <h1 className="text-2xl font-semibold text-gray-900">*/}
-        {/*        {title}*/}
-        {/*      </h1>*/}
-        {/*    </div>*/}
-        {/*    <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">*/}
-        {/*      /!* Replace with your content *!/*/}
-        {/*      <div className="py-4 prose lg:prose-sm">{children}</div>*/}
-        {/*      /!* /End replace *!/*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*</main>*/}
+        <main className="flex-1">
+          <div className="py-6">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+              <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
+            </div>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+              {/* Replace with your content */}
+              <div className="py-4 prose lg:prose-sm">{children}</div>
+              {/* /End replace */}
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   )

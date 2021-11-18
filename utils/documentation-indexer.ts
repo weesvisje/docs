@@ -1,9 +1,10 @@
+import { Dree, parseTree, scanAsync } from 'dree'
 import fg from 'fast-glob'
 import fs from 'fs/promises'
-import path from 'path'
 import matter from 'gray-matter'
+import path from 'path'
 import { ParsedUrlQuery } from 'querystring'
-import { scanAsync, Dree, parseTree } from 'dree'
+
 import exists from './fileExistsAsync'
 
 export interface Query extends ParsedUrlQuery {
@@ -14,7 +15,7 @@ export async function docsStaticPaths() {
   const filePaths = (
     await fg(path.join(process.cwd(), 'docs/**/*.mdx').replace(/\\/g, '/'))
   ).map((filePath) => {
-    let relativeFilePath = path
+    const relativeFilePath = path
       .relative(path.join(process.cwd(), 'docs'), filePath)
       .replace('.mdx', '')
     let parts = relativeFilePath.split(path.sep)
@@ -35,6 +36,8 @@ export interface MenuTree {
   href?: string
   skipDir: boolean
   ordinal: number
+  type: 'directory' | 'file'
+  relativePath?: string
   children?: MenuTree[]
 }
 

@@ -18,6 +18,7 @@ import {
 interface Props {
   code: string
   frontmatter: { [key: string]: unknown }
+  frontmatter: { [key: string]: unknown }
   menuTree?: Partial<MenuTree>
 }
 
@@ -40,8 +41,6 @@ export default function DocPage({
 
 export const getStaticProps: GetStaticProps<Props, Query> = async (context) => {
   const slug = context.params.slug || []
-
-  console.log({ slug })
 
   const menuTree = await indexMenuItems()
 
