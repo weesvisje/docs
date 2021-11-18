@@ -147,6 +147,8 @@ The Ditto HTTP API follows a RESTful pattern and is organized into several resou
 
 ### TimeSeries and Events Resources
 
+#### URL Template: `/api/v1/timeseries/<timeseries_id>/events`
+
 - POST - Batch Upload Events to a specific time series. Unless required, we won't use the `X-HYDRA-ENSURE-INSERT` header unless we have reason to believe another client could by issuing a concurrent delete request. Note that `_time` is provided as a RFC3339 formatted string in this JSON API. See `Event` JSON Schema below for details of the required fields.
 
   In the event the TimeSeries `my-time-series` does not exist, the time series will be created provided the client's JWT contains a write permission with a regex matching `my-time-series`.
@@ -237,6 +239,48 @@ The Ditto HTTP API follows a RESTful pattern and is organized into several resou
   Content-Type: application/json
 
   {"txn_id": 15}
+  ```
+
+#### URL Template: `/api/v1/timeseries/<timeseries_id>/distinct_value`
+
+- GET - Query for the distinct values in a timeseries, within a range of events in a TimeSeries using a half-open interval `[start, end)`. Returns a *single document* containing the aggregated paths and their distinct values.  Paths are specified as json arrays of strings. This query *expects a json body* in the following format:
+
+  ```
+  {"start":null,"end":null,"paths":[["minutes"]],"timeout_millis":null}
+  ```
+  Parameters
+
+  - start (rfc3339 string, optional) - The earliest time that will be included. Defaults to 1970-01-01T00:00:0Z (epoch start).
+  - end (rfc3339 string, optional) - The earliest time AFTER the queried interval. Defaults to current time.
+  - paths (array(array(string))) - Event paths for which the distict values should be calculated.
+  - timeout_millis (number, optional) - Request will stop if it exceeds this time (defaults to 10_000).
+
+
+  ```
+  GET /api/v1/timeseries/my-time-series/distinct_value HTTP/1.1
+  Accept: application/json-l
+  Content-Type: application/json
+  X-HYDRA-VERSION: 7
+
+  {"start": null, "end": null,"paths":[["deviceId"]],"timeout_millis":null}
+  ```
+
+  Response
+
+  ```
+  HTTP/1.1 200 OK
+  Content-Type: application/json-l
+  X-HYDRA-VERSION: 7
+  {"item":{"[\"minutes\"]":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59]}}
+
+  ```
+  Note also the X-HYDRA-VERSION value is included the Response Header
+
+  If there is an error once the stream has begun, it is communicated with a final json lines value, for example:
+
+  ```
+  {"error": "Timeout"}
+
   ```
 
 ### Events
