@@ -6,7 +6,8 @@ import {
   InboxIcon,
   UsersIcon,
 } from '@heroicons/react/outline'
-import React, { useState } from 'react'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
 
 import { MenuTree } from '../utils/documentation-indexer'
 import DesktopSidebar from './DesktopSidebar'
@@ -30,6 +31,11 @@ interface Props extends React.PropsWithChildren<unknown> {
 
 export default function Layout({ menuTree, title, children }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    setSidebarOpen(false)
+  }, [router.asPath])
 
   return (
     <div>

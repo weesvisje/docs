@@ -18,7 +18,6 @@ import {
 interface Props {
   code: string
   frontmatter: { [key: string]: unknown }
-  frontmatter: { [key: string]: unknown }
   menuTree?: Partial<MenuTree>
 }
 
@@ -53,22 +52,39 @@ export const getStaticProps: GetStaticProps<Props, Query> = async (context) => {
     }
   }
 
-  const withOutIndex = path.join(process.cwd(), 'docs', ...slug) + '.mdx'
-  const withIndex = path.join(process.cwd(), 'docs', ...slug, 'index') + '.mdx'
+  const withOutIndexMd = path.join(process.cwd(), 'docs', ...slug) + '.md'
+  const withOutIndexMdx = path.join(process.cwd(), 'docs', ...slug) + '.mdx'
+  const withIndexMd = path.join(process.cwd(), 'docs', ...slug, 'index') + '.md'
+  const withIndexMdx =
+    path.join(process.cwd(), 'docs', ...slug, 'index') + '.mdx'
 
-  const isWithOutIndex = await checkFileExists(withOutIndex)
-  const isWithIndex = await checkFileExists(withIndex)
+  const isWithOutIndexMd = await checkFileExists(withOutIndexMd)
+  const isWithOutIndexMdx = await checkFileExists(withOutIndexMdx)
+  const isWithIndexMd = await checkFileExists(withIndexMd)
+  const isWithIndexMdx = await checkFileExists(withIndexMdx)
 
-  if (isWithOutIndex) {
+  const withOutIndex = isWithOutIndexMd
+    ? withOutIndexMd
+    : isWithOutIndexMdx
+    ? withOutIndexMdx
+    : null
+
+  const withIndex = isWithIndexMd
+    ? withIndexMd
+    : isWithIndexMdx
+    ? withIndexMdx
+    : null
+
+  if (!!withOutIndex) {
     const { code, frontmatter } = await bundleMDXFile(withOutIndex)
     return {
       props: {
         code: code,
-        menuTree: {},
+        menuTree: menuTree,
         frontmatter: frontmatter,
       },
     }
-  } else if (isWithIndex) {
+  } else if (!!withIndex) {
     const { code, frontmatter } = await bundleMDXFile(withIndex)
     return {
       props: {
@@ -87,6 +103,7 @@ export const getStaticProps: GetStaticProps<Props, Query> = async (context) => {
 
 export const getStaticPaths: GetStaticPaths<Query> = async () => {
   const f = await docsStaticPaths()
+
   return {
     paths: f,
     fallback: false,

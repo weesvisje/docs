@@ -19,7 +19,7 @@ const MenuGroup = ({ children, group }: React.PropsWithChildren<Props>) => {
   }
 
   return (
-    <Disclosure>
+    <Disclosure defaultOpen={isActive}>
       {({ open }) => (
         <>
           <Disclosure.Button

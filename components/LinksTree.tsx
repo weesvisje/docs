@@ -12,15 +12,20 @@ type Props = {
 const LinksTree: React.FC<Props> = ({ tree }) => {
   const renderTree = (element: Partial<MenuTree>) => {
     if (element.type === 'file') {
-      return <MenuLink link={element as MenuLinkProp} key={element.name} />
-    }
-
-    if (element.type === 'directory') {
+      return (
+        <MenuLink
+          link={element as MenuLinkProp}
+          key={element.relativePath || element.name}
+        />
+      )
+    } else if (element.type === 'directory') {
       return (
         <MenuGroup group={element} key={element.name}>
           {element.children?.map((groupChild) => renderTree(groupChild))}
         </MenuGroup>
       )
+    } else {
+      return null
     }
   }
 

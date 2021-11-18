@@ -13,11 +13,12 @@ export interface Query extends ParsedUrlQuery {
 
 export async function docsStaticPaths() {
   const filePaths = (
-    await fg(path.join(process.cwd(), 'docs/**/*.mdx').replace(/\\/g, '/'))
+    await fg(path.join(process.cwd(), 'docs/**/*.(md|mdx)').replace(/\\/g, '/'))
   ).map((filePath) => {
     const relativeFilePath = path
       .relative(path.join(process.cwd(), 'docs'), filePath)
       .replace('.mdx', '')
+      .replace('.md', '')
     let parts = relativeFilePath.split(path.sep)
     if (parts[parts.length - 1] === 'index') {
       parts = parts.slice(0, -1)
@@ -48,7 +49,7 @@ export async function indexMenuItems(): Promise<MenuTree> {
       size: false,
       sizeInBytes: false,
       hash: false,
-      extensions: ['mdx'],
+      extensions: ['mdx', 'md'],
       emptyDirectory: false,
     },
     async (file) => {
@@ -64,6 +65,7 @@ export async function indexMenuItems(): Promise<MenuTree> {
       file['href'] = path
         .relative(path.join(process.cwd(), 'docs'), file.path)
         .replace('.mdx', '')
+        .replace('.md', '')
         .replace('index', '')
     },
     async (dirTreeItem) => {
@@ -94,7 +96,13 @@ export async function indexMenuItems(): Promise<MenuTree> {
    */
   function sort(m: MenuTree) {
     if (m.children) {
-      m.children = m.children?.sort((a, b) => (a.ordinal > b.ordinal ? 1 : -1))
+      m.children = m.children?.sort((a, b) => {
+        if (a.ordinal && b.ordinal) {
+          return a.ordinal > b.ordinal ? 1 : -1
+        } else {
+          a.name > b.name ? 1 : -1
+        }
+      })
       m.children?.forEach((c) => sort(c))
     }
   }

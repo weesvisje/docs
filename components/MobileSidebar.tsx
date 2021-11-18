@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import React, { Fragment } from 'react'
 
 import { MenuTree } from '../utils/documentation-indexer'
+import LinksTree from './LinksTree'
 
 type Props = {
   /** Menu tree */
@@ -72,20 +73,7 @@ const MobileSidebar: React.FC<Props> = ({ menuTree, isOpen, onToggleOpen }) => {
             </div>
             <div className="mt-5 flex-1 h-0 overflow-y-auto">
               <nav className="px-2 space-y-1">
-                {menuTree?.children?.map((tree) => (
-                  <a
-                    key={tree.name}
-                    href={tree.href}
-                    className={classNames(
-                      true
-                        ? 'bg-gray-100 text-gray-900'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                      'group flex items-center px-2 py-2 text-base font-medium rounded-md',
-                    )}
-                  >
-                    {tree.name}
-                  </a>
-                ))}
+                <LinksTree tree={menuTree} />
               </nav>
             </div>
           </div>
