@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
-    "dev": "next-remote-watch ./docs ./components ./utils",
+    "dev": "cross-env PORT=8600 next-remote-watch ./docs ./components ./utils ./pages",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -29,6 +29,7 @@
     "classnames": "^2.3.1",
     "clsx": "^1.1.1",
     "common-tags": "^1.8.0",
+    "cross-env": "^7.0.3",
     "directory-tree": "^3.0.0",
     "dree": "^2.8.3",
     "esbuild": "^0.13.13",

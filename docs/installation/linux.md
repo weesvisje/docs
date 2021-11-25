@@ -1,12 +1,11 @@
 ---
+title: 'Linux Raspberry Pi'
 sidebar_position: 7
 pagination_prev: intro
 pagination_next: concepts/overview
 ---
 
-# Linux (Raspberry Pi)
-
-If you would like to run Ditto on a Linux device and leverage Bluetooth Low Energy please follow the instructions. __These instructions are required to run on Linux regardless of the programming language.__ This means that if you are running the JavaScript (Node/Electron), C#, or C++ SDKs on Linux and need to use Bluetooth Low Energy, then you should follow these additional instructions.
+If you would like to run Ditto on a Linux device and leverage Bluetooth Low Energy please follow the instructions. **These instructions are required to run on Linux regardless of the programming language.** This means that if you are running the JavaScript (Node/Electron), C#, or C++ SDKs on Linux and need to use Bluetooth Low Energy, then you should follow these additional instructions.
 
 1. Install or update BlueZ 5.51 or higher
 
@@ -38,4 +37,4 @@ ExecStart=/usr/lib/bluetooth/bluetoothd -P battery
 
 3. Save the file.
 4. Run `systemctl daemon-reload` and `systemctl restart bluetooth` to apply the changes to the Bluetooth service
-After that, BlueZ should be able to connect to iOS devices without prompting and Ditto Apps should be able to communicate over BLE between iOS and Linux.
+   After that, BlueZ should be able to connect to iOS devices without prompting and Ditto Apps should be able to communicate over BLE between iOS and Linux.

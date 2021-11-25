@@ -22,6 +22,7 @@ interface Props {
 }
 
 const components: MDXComponents = {
+  //@ts-ignore
   code: CodeBlock,
 }
 
@@ -39,6 +40,7 @@ export default function DocPage({
 }
 
 export const getStaticProps: GetStaticProps<Props, Query> = async (context) => {
+  console.log(context)
   const slug = context.params.slug || []
 
   const menuTree = await indexMenuItems()
@@ -103,7 +105,6 @@ export const getStaticProps: GetStaticProps<Props, Query> = async (context) => {
 
 export const getStaticPaths: GetStaticPaths<Query> = async () => {
   const f = await docsStaticPaths()
-
   return {
     paths: f,
     fallback: false,

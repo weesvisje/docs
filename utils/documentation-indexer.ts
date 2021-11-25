@@ -67,6 +67,7 @@ export async function indexMenuItems(): Promise<MenuTree> {
         .replace('.mdx', '')
         .replace('.md', '')
         .replace('index', '')
+        .replace('\\', '/')
     },
     async (dirTreeItem) => {
       const categoryJSONPath = path.join(dirTreeItem.path, '_category_.json')
