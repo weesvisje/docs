@@ -33,7 +33,7 @@ Depending on the amount of documents in the store and especially the rate at
 which those are updated, that observation callback might be called many times,
 each time with a fresh copy of the documents data (because value semantics) held
 in-memory. Each of those dispatches will hold on to these document copies until
-the work item got a chance to run. If the `documentProcessingQueue` can't keep
+the work item had a chance to run. If the `documentProcessingQueue` can't keep
 up processing those documents and releasing them fast enough, more and more
 documents are accumulated in memory waiting to be processed, resulting in
 excessive memory use.
