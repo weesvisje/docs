@@ -113,7 +113,7 @@ the received documents are fully processed and can be released.
 
 This of course doesn't mean that you can never keep a reference to the
 documents and use or operate on them later on. In fact, a typical use-case
-would be to always keep the latest set of documents rturned by a (live) query
+would be to always keep the latest set of documents returned by a (live) query
 to display them in the UI or use otherwise. The important thing is to control
 the rate at which those are delivered and let Ditto know when you are ready to
 receive the next batch. This rule of thumb can help with that.
