@@ -11,8 +11,9 @@ blobs of data as early as possible*, freeing the claimed memory space.
 Special care needs to be taken whenever you spread the work across multiple
 queues or async APIs. It is very easy to end up with a lot of work items on a
 queue, each holding on to large amounts of data, such as big arrays of Ditto
-documents. This isn't always obvious leading to mysterious excessive memory
-consumption, eventually resulting in an out-of memory crash on mobile devices.
+documents. This isn't always obvious, leads to mysterious excessive memory
+consumption, eventually resulting in an out-of memory crash, especially on
+mobile devices.
 
 ## Live Queries
 
@@ -38,7 +39,7 @@ up processing those documents and releasing them fast enough, more and more
 documents are accumulated in memory waiting to be processed, resulting in
 excessive memory use.
 
-## Back Pressure Mechanism
+## Back Pressure
 
 To deal with these situations, all of our APIs prone to this problem have more
 advanced variants allowing you to control the rate at which those callbacks are
@@ -98,7 +99,7 @@ self.liveQuery = ditto.store.collection("A").findAll().observeWithNextSignal(del
 
 ## Rule of Thumb
 
-All of this boils down to the following rule of thumb you should follow:
+All of this boils down to the following rule of thumb:
 
 --------------------------------------------------------------------------------
 
@@ -109,3 +110,65 @@ dispatching onto other queues or using any async APIs. Otherwise, use
 the received documents are fully processed and can be released.
 
 --------------------------------------------------------------------------------
+
+This of course doesn't mean that you can never keep a reference to the
+documents and use or operate on them later on. In fact, a typical use-case
+would be to always keep the latest set of documents rturned by a (live) query
+to display them in the UI or use otherwise. The important thing is to control
+the rate at which those are delivered and let Ditto know when you are ready to
+receive the next batch. This rule of thumb can help with that.
+
+## Implementation Details
+
+The four variants shown in this article are as follows:
+
+```swift
+- observe(handler:)
+- observe(deliverOn:handler:)
+- observeWithNextSignal(handler:)
+- observeWithNextSignal(deliverOn:handler:)
+````
+
+The former three are convenience methods and are implemented in terms of the
+latter:
+
+```swift
+.observe() { documents, event in
+    // Process documents.
+}
+
+// Equivalent to and implemented as:
+.observeWithNextSignal(deliverOn: .main) { documents, event, signalNext in
+    // Process documents.
+    signalNext()
+}
+
+```
+
+```swift
+.observe(deliverOn: .someQueue) { documents, event, in
+    // Process documents.
+}
+
+// Equivalent to and implemented as:
+.observeWithNextSignal(deliverOn: .someQueue) { documents, event, signalNext in
+    // Process documents.
+    signalNext()
+}
+```
+
+```swift
+.observeWithNextSignal() { documents, event, signalNext in
+    // Process documents.
+    signalNext()
+}
+
+// Equivalent to and implemented as:
+.observeWithNextSignal(deliverOn: .main) { documents, event, signalNext in
+    // Process documents.
+    signalNext()
+}
+```
+
+Same is true for the `observeLocalXXX` variants. Please refer to our API
+reference for details.
