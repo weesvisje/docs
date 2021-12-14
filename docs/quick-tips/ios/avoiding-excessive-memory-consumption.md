@@ -10,7 +10,7 @@ blobs of data as early as possible*, freeing the claimed memory space.
 
 Special care needs to be taken whenever you spread the work across multiple
 queues or async APIs. It is very easy to end up with a lot of work items on a
-queue, each holding on to large amounts of data, such as big array of ditto
+queue, each holding on to large amounts of data, such as big arrays of Ditto
 documents. This isn't always obvious leading to mystirious excessive memory
 consuption, eventually resulting in an out-of memory crash on mobile devices.
 
