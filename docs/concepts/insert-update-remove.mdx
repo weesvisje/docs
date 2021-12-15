@@ -1118,7 +1118,43 @@ Thus using our example, the document is left unchanged.
 
 ## Removing Documents
 
-Removes will delete or remove one or more documents from the collection. These remove operations will also sync and remove the relevant documents from connected peers.
+Removes will delete or remove one or more documents from the collection. Calling remove __will sync removals to the local device and to other devices as well__. 
+
+
+:::danger
+
+Removing documents will remove documents from the local device _and other peers_. Your application code should consider `remove`  calls to be destructive. In other words, if you call remove on document, your application should consider this document _gone_ throughout your system.
+
+__Alternatively:__ consider using a "soft-delete" pattern in your application for most use cases. For example, use a field like `isArchived: true` and query for documents to represent a "soft-delete". 
+
+```json
+{
+  "_id": "123abc",
+  "name": "Foo",
+  "isArchived": true // add this field
+}
+```
+
+And query non-archived documents like so:
+
+```js
+let liveQuery = ditto
+  .store.collection('cars')
+  .find('isArchived == $args.isArchived', { isArchived: false }).observe((documents) => {
+    console.log('these are the unarchived documents', documents)
+  })
+```
+
+You can easily un-archive these documents by calling update on that field like so:
+
+```js
+ditto.store.collection('cars').update((mutableDoc) => {
+  mutableDoc["isArchived"] = false
+})
+```
+
+:::
+
 
 ### Removing by `_id`
 
