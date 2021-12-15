@@ -13,7 +13,14 @@ module.exports = {
   favicon: "img/favicon.ico/favicon.ico",
   organizationName: "getditto", // Usually your GitHub org/user name.
   projectName: "docs", // Usually your repo name.
-  plugins: [path.resolve(__dirname, "plugins/postcss-tailwindcss-loader")],
+  plugins: [path.resolve(__dirname, "plugins/postcss-tailwindcss-loader"),
+    [
+      require.resolve('docusaurus-gtm-plugin'),
+      {
+        id: 'GTM-PV7QFWF',
+      }
+    ]
+  ],
   themeConfig: {
     colorMode: {
       defaultMode: 'light',
