@@ -29,10 +29,9 @@ import { init, Ditto } from "@dittolive/ditto"
   await init() // you need to call this at least once before using any of the Ditto API
 
   const authHandler = {
-    authenticationRequired: function(authenticator) {
-      authenticator.loginWithToken(ThirdPartyAuth.getToken(), "third_party", (err) => {
-        console.log(`Login request completed. Error? ${err}`)
-      })
+    authenticationRequired: async function(authenticator) {
+      await authenticator.loginWithToken(ThirdPartyAuth.getToken(), "third_party");
+      console.log("Login request completed.");
     },
     authenticationExpiringSoon: function(authenticator, secondsRemaining) {
       console.log(`Auth token expiring in ${secondsRemaining} seconds`)

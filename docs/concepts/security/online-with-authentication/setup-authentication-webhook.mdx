@@ -127,6 +127,11 @@ To grant full `read` permissions to _all collections_ and _all documents_:
     // highlight-start
     "read": {
       "everything": true,
+      "queriesByCollection": {}
+    },
+    "write": {
+      "everything": false,
+      "queriesByCollection": {}
     }
     // highlight-end
   }
@@ -141,8 +146,13 @@ To grant full `write` permissions to _all collections_ and _all documents_:
   "expirationSeconds": 28800,
   "userID": "123abc",
   "permissions": {
+    "read": {
+      "everything": false,
+      "queriesByCollection": {}
+    },
     "write": {
       "everything": true,
+      "queriesByCollection": {}
     }
   }
 }
@@ -156,11 +166,13 @@ To grant full `read` & `write` permissions to _all collections_ and _all documen
   "expirationSeconds": 28800,
   "userID": "123abc",
   "permissions": {
-    "write": {
-      "everything": true,
-    },
     "read": {
       "everything": true,
+      "queriesByCollection": {}
+    },
+    "write": {
+      "everything": true,
+      "queriesByCollection": {}
     }
   }
 }
@@ -168,7 +180,7 @@ To grant full `read` & `write` permissions to _all collections_ and _all documen
 
 ##### Granting selective permissions on certain documents
 
-To grant selective permissions on specific documents, add `queriesByCollection` property inside either the `read` or `write` property. Each key inside `queriesByCollection` is a reference to the collection. Each value is an array of [ditto queries](/concepts/querying) describing which documents the user can read or write.
+To grant selective permissions on specific documents, add to the `queriesByCollection` property inside either the `read` or `write` property. Each key inside `queriesByCollection` is a reference to the collection. Each value is an array of [ditto queries](/concepts/querying) describing which documents the user can read or write.
 
 :::info
 Currently, you can __only specify a permission query on the `_id` field of a document__. Mutable properties are currently not supported. We are working on adding this feature.
@@ -206,12 +218,14 @@ The following write permissions below describe that `userID: "123abc"` can
     },
     "read": {
       "everything": false, // ensure that this is false
-      // highlight-start
-      // 3. 
-      "books": [
-        "endsWith(_id.title, 'Potter')"
-      ],
-      // highlight-end
+      "queriesByCollection": {
+        // highlight-start
+        // 3.
+        "books": [
+          "endsWith(_id.title, 'Potter')"
+        ],
+        // highlight-end
+      }
     }
   }
 }
