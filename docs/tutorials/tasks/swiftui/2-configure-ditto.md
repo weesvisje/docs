@@ -142,7 +142,7 @@ extension Task: Identifiable {
 
 ```
 
-This data class takes a `DittoDocument` and safely parses out the values into native Kotlin types. We also added constructor that allows us to preview data without requiring Ditto.
+This data class takes a `DittoDocument` and safely parses out the values into native Swift types. We also added constructor that allows us to preview data without requiring Ditto.
 
 So now in our application if we want an array of `Tasks`, `[Task]`, we can write the following code:
 
