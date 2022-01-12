@@ -49,7 +49,7 @@ struct TasksApp: App {
 
     // 2.
     // highlight-next-line
-    var ditto = Ditto(identity: .development(appName: "live.ditto.tasks")
+    var ditto = Ditto(identity: .offlinePlayground(appID: "live.ditto.tasks"))
 
     // 3.
     // highlight-start
