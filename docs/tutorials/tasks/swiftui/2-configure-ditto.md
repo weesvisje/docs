@@ -166,7 +166,7 @@ When we generated the project, Xcode created a default `ContentView`, which need
 
 4. Create a constructor and a variable to pass `var ditto: Ditto`
 
-5. Replace the the `body` with `NavigationView` with a single `List` child. We will fill out the contents of the `List` in the next section. We've also added a couple of decorative navigation elements which we will hook up later. This includes a navigation title, `.navigationTitle` which shows the name of the app, a navigation plus button in `.navigationBarItems` and a `.sheet` that we will use navigate to an `EditScreen`. We will create the `EditScreen` later.
+5. Replace the `body` with `NavigationView` with a single `List` child. We will fill out the contents of the `List` in the next section. We've also added a couple of decorative navigation elements which we will hook up later. This includes a navigation title, `.navigationTitle` which shows the name of the app, a navigation plus button in `.navigationBarItems` and a `.sheet` that we will use navigate to an `EditScreen`. We will create the `EditScreen` later.
 
 ```swift title="TasksListScreen.swift"
 import SwiftUI
