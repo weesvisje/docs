@@ -45,7 +45,7 @@ The following are the network transports supported by Ditto. By default Ditto wi
       <th scope="row">Apple Wireless Direct Link (AWDL)</th>
       <td><Check /></td>
       <td></td>
-      <td><Clock /></td>
+      <td><Check /></td>
       <td></td>
       <td></td>
       <td></td>
