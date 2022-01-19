@@ -226,6 +226,9 @@ The Ditto HTTP API follows a RESTful pattern and is organized into several resou
   - start (rfc3339 string, optional) - The earliest time that will be included. Defaults to 1970-01-01T00:00:0Z (epoch start).
   - end (rfc3339 string, optional) - The earliest time AFTER the queried interval. Defaults to current time.
 
+  *Important* – The `start` parameter must be earlier (less than) the `end` parameter so that the deleted range runs forward in time. This allows large ranges to be deleted in rapidly in a single transaction.
+  To ensure your next query reflects the deletion, include the `txn_id` value as an `X-HYDRA-VERSION` header in your next request.
+
   ```
   DELETE /api/v1/timeseries/my-time-series/events?start=2020-01-01T00%3A00%3A00.0Z&end=2021-01-01T00%3A00%3A00.0Z HTTP/1.1
   Content-Type: application/json
