@@ -10,7 +10,7 @@ Each row of the tasks will be represented by a SwiftUI `View` called `TaskRow` w
 
 1. If the `task.isCompleted` is `true`, we will show a filled circle icon and a
 strikethrough style for the `body`.
-2. If the `task.isCompleted` is `false`, we will show a filled circle icon and a strikethrough style for the `body`.
+2. If the `task.isCompleted` is `false`, we will show an open circle icon.
 3. If the user taps the `Icon`, we will call a `onToggle: ((_ task: Task) -> Void)?`, we will reverse the `isCompleted` from `true` to `false` or `false` to `true`
 4. If the user taps the `Text`, we will call a `onClickBody: ((_ task: Task) -> Void)?`. We will use this to navigate an `EditScreen` (we will create this later)
 
@@ -89,7 +89,7 @@ In SwiftUI we create a view model by inheriting the `ObservableObject`. The `Obs
 4. We also add a normal variable, `private(set) var taskToEdit: Task? = nil`. When a user is attempting to _edit_ a task, we need to tell the view model which task the user would like to edit. This does not need to trigger a view reload, so it's a simple variable.
 5. Here's where the magic happens. As soon as the `TasksListScreenViewModel` is initialized, we need to `.observe` all the tasks by creating a live query. To prevent the `liveQuery` from being prematurely deallocated, we store it as a variable. In the observe callback, we convert all the documents into `Task` objects and set it to the `@Published tasks` variable. Every time to `.observe` fires, SwiftUI will pick up the changes and tell the view to render the list of tasks.
 6. Add a function called `toggle()`. When a user clicks on a task's image icon, we need to trigger reversing the `isCompleted` state. In the function body we add a standard call to find the task by it's `_id` and attempt to mutate the `isCompleted` property.
-7. Add a function called `clickedBody`. When the user taps the `TaskRow`'s `Text` field, we need to store that task and change change the `isPresentingEditScreen` to true. This will give us enough information to present a `.sheet` in the `TasksListScreenViewModel` to feed to the `EditScreen`
+7. Add a function called `clickedBody`. When the user taps the `TaskRow`'s `Text` field, we need to store that task and change the `isPresentingEditScreen` to true. This will give us enough information to present a `.sheet` in the `TasksListScreenViewModel` to feed to the `EditScreen`
 8. In the previous setup of the `TasksListScreen`, we added a `navigationBarItem` with a plus icon. When the user clicks this button we need to tell the view model that it should show the `EditScreen`. So we've set the `isPresentingEditScreen` property to `true`. However, because we are attempting to _create_ a `Task`, we need to set the `taskToEdit` to `nil` because we don't yet have a task.
 
 
