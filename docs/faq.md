@@ -99,7 +99,7 @@ Yes, Bluetooth Low Energy sync can operate at the same time as other Bluetooth d
 
 ### Can I sync data with devices that I am not directly connected to in the mesh?
 
-Yes. All participating devices must be subscribing to the same data query. For more information, look [here](https://ditto.live/docs/concepts/syncing-and-live-queries#subscriptions)
+Yes. All participating devices must be subscribing to the same data query. For more information, look [here](/concepts/syncing-data#subscriptions)
 
 ### Can multiple apps share a database?
 
