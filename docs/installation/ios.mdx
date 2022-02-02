@@ -1,17 +1,55 @@
 ---
-title: 'iOS'
+title: "iOS"
 sidebar_position: 2
 pagination_prev: intro
 pagination_next: concepts/overview
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import { InstallCode } from "../../src/components/Changelog.tsx"
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { InstallCode } from "../../src/components/Changelog.tsx";
+
+<Tabs
+  groupId="package-manager"
+  defaultValue="swiftpm"
+  values={[
+    {label: 'Swift Package Manager', value: 'swiftpm'},
+    {label: 'CocoaPods', value: 'cocoapods'},
+  ]
+}>
+
+<TabItem value="swiftpm">
+
+1. Open your Xcode project, select "File" > "Add Packages...". Enter the following
+   package URL in search box in the upper right corner: https://github.com/getditto/DittoSwift
+
+![Xcode 13 Add Package Dialog](./xcode13-add-package.png)
+
+See [Adding Package Dependencies to Your App](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app#3512138)
+for details on
+
+2. Click the "Add Package" button.
+
+Xcode will take a minute or two to download the Ditto package.
+
+![Swift Package Checkout Progress Dialog](./swiftpm-checkout-progress.png)
+
+3. Select the package product(s) you want to use in your app.
+
+![Choose Package Products Dialog](./swiftpm-choose-products.png)
+
+- Swift apps: make sure to select **both** "DittoSwift" and "DittoObjC" :warning:
+- Objective-C apps may select only "DittoObjC".
+
+Click the "Add Package" button.
+
+</TabItem>
+
+<TabItem value="cocoapods">
 
 1. [Ensure you have CocoaPods 1.1.0 or later](https://guides.cocoapods.org/using/getting-started.html)
 2. Ensure you have `use_frameworks!` in your Podfile
-3. Add the following to your __Podfile__ like so:
+3. Add the following to your **Podfile** like so:
 
 <Tabs
   groupId="programming-language"
@@ -35,11 +73,14 @@ import { InstallCode } from "../../src/components/Changelog.tsx"
 
 And run `pod install --repo-update` to install the latest versions.
 
-4. Navigate to your App's __Target__ and go to the __Info__ tab and right click on any row and __Add Row__.
+</TabItem>
+</Tabs>
 
-![XCode 13 Info Plist Edit](./xcode13-infoplist.png)
+4. Navigate to your App's **Target** and go to the **Info** tab and right click on any row and **Add Row**.
 
-5. _Add_ the following keys to your Info.plist. 
+![Xcode 13 Info Plist Edit](./xcode13-infoplist.png)
+
+5. _Add_ the following keys to your Info.plist.
 
 <Tabs
 groupId="info-plist"
@@ -75,7 +116,7 @@ Value: _http-alt._tcp.
 </TabItem>
 <TabItem value="source-code">
 
-If your app already has an __Info.plist__ file, you can right click on it and __Open As Source__ and add the following values.
+If your app already has an **Info.plist** file, you can right click on it and **Open As Source** and add the following values.
 
 ```xml title=Info.plist
 <key>NSBluetoothAlwaysUsageDescription</key>
