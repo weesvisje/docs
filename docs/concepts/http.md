@@ -1,4 +1,4 @@
-# Ditto HTTP API Reference
+# HTTP API Reference
 
 <!-- This document is intended to serve as a public facing guide to the entire HTTP API at the time we deliver Particle phase 1. Items for future work or discussion will be called out in comments like this. -->
 
