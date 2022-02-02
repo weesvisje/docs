@@ -17,8 +17,8 @@
     "postinstall": "npm run download-changelog"
   },
   "dependencies": {
-    "@docusaurus/core": "=2.0.0-beta.9",
-    "@docusaurus/preset-classic": "=2.0.0-beta.9",
+    "@docusaurus/core": "^2.0.0-beta.15",
+    "@docusaurus/preset-classic": "^2.0.0-beta.15",
     "@heroicons/react": "^1.0.4",
     "@lottiefiles/react-lottie-player": "^3.4.1",
     "@mdx-js/react": "^1.6.21",
@@ -56,7 +56,7 @@
     ]
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^2.0.0-beta.8",
+    "@docusaurus/module-type-aliases": "^2.0.0-beta.15",
     "@headlessui/react": "^1.4.1",
     "@tailwindcss/aspect-ratio": "^0.2.1",
     "@tailwindcss/forms": "^0.3.3",
