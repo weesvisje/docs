@@ -20,13 +20,14 @@ import { InstallCode } from "../../src/components/Changelog.tsx";
 
 <TabItem value="swiftpm">
 
-1. Open your Xcode project, select "File" > "Add Packages...". Enter the following
-   package URL in search box in the upper right corner: https://github.com/getditto/DittoSwift
+1. Open your Xcode project and select the "File" > "Add Packages..." menu entry.
+   Enter the following package URL in search box in the upper right corner:
+   - https://github.com/getditto/DittoSwiftPackage
 
 ![Xcode 13 Add Package Dialog](./xcode13-add-package.png)
 
 See [Adding Package Dependencies to Your App](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app#3512138)
-for details on
+for more details on this dialog.
 
 2. Click the "Add Package" button.
 
@@ -36,10 +37,10 @@ Xcode will take a minute or two to download the Ditto package.
 
 3. Select the package product(s) you want to use in your app.
 
-![Choose Package Products Dialog](./swiftpm-choose-products.png)
-
 - Swift apps: make sure to select **both** "DittoSwift" and "DittoObjC" :warning:
 - Objective-C apps may select only "DittoObjC".
+
+![Choose Package Products Dialog](./swiftpm-choose-products.png)
 
 Click the "Add Package" button.
 
