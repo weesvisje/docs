@@ -8,7 +8,7 @@
 import React from "react";
 import clsx from "clsx";
 
-import useWindowSize from "@theme/hooks/useWindowSize";
+import useWindowSize from "@docusaurus/theme-common";
 import DocPaginator from "@theme/DocPaginator";
 import DocVersionBanner from "@theme/DocVersionBanner";
 import Seo from "@theme/Seo";

@@ -5,15 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import DefaultNavbarItem from '@theme/NavbarItem/DefaultNavbarItem';
+import React from "react";
+import DefaultNavbarItem from "@theme/NavbarItem/DefaultNavbarItem";
 import {
   useActiveVersion,
   useLatestVersion,
   GlobalVersion,
-} from '@theme/hooks/useDocs';
-import type {Props} from '@theme/NavbarItem/DocsVersionNavbarItem';
-import {useDocsPreferredVersion} from '@docusaurus/theme-common';
+} from "@docusaurus/plugin-content-docs/client";
+import type { Props } from "@theme/NavbarItem/DocsVersionNavbarItem";
+import { useDocsPreferredVersion } from "@docusaurus/theme-common";
 
 const getVersionMainDoc = (version: GlobalVersion) =>
   version.docs.find((doc) => doc.id === version.mainDocId)!;
@@ -25,7 +25,7 @@ export default function DocsVersionNavbarItem({
   ...props
 }: Props): JSX.Element {
   const activeVersion = useActiveVersion(docsPluginId);
-  const {preferredVersion} = useDocsPreferredVersion(docsPluginId);
+  const { preferredVersion } = useDocsPreferredVersion(docsPluginId);
   const latestVersion = useLatestVersion(docsPluginId);
   const version = activeVersion ?? preferredVersion ?? latestVersion;
   const label = staticLabel ?? version.label;

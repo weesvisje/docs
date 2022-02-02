@@ -5,18 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import DefaultNavbarItem from '@theme/NavbarItem/DefaultNavbarItem';
-import DropdownNavbarItem from '@theme/NavbarItem/DropdownNavbarItem';
+import React from "react";
+import DefaultNavbarItem from "@theme/NavbarItem/DefaultNavbarItem";
+import DropdownNavbarItem from "@theme/NavbarItem/DropdownNavbarItem";
 import {
   useVersions,
   useLatestVersion,
   useActiveDocContext,
-} from '@theme/hooks/useDocs';
-import type {Props} from '@theme/NavbarItem/DocsVersionDropdownNavbarItem';
-import {useDocsPreferredVersion} from '@docusaurus/theme-common';
-import {translate} from '@docusaurus/Translate';
-import type {GlobalDataVersion} from '@docusaurus/plugin-content-docs-types';
+} from "@docusaurus/plugin-content-docs/client";
+import type { Props } from "@theme/NavbarItem/DocsVersionDropdownNavbarItem";
+import { useDocsPreferredVersion } from "@docusaurus/theme-common";
+import { translate } from "@docusaurus/Translate";
+import type { GlobalDataVersion } from "@docusaurus/plugin-content-docs-types";
 
 const getVersionMainDoc = (version: GlobalDataVersion) =>
   version.docs.find((doc) => doc.id === version.mainDocId)!;
@@ -33,9 +33,8 @@ export default function DocsVersionDropdownNavbarItem({
   const versions = useVersions(docsPluginId);
   const latestVersion = useLatestVersion(docsPluginId);
 
-  const {preferredVersion, savePreferredVersionName} = useDocsPreferredVersion(
-    docsPluginId,
-  );
+  const { preferredVersion, savePreferredVersionName } =
+    useDocsPreferredVersion(docsPluginId);
 
   function getItems() {
     const versionLinks = versions.map((version) => {
@@ -67,10 +66,10 @@ export default function DocsVersionDropdownNavbarItem({
   const dropdownLabel =
     mobile && items
       ? translate({
-          id: 'theme.navbar.mobileVersionsDropdown.label',
-          message: 'Versions',
+          id: "theme.navbar.mobileVersionsDropdown.label",
+          message: "Versions",
           description:
-            'The label for the navbar versions dropdown on mobile view',
+            "The label for the navbar versions dropdown on mobile view",
         })
       : dropdownVersion.label;
   const dropdownTo =

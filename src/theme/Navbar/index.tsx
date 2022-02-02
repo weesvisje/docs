@@ -5,30 +5,30 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, {useCallback, useState, useEffect} from 'react';
-import clsx from 'clsx';
-import Translate from '@docusaurus/Translate';
-import SearchBar from '@theme/SearchBar';
-import Toggle from '@theme/Toggle';
-import useThemeContext from '@theme/hooks/useThemeContext';
+import React, { useCallback, useState, useEffect } from "react";
+import clsx from "clsx";
+import Translate from "@docusaurus/Translate";
+import SearchBar from "@theme/SearchBar";
+import Toggle from "@theme/Toggle";
+import useThemeContext from "@docusaurus/theme-common";
 import {
   useThemeConfig,
   useMobileSecondaryMenuRenderer,
   usePrevious,
   useHistoryPopHandler,
-} from '@docusaurus/theme-common';
-import useHideableNavbar from '@theme/hooks/useHideableNavbar';
-import useLockBodyScroll from '@theme/hooks/useLockBodyScroll';
-import useWindowSize from '@theme/hooks/useWindowSize';
-import {useActivePlugin} from '@theme/hooks/useDocs';
-import NavbarItem, {Props as NavbarItemConfig} from '@theme/NavbarItem';
-import Logo from '@theme/Logo';
-import { XIcon, MenuIcon } from "@heroicons/react/outline"
+} from "@docusaurus/theme-common";
+import useHideableNavbar from "@docusaurus/theme-common";
+import useLockBodyScroll from "@docusaurus/theme-common";
+import useWindowSize from "@docusaurus/theme-common";
+import { useActivePlugin } from "@docusaurus/plugin-content-docs/client";
+import NavbarItem, { Props as NavbarItemConfig } from "@theme/NavbarItem";
+import Logo from "@theme/Logo";
+import { XIcon, MenuIcon } from "@heroicons/react/outline";
 
-import styles from './styles.module.css';
+import styles from "./styles.module.css";
 
 // retrocompatible with v1
-const DefaultNavItemPosition = 'right';
+const DefaultNavItemPosition = "right";
 
 function useNavbarItems() {
   // TODO temporary casting until ThemeConfig type is improved
@@ -39,10 +39,10 @@ function useNavbarItems() {
 // if position is unspecified, fallback to right (as v1)
 function splitNavItemsByPosition(items: NavbarItemConfig[]) {
   const leftItems = items.filter(
-    (item) => (item.position ?? DefaultNavItemPosition) === 'left',
+    (item) => (item.position ?? DefaultNavItemPosition) === "left"
   );
   const rightItems = items.filter(
-    (item) => (item.position ?? DefaultNavItemPosition) === 'right',
+    (item) => (item.position ?? DefaultNavItemPosition) === "right"
   );
   return {
     leftItems,
@@ -54,7 +54,7 @@ function useMobileSidebar() {
   const windowSize = useWindowSize();
 
   // Mobile sidebar not visible on hydration: can avoid SSR rendering
-  const shouldRender = windowSize === 'mobile'; // || windowSize === 'ssr';
+  const shouldRender = windowSize === "mobile"; // || windowSize === 'ssr';
 
   const [shown, setShown] = useState(false);
 
@@ -75,24 +75,24 @@ function useMobileSidebar() {
   }, []);
 
   useEffect(() => {
-    if (windowSize === 'desktop') {
+    if (windowSize === "desktop") {
       setShown(false);
     }
   }, [windowSize]);
 
-  return {shouldRender, toggle, shown};
+  return { shouldRender, toggle, shown };
 }
 
 function useColorModeToggle() {
   const {
-    colorMode: {disableSwitch},
+    colorMode: { disableSwitch },
   } = useThemeConfig();
-  const {isDarkTheme, setLightTheme, setDarkTheme} = useThemeContext();
+  const { isDarkTheme, setLightTheme, setDarkTheme } = useThemeContext();
   const toggle = useCallback(
     (e) => (e.target.checked ? setDarkTheme() : setLightTheme()),
-    [setLightTheme, setDarkTheme],
+    [setLightTheme, setDarkTheme]
   );
-  return {isDarkTheme, toggle, disabled: disableSwitch};
+  return { isDarkTheme, toggle, disabled: disableSwitch };
 }
 
 function useSecondaryMenu({
@@ -138,7 +138,7 @@ function useSecondaryMenu({
     setShown(false);
   }, []);
 
-  return {shown, hide, content};
+  return { shown, hide, content };
 }
 
 type NavbarMobileSidebarProps = {
@@ -178,7 +178,8 @@ function NavbarMobileSidebar({
         <button
           type="button"
           className="clean-btn navbar-sidebar__close"
-          onClick={toggleSidebar}>
+          onClick={toggleSidebar}
+        >
           <XIcon
             width={20}
             height={20}
@@ -188,9 +189,10 @@ function NavbarMobileSidebar({
       </div>
 
       <div
-        className={clsx('navbar-sidebar__items', {
-          'navbar-sidebar__items--show-secondary': secondaryMenu.shown,
-        })}>
+        className={clsx("navbar-sidebar__items", {
+          "navbar-sidebar__items--show-secondary": secondaryMenu.shown,
+        })}
+      >
         <div className="navbar-sidebar__item menu">
           <ul className="menu__list">
             {items.map((item, i) => (
@@ -204,10 +206,12 @@ function NavbarMobileSidebar({
             <button
               type="button"
               className="clean-btn navbar-sidebar__back"
-              onClick={secondaryMenu.hide}>
+              onClick={secondaryMenu.hide}
+            >
               <Translate
                 id="theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel"
-                description="The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)">
+                description="The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)"
+              >
                 ← Back to main menu
               </Translate>
             </button>
@@ -221,28 +225,29 @@ function NavbarMobileSidebar({
 
 function Navbar(): JSX.Element {
   const {
-    navbar: {hideOnScroll, style},
+    navbar: { hideOnScroll, style },
   } = useThemeConfig();
 
   const mobileSidebar = useMobileSidebar();
   const colorModeToggle = useColorModeToggle();
   const activeDocPlugin = useActivePlugin();
-  const {navbarRef, isNavbarVisible} = useHideableNavbar(hideOnScroll);
+  const { navbarRef, isNavbarVisible } = useHideableNavbar(hideOnScroll);
 
   const items = useNavbarItems();
-  const hasSearchNavbarItem = items.some((item) => item.type === 'search');
-  const {leftItems, rightItems} = splitNavItemsByPosition(items);
+  const hasSearchNavbarItem = items.some((item) => item.type === "search");
+  const { leftItems, rightItems } = splitNavItemsByPosition(items);
 
   return (
     <nav
       ref={navbarRef}
-      className={clsx('navbar', 'navbar--fixed-top', {
-        'navbar--dark': style === 'dark',
-        'navbar--primary': style === 'primary',
-        'navbar-sidebar--show': mobileSidebar.shown,
+      className={clsx("navbar", "navbar--fixed-top", {
+        "navbar--dark": style === "dark",
+        "navbar--primary": style === "primary",
+        "navbar-sidebar--show": mobileSidebar.shown,
         [styles.navbarHideable]: hideOnScroll,
         [styles.navbarHidden]: hideOnScroll && !isNavbarVisible,
-      })}>
+      })}
+    >
       <div className="navbar__inner">
         <div className="navbar__items">
           {(items?.length > 0 || activeDocPlugin) && (
@@ -252,7 +257,8 @@ function Navbar(): JSX.Element {
               type="button"
               tabIndex={0}
               onClick={mobileSidebar.toggle}
-              onKeyDown={mobileSidebar.toggle}>
+              onKeyDown={mobileSidebar.toggle}
+            >
               <MenuIcon width={25} height={25} />
             </button>
           )}

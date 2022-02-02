@@ -6,7 +6,7 @@
  */
 
 import React, { useState, cloneElement, Children, ReactElement } from "react";
-import useUserPreferencesContext from "@theme/hooks/useUserPreferencesContext";
+import { useTabGroupChoice } from "@docusaurus/theme-common";
 import type { Props } from "@theme/Tabs";
 import type { Props as TabItemProps } from "@theme/TabItem";
 
@@ -45,7 +45,7 @@ function Tabs(props: Props): JSX.Element {
     defaultValueProp ??
     children.find((child) => child.props.default)?.props.value;
 
-  const { tabGroupChoices, setTabGroupChoices } = useUserPreferencesContext();
+  const { tabGroupChoices, setTabGroupChoices } = useTabGroupChoice();
   const [selectedValue, setSelectedValue] = useState(defaultValue);
   const buttonRefs: (HTMLButtonElement | null)[] = [];
 
@@ -74,13 +74,13 @@ function Tabs(props: Props): JSX.Element {
       setTabGroupChoices(groupId, selectedTabValue);
     }
   };
-  
+
   const changeTab = (value: string) => {
     setSelectedValue(value);
     if (groupId != null) {
       setTabGroupChoices(groupId, value);
     }
-  }
+  };
 
   const handleKeydown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
     let focusElement: HTMLButtonElement | null = null;
@@ -116,7 +116,7 @@ function Tabs(props: Props): JSX.Element {
           id="tabs"
           name="tabs"
           value={selectedValue}
-          onChange={(e) => changeTab(e.currentTarget.value) }
+          onChange={(e) => changeTab(e.currentTarget.value)}
           className="block w-full focus:ring-blue-500 focus:border-blue-500 border-gray-300 rounded-md"
         >
           {values.map(({ value, label }) => (
@@ -134,7 +134,7 @@ function Tabs(props: Props): JSX.Element {
               key={value}
               // onKeyDown={handleKeydown}
               // onFocus={handleTabChange}
-              onClick={() => changeTab(value) }
+              onClick={() => changeTab(value)}
               className={clsx(
                 selectedValue === value
                   ? "bg-blue-100 text-blue-700"
