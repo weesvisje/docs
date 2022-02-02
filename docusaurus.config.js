@@ -13,27 +13,24 @@ module.exports = {
   favicon: "img/favicon.ico/favicon.ico",
   organizationName: "getditto", // Usually your GitHub org/user name.
   projectName: "docs", // Usually your repo name.
-  plugins: [path.resolve(__dirname, "plugins/postcss-tailwindcss-loader"),
+  plugins: [
+    path.resolve(__dirname, "plugins/postcss-tailwindcss-loader"),
     [
-      require.resolve('docusaurus-gtm-plugin'),
+      require.resolve("docusaurus-gtm-plugin"),
       {
-        id: 'GTM-PV7QFWF',
-      }
-    ]
+        id: "GTM-PV7QFWF",
+      },
+    ],
   ],
   themeConfig: {
     colorMode: {
-      defaultMode: 'light',
+      defaultMode: "light",
       disableSwitch: true,
       respectPrefersColorScheme: false,
     },
     prism: {
-      additionalLanguages: ['objectivec', 'java', 'csharp'],
-      theme: require('prism-react-renderer/themes/vsDark'),
-    },
-    gtag: {
-      // You can also use your "G-" Measurement ID here.
-      trackingID: "G-D8PMW3CCL2",
+      additionalLanguages: ["objectivec", "java", "csharp"],
+      theme: require("prism-react-renderer/themes/vsDark"),
     },
     navbar: {
       title: "Ditto",
@@ -165,6 +162,10 @@ module.exports = {
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
           editUrl: "https://github.com/getditto/docs/edit/master/",
+        },
+        gtag: {
+          // You can also use your "G-" Measurement ID here.
+          trackingID: "G-D8PMW3CCL2",
         },
       },
     ],
