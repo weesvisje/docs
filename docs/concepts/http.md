@@ -6,15 +6,12 @@ The Ditto HTTP API provides a programmatic interface for interactions with Ditto
 
 ## Root URL
 
-The canonical root URL for the HTTP API is `https://<app-uuid>.cloud.ditto.live/api/v1/`.
-The standard port 443 is used.
-
-API Clients may also use the more convenient `https://<app-slug>.<org-slug>.cloud.ditto.live/api/v1/` in future releases.
+The canonical root URL for the HTTP API is `https://<app-uuid>.cloud.ditto.live/api/v1/`. The standard port 443 is used.
 
 _Example_
 
 ```bash
-curl https://f81d4fae-7dec-11d0-a765-00a0c91e6bf6.cloud.ditto.live/api/v1/
+curl https://f81d4fae-7dec-11d0-a765-00a0c91e6bf6.cloud.ditto.live/api/v1/collections/cars/abc123
 ```
 
 ## Authorization
@@ -44,15 +41,10 @@ Ditto's HTTP API uses HTTP Methods (aka "verbs") to distinguish between typical 
 - GET - Used to get the version of an individual resource and to query a collection of resources.
 - POST - Used to create one or more Documents in a Collection or Events in a TimeSeries. Requests that would insert a duplicate copy of a resource may result in a client error. The specific behavior for individual resources is described below.
 - DELETE - Used to remove a resource. As discussed above other clients may try to concurrently insert or modify this resource, but DELETE requests take precedence.
-<!-- Note that PUT and PATCH are not currently implemented -->
-- PUT - _Reserved for future use_
-- PATCH - _Reserved for future use_
-
-<!-- The SubServer acts like an HTTP proxy but I don't think the current design can support HTTP/2 at all -->
 
 ## Common Query Parameters
 
-- find - A JMESPath formatted string used to filter the target collection or time series
+- find - A JMESPath formatted string used to filter the target collection
 - limit - Used to limit the number of resources returned in a query. Most endpoints will define a default value, such as 1000.
   start - a date time for start, if none specified then from the start of collection.
   end - a date time for end, if none specified then to the end of the collection.
@@ -68,7 +60,9 @@ Ditto HTTP API errors are indicated with an HTTP Status Code and with a JSON res
 - error.message - A short description of the error
 - error.data - An optional object which contains further elaboration about the error
 
-## Generating an Actor ID
+## Generating an X-HYDRA-CLIENT-ID
+
+An `X-HYDRA-CLIENT-ID` is required whenever issuing POST requests to the HTTP API. You should generate one for each client, as this ID represents a client in the Ditto mesh. Generating a new ID for each request, rather than one for the HTTP client, could cause performance issues. When possible generate this ID and cache it for the duration of the client.
 
 ```python
 >>> import base64
@@ -305,52 +299,6 @@ Example JSON
   {"txn_id": 15}
   ```
 
-#### URL Template: `/api/v1/timeseries/<timeseries_id>/distinct_values`
-
-** DEPRECATED use v2 instead **
-
-- GET - Query for the distinct values in a timeseries, within a range of events in a TimeSeries using a half-open interval `[start, end)` (optional). Returns a single document containing the paths and their distinct values.  Paths are specified as json arrays of strings. This query expects a body of json in the following format:
-
-  ```
-  { "start": null, "end": null, "paths": [["minutes"], ["nested", "device_id"]] }
-  ```
-
-  Parameters:
-  - start (rfc3339 string, optional) - The earliest time that will be included. Defaults to 1970-01-01T00:00:0Z (epoch start).
-  - end (rfc3339 string, optional) - The earliest time AFTER the queried interval. Defaults to current time.
-  - paths (list) - A list of DittoQl paths to get distinct values for. See Supported Paths section below.
-  - timeout_millis (number, optional) - the timeout, in milliseconds
-
-  Supported paths:
-  - Field access. Eg. `fieldA`, `fieldA.fieldB`.
-  - No other access methods are supported.
-
-  Response
-
-  The response will contain an object where the keys are the json encoded paths from the request. And their values are the unique values at the respective paths.
-  Note that only primitive values are returned distinctly. Any arrays or objects present at the specified path will appear in the result as an empty array `{}` or object `{}` respectively.
-
-  ```
-  HTTP/1.1 200 OK
-  Content-Type: application/json
-  X-HYDRA-VERSION: 7
-  {
-    "item": {
-      "[\"minutes\"]: [0, 1, 2],
-      "[\"nested\", "\"device_id"\"]": ["tag1", "tag2"]
-    }
-  }
-
-  ```
-  Note also the X-HYDRA-VERSION value is included the Response Header
-
-  If there is an error once the stream has begun, it is communicated with a final json lines value, for example:
-
-  ```
-  {"error": "Timeout"}
-
-  ```
-
 #### URL Template: `/api/v2/timeseries/<timeseries_id>/distinct_values`
 
 - GET - Query for the distinct values in a timeseries, within a range of events in a TimeSeries using a half-open interval `[start, end)` (optional). Returns a single document containing the paths and their distinct values.  Paths are specified as json arrays of strings. This query expects a body of json in the following format:
@@ -449,7 +397,7 @@ An Event is the fundamental element of a TimeSeries. It consists of a timestamp 
 
 ### Datetime
 
-Datetimes are used to indicate when a particular event occurred. In a binary context, timestamps are stored with the [TAI64N]() format, but in a JSON context RFC 3339 formatted strings are used, including the fractional seconds. If the fractional seconds are not supplied, 0 nanoseconds are assumed. If an offset (timezone) is not supplied, UTC is assumed. The term `Datetime` is used to represent the RFC3339-formated String representation, while `Timestamp` is used to represent the binary encoding. The two types are generally inter-convertable. However, some client libraries may not fully preserve the full resolution of the `Datetime` during round trip serialization.
+Datetimes are used to indicate when a particular event occurred. In a binary context, timestamps are stored with the [TAI64N](https://cr.yp.to/libtai/tai64.html#tai64n) format, but in a JSON context RFC 3339 formatted strings are used, including the fractional seconds. If the fractional seconds are not supplied, 0 nanoseconds are assumed. If an offset (timezone) is not supplied, UTC is assumed. The term `Datetime` is used to represent the RFC3339-formated String representation, while `Timestamp` is used to represent the binary encoding. The two types are generally inter-convertable. However, some client libraries may not fully preserve the full resolution of the `Datetime` during round trip serialization.
 
 Queries which require an interval of time to be specified, or events where full nanosecond resolution is not required, can "truncate" the `Datetime` by rounding down to the start of the period of interest and framing the query as a comparison. For example, when one only cares about events with hourly resolution, an event which occurred at T17:36:12.12345 can be "rounded" to T17:00:00.0. The right-most non-zero digit of the Datetime or Timestamp determines the resolution of the Timeseries.
 
