@@ -1,30 +1,31 @@
 ---
-title: 'Big Peer Internals'
+title: "Big Peer Internals"
 ---
 
 export function ImageHolder(props) {
-  return <div style={{padding: '2rem', margin: '2rem', borderRadius: '8px', background: 'white'}}>{props.children}</div>
+return <div style={{padding: '2rem', margin: '2rem', borderRadius: '8px', background: 'white'}}>{props.children}</div>
 }
 
-Ditto's distributed database architecture is a composition of Small Peers and Big Peers. Small peers are predominantly used to synchronize data across web, mobile, desktop, and IoT apps where storage, RAM, and CPU resources are generally static and unchangable. For example, if you were to buy an iPhone with 256 Gigabytes of storage, you are pretty much stuck with this size unless you buy another iPhone. 
+Ditto's distributed database architecture is a composition of Small Peers and Big Peers. Small peers are predominantly used to synchronize data across web, mobile, desktop, and IoT apps where storage, RAM, and CPU resources are generally static and unchangable. For example, if you were to buy an iPhone with 256 Gigabytes of storage, you are pretty much stuck with this size unless you buy another iPhone.
 
-Conversely, Big Peers are database peers which live in the cloud and are capable of sharding or partitioning. When they sync with small peers, they look like any other peer. However, a Big Peer can be split across multiple virtual or physical nodes allowing for both horiztonal and vertical scaling of resources as your application demands grow. 
+Conversely, Big Peers are database peers which live in the cloud and are capable of sharding or partitioning. When they sync with small peers, they look like any other peer. However, a Big Peer can be split across multiple virtual or physical nodes allowing for both horiztonal and vertical scaling of resources as your application demands grow.
 
 The Big Peer fits into Ditto's vision of syncing data, anywhere. Big Peer is cloud-ready, multi-tenant, highly available, fault
 tolerant, offers causally consistent transactions, and works seamlessly with Small Peer devices. Ditto's cloud platform is essentially the Big Peer with some additional services. However, this article will focus primarily on the database portion.
 
 For reference:
 
-* Web, iOS, Android, Raspberry Pi, Desktop, and some server side apps 👉 __Small Peer__
-* Ditto Cloud 👉 __Big Peer__
+- Web, iOS, Android, Raspberry Pi, Desktop, and some server side apps 👉 **Small Peer**
+- Ditto Cloud 👉 **Big Peer**
 
 Previously, we referred to the Big Peer with the code name "HyDRA". This stood for Hyper Data Replication Architecture. We've since retired this name in favor of a more unifying terminology by embracing the word "Peer".
+
 ## Why Did You Make It?
 
 Even with the Small Peer's wireless mesh networking capabilities, some pair of devices may not be able to
 exchange data. Maybe they are miles apart, or they are never online at the same time. That is where Big Peer fits in. The Big Peer is a database that Small Peer devices can sync with to propagate changes across disconnected meshes, and even back to the enterprise. So often databases are used as channels, which is also one of Big Peer's purposes.
 
-There exist many distributed databases, but Big Peer is specifically designed for Ditto: It stores Ditto's CRDTs by default; it can store and merge Ditto [CRDT](https://docs.ditto.live/advanced/architecture/crdt) Diffs; it "speaks" Ditto's mesh replication protocol, meaning it appears as just another peer to Ditto mesh devices; and it provides causally consistent transactions.
+There exist many distributed databases, but Big Peer is specifically designed for Ditto: It stores Ditto's CRDTs by default; it can store and merge Ditto [CRDT](/advanced/architecture/crdt) Diffs; it "speaks" Ditto's mesh replication protocol, meaning it appears as just another peer to Ditto mesh devices; and it provides causally consistent transactions.
 
 ## How Does It Work?
 
@@ -48,15 +49,15 @@ The following drawing is a rough overview of the architecture.
 ### Ditto CRDTs
 
 The core data type in Ditto is the CRDT. It is documented in detail
-[here](https://docs.ditto.live/advanced/architecture/crdt). Understanding some
-of how the CRDT works helps understand the concepts below.  It is
+[here](/advanced/architecture/crdt). Understanding some
+of how the CRDT works helps understand the concepts below. It is
 enough to know that if the same CRDT is modified by multiple Ditto
 mesh Small Peer devices concurrently there is a way to deterministically
 _merge_ the conflicting versions into a single meaningful value.
 
 ### Ditto Mesh Replication
 
-This is also covered in [other documents](https://docs.ditto.live/advanced/architecture/mesh-network). All we need know
+This is also covered in [other documents](/advanced/architecture/mesh-network). All we need know
 here is that Small Peer devices replicate with Big Peer by sending
 CRDT Documents, and CRDT Diffs to Big Peer's Subscription Server API, and
 receive in return Documents and Diffs that they are subscribed to. A
@@ -84,7 +85,7 @@ distributed systems between Consistency and Availability in a world of
 asynchronous networks, Causal Consistency is the strongest consistency model
 that can be achieved if a system is designed to continue to be Available in the
 CAP sense. You can read more
-[on Wikipedia](https://en.wikipedia.org/wiki/Causal_consistency). 
+[on Wikipedia](https://en.wikipedia.org/wiki/Causal_consistency).
 
 Causal Consistency is a model that is much simpler to work with, compared to
 eventual consistency. In eventual consistency it seems like _anything_ is
@@ -154,12 +155,13 @@ database after transaction 1 is committed you are reading version 1. When the
 2nd transaction commits, the database is at version 2, and so on.
 
 If we now wish to have two replicas of our data, how we replicate matters. If
-one replica is the primary, and another is the secondary*, maybe the primary
+one replica is the primary, and another is the secondary\*, maybe the primary
 commits transaction 1, and then sends it to the secondary, who also commits it.
 Now the database is at version 1, and whichever replica you read from you get
 the same answer. But what if transaction two doesn't make it to the secondary?
 There is a brief network outage, or for some reason the message is delayed. The
 primary has committed transactions 1 and 2, but the secondary has only committed
+
 1.
 
 If the system wishes to spread the read load equally, and a client reads from
@@ -171,7 +173,7 @@ highest transaction that is committed on both replicas: the universally stable
 timestamp. A client reading from either replica will get a consistent view of
 the data.
 
-(*We don't have Primaries and Secondaries in Big Peer, I used them to motivate the
+(\*We don't have Primaries and Secondaries in Big Peer, I used them to motivate the
 example. In Big Peer all the database nodes are equal ✊.)
 
 #### Versions
@@ -259,7 +261,7 @@ number for each transaction. In Big Peer we use the log to sequence
 transactions. The sequence number for a Transaction on the log becomes
 the transaction timestamp, and transaction timestamps are what the UST
 reflects. The Transaction Timestamps in Big Peer form a total sequence,
-from ZERO (initial empty database version) on up.  Each storage node
+from ZERO (initial empty database version) on up. Each storage node
 consumes from the log, and a transaction is stable when all nodes
 have observed the transaction, those that own data in the
 transaction having written that data durably.
@@ -354,8 +356,7 @@ each replica, and merges and streams the results back to the caller.
 The Coordinator issues the query to each partition with a predetermined Timestamp.
 This timestamp is usually the UST at the Coordinator but can be any Timestamp between the cluster Garbage Collection Timestamp and the UST.
 
-
-When a node coordinates a Read Transaction it locally holds some metadata in memory of the UST at which the Read began. This data is used to calculate  the Local Garbage Collection Timestamp that the node gossips. The Local GC timestamp is the maximum transaction below the minimum read transaction. The GC timestamp proceeds monotonically upwards, as does the UST. When the query is complete, the Read Transaction is removed from memory, and the GC timestamp can rise.
+When a node coordinates a Read Transaction it locally holds some metadata in memory of the UST at which the Read began. This data is used to calculate the Local Garbage Collection Timestamp that the node gossips. The Local GC timestamp is the maximum transaction below the minimum read transaction. The GC timestamp proceeds monotonically upwards, as does the UST. When the query is complete, the Read Transaction is removed from memory, and the GC timestamp can rise.
 
 A node that is not currently performing a Read Transaction will still gossip its view of the UST as the GC timestamp. This way progress can always be made.
 
@@ -408,12 +409,13 @@ map hot partitions to bigger nodes ("The Bieber problem": see the
 paper, or Scott's article for details.)
 
 As per the Random Slicing algorithm, we think of the keyspace as the range 0 to
-1. We take the _capacity_ of the cluster, and  divide 1 by it. This determines
-how much of the keyspace each partition owns.
+
+1. We take the _capacity_ of the cluster, and divide 1 by it. This determines
+   how much of the keyspace each partition owns.
 
 In our initial, naive, implementation the capacity is the number of partitions we
 wish to have. We enforce an equal number of replicas per-partition, and thus all
-clusters are rectangular. E.g. 1*1, or 2*3, or 5*2, etc., where the first
+clusters are rectangular. E.g. 1*1, or 2*3, or 5\*2, etc., where the first
 number is the number of partitions, and the second the number of replicas.
 Random Slicing allows in future to have heterogeneous nodes, assigning the
 capacity accordingly.
@@ -519,7 +521,7 @@ process is best explained with an example.
 
 Using the diagram from the Random Slicing section, a walkthrough of the transition from the 3 Partition original cluster to the target 4 partition cluster. In this case assume 2 Replicas per partition, which means adding 2 new servers to the cluster.
 
-There is a Current Config, that contains the intervals  that make up the Partitions 1, 2, and 3 mapped to the replicas for those Partitions. The name `p1r1` refers to the first replica of partition 1, `p2r2` the second replica of partition 2, etc.
+There is a Current Config, that contains the intervals that make up the Partitions 1, 2, and 3 mapped to the replicas for those Partitions. The name `p1r1` refers to the first replica of partition 1, `p2r2` the second replica of partition 2, etc.
 
 In the Current Config there are nodes `p1r1`, `p1r2`, `p2r1`, `p2r2`, `p3r1`, `p3r2`. Two new nodes are started, (`p4r1`, `p4r2`). A new Cluster Configuration is generated from the Current Configuration. This runs the Cut-Shift algorithm and produces a Next Configuration, with the partition map and intervals as-per the diagram above.
 
@@ -539,11 +541,11 @@ In the section on UST we described a scalar value, the Transaction Timestamp. In
 
 This allows us to calculate a UST per-configuration. Before we began the transition the UST was `(1, 1000)`. The UST may never go backwards (that would break Causal Consistency). After starting the new servers and notifying nodes about the Next Config, the UST in the Current Config is `(1, 1000)` and in the Next Config is `(2, 0)`. During this period of transition the nodes in `p4`` cannot be routed to for querying. Only nodes in the Current Config can coordinate queries, and these nodes decide what Configuration to use for Routing based on the USTs in each of the Current and Next Config. We call this the Routing Config. It is calculated. And like everything else in Big Peer, it progresses monotonically upwards.
 
-After the new nodes have Backfilled, and after some period of gossip, the UST in the Next Config arrives at a value that is `>=` the UST in the current config* the servers in the Current Config will begin to Route queries using the Next Config. Recall that nodes gossip a GC timestamp that is based on active Read Transactions. A Read Transaction is identified by the Timestamp at which it began. For example `(1, 1000)` is a Read Transaction that began at UST 1000 in the Current Configuration. When all the replicas in the Current Configuration are Routing with the next configuration, (i.e. the Cluster GC timestamp is in the Next Configuration, `(2, 1300)` for example) the Transition is complete. Any of the nodes can store the Next Config into the Strongly Consistent metadata store as the Current Config. Each node is signaled, and eventually all will have a Current Config with `ConfigId 2`, and will forget metadata related to `ConfigId 1`. Furthermore, Garbage Collection will ensure that replicas drop data that they no longer own.
+After the new nodes have Backfilled, and after some period of gossip, the UST in the Next Config arrives at a value that is `>=` the UST in the current config\* the servers in the Current Config will begin to Route queries using the Next Config. Recall that nodes gossip a GC timestamp that is based on active Read Transactions. A Read Transaction is identified by the Timestamp at which it began. For example `(1, 1000)` is a Read Transaction that began at UST 1000 in the Current Configuration. When all the replicas in the Current Configuration are Routing with the next configuration, (i.e. the Cluster GC timestamp is in the Next Configuration, `(2, 1300)` for example) the Transition is complete. Any of the nodes can store the Next Config into the Strongly Consistent metadata store as the Current Config. Each node is signaled, and eventually all will have a Current Config with `ConfigId 2`, and will forget metadata related to `ConfigId 1`. Furthermore, Garbage Collection will ensure that replicas drop data that they no longer own.
 
 Throughout the transition, writes are processed, queries are executed, and the normal monotonic progress of the Cluster's UST and GC timestamp ensure that the new nodes can begin to store data at once, and will be used for query capacity as soon as they support Causally Consistent view of the data.
 
-*(there are details elided here about how we ensure that the Next Config makes progress and catches up with the current, whilst ensuring the cluster still moves forward)
+\*(there are details elided here about how we ensure that the Next Config makes progress and catches up with the current, whilst ensuring the cluster still moves forward)
 
 ## Handling Failure
 
@@ -591,7 +593,7 @@ Big Peer is approaching beta. Some customers are already putting production work
 
 Completing the cycle of data in Big Peer is CDC ([Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture)). Work in progress where each transaction produces a Change Data Message containing the type of change (eg insert, delete, update) and the details of the change. CDC is a way for customer to react to data changes that occur from the mesh or elsewhere, or even to keep external legacy databases in sync with Big Peer.
 
-Data from CDC will first be available via webhooks. Developers can register HTTP endpoints where Big Peer will deliver data change events that match a defined query - similar to how Small Peers can `observe` queries to react to data changes. 
+Data from CDC will first be available via webhooks. Developers can register HTTP endpoints where Big Peer will deliver data change events that match a defined query - similar to how Small Peers can `observe` queries to react to data changes.
 
 This will enable delivery of data within Big Peer into other systems or to build server-side logic that reacts to data change events - such as performing data aggregations that write back into Big Peer or to trigger an email to a user based off an event from a Small Peer. These data change events fit into "serverless" patterns and will work with any "functions-as-a-service" (FaaS) systems, such as AWS Lambda or others.
 
@@ -599,7 +601,7 @@ Care is being taken to ensure the delivery of these events are reliable. Endpoin
 
 ### Time Series
 
-In addition to storing mutable Documents backed by CRDTs, Big Peer recently added support for immutable Time Series data. We have a basic Time Series API in Big Peer and we're adding Time Series to the Small Peer. Developers can utilize these APIs to match data in their application, such as blending Documents from a companion mobile app alongside sensor Time Series data produced via an embedded or "IoT" device.  Watch this space.
+In addition to storing mutable Documents backed by CRDTs, Big Peer recently added support for immutable Time Series data. We have a basic Time Series API in Big Peer and we're adding Time Series to the Small Peer. Developers can utilize these APIs to match data in their application, such as blending Documents from a companion mobile app alongside sensor Time Series data produced via an embedded or "IoT" device. Watch this space.
 
 ### HTTP API
 
@@ -608,8 +610,11 @@ Although we have a rudimentary HTTP API, we expect this area to grow and improve
 ### Eventual Consistency Mode
 
 Multi-model databases are becoming more popular. We'd like to add an "Eventual Consistency Mode" to Big Peer, where the overhead of Causal Consistency is not needed.
+
 ### Improved Queries and Indexing
+
 We'd like to expand the types of queries offered, such as cross-collection joins, in addition, to offer flexible indexing for improved query performance.
+
 ### Summary
 
 Big Peer is multi-tenant, distributed, causally consistent CRDT database,
