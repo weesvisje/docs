@@ -26,7 +26,8 @@ To get a reference to a collection:
     {label: 'Java', value: 'java'},
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
-    {label: 'Rust', value: 'rust'}
+    {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -90,6 +91,9 @@ let store = ditto.store();
 let cars_collection = store.collection("cars")?;
 ```
 
+</TabItem>
+<TabItem value="http">
+An HTTP client creates a new collection by adding a new document (see below).
 </TabItem>
 
 </Tabs>
@@ -1101,6 +1105,7 @@ Once the value in the document is a counter, you can proceed to increment or dec
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -1239,4 +1244,10 @@ ditto.store
   ```
 
 </TabItem>
+<TabItem value="http">
+
+Counters are not supported by the HTTP API.
+
+</TabItem>
+
 </Tabs>
