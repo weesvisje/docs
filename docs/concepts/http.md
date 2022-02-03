@@ -46,8 +46,8 @@ Ditto's HTTP API uses HTTP Methods (aka "verbs") to distinguish between typical 
 
 - find - A JMESPath formatted string used to filter the target collection
 - limit - Used to limit the number of resources returned in a query. Most endpoints will define a default value, such as 1000.
-  start - a date time for start, if none specified then from the start of collection.
-  end - a date time for end, if none specified then to the end of the collection.
+- start - a date time for start, if none specified then from the start of collection.
+- end - a date time for end, if none specified then to the end of the collection.
 - timeout_millis - the number of milliseconds that hydra will wait for a full result set from the query
 
 NOTE: if end < start, then the query is a descending order query.
