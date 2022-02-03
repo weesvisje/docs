@@ -232,6 +232,14 @@ _Reserved for future use_
   - limit (number, optional) - The maximum number of events to return. Defaults to 1000.
   - filter (string, optional) - A dittoQL string
   - timeout_millis (number, optional) - the timeout, in milliseconds
+  - describe - a boolean that when absent or false does nothing, but when `true` rather than performing the query will return a single item that contains information about the query plan that would be executed for the given query
+
+Here is an example of the `describe` parameter output:
+
+```
+curl -X GET "localhost:8000/00000000-0000-4000-8000-000000000000/api/v1/timeseries/0/events?describe=true&filter=device==1"
+{"item": {"index_scan":{"eq":1,"path":["device"]}}}
+```
 
   _Note: the `null` parameters are simply to show which parameters could be provided. These keys don't actually need to be present._
 
