@@ -1290,8 +1290,7 @@ ditto.store.collection("people").find_by_id(docId).remove();
   ```bash
   curl -X DELETE 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/<doc_id>' \
     --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
-    --header 'Content-Type: application/json' \
-    --data-raw '{"name": "Susan", "age": 31}'
+    --header 'Content-Type: application/json' 
   ```
 </TabItem>
 </Tabs>
