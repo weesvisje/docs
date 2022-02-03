@@ -230,7 +230,6 @@ let _doc_id = ditto.store().collection("people")?.insert(person, Some(&doc_id), 
 
 ```bash
 curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/123abc' \
-    --header 'Accept: application/json' \
     --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
     --header 'Content-Type: application/json' \
     --data-raw '{"name": "Susan", "age": 31}'
@@ -358,7 +357,6 @@ let doc_id = ditto.store().collection("people")?.insert(person, None, is_default
 
 ```bash
 curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents' \
-  --header 'Accept: application/json' \
   --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
   --header 'Content-Type: application/json' \
   --data-raw '{"name": "Susan", "age": 31}'
@@ -512,7 +510,6 @@ DocumentId doc_id = ditto.store
 
   ```bash
   curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents' \
-      --header 'Accept: application/json' \
       --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
       --header 'Content-Type: application/json' \
       --data-raw "{"_id": {"user_id": "456abc", "work_id": 789}, "name": "Susan", "age": 31}"
@@ -780,7 +777,6 @@ ditto.store.collection("foo").insert({
 
 ```bash
 curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/123abc' \
-    --header 'Accept: application/json' \
     --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
     --header 'Content-Type: application/json' \
     --data-raw '{ "boolean": true, "string": "Hello World", "number": 10, "map": { "key": "value"}, "array": [1, 2, 3], "null": null }'
