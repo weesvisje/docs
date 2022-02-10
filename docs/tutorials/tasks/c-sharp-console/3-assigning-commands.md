@@ -11,11 +11,11 @@ Our application will continually ask for commands that we setup in the last sect
 1. To determine whether or not the while loop should run, we need an addition `static bool isAskedToExit = false`. If the user turns this to `true` via the `--exit` command, the while loop will stop and the application will exit.
 2. In each iteration of the while loop, we will need read the command from the user. In C#, we can use the `Console.ReadLine` API, which will prompt the user for a string entry. We can store this into `string command`.
 3. We can add a `switch` statement which will parse the correct command and react to the command.
-4. If the user types in `--insert`, we will parse out the string without the `--insert` command. We assume this string is the `body` for a new document. So we will call the `.insert` command with ditto via:
+4. If the user types in `--insert`, we will parse out the string without the `--insert` command. We assume this string is the `body` for a new document. So we will call the `.upsert` command with ditto via:
 
 ```csharp
 string taskBody = s.Replace("--insert ", "");
-ditto.Store["tasks"].Insert(new Task(taskBody, false).ToDictionary());
+ditto.Store["tasks"].Upsert(new Task(taskBody, false).ToDictionary());
 ```
 
 5. Check for a switch case for `--toggle`. We will parse out the string without `--toggle` and assume the user's input is a Task document's `_id`. We can then find the document by it's `_id` and call `.update`
@@ -70,7 +70,7 @@ namespace Tasks
                     // highlight-start
                     case string s when command.StartsWith("--insert"):
                         string taskBody = s.Replace("--insert ", "");
-                        ditto.Store["tasks"].Insert(new Task(taskBody, false).ToDictionary());
+                        ditto.Store["tasks"].Upsert(new Task(taskBody, false).ToDictionary());
                         break;
                         // highlight-end
                     // 5.
@@ -174,7 +174,7 @@ namespace Tasks
 
                     case string s when command.StartsWith("--insert"):
                         string taskBody = s.Replace("--insert ", "");
-                        ditto.Store["tasks"].Insert(new Task(taskBody, false).ToDictionary());
+                        ditto.Store["tasks"].Upsert(new Task(taskBody, false).ToDictionary());
                         break;
                     case string s when command.StartsWith("--toggle"):
                         string _idToToggle = s.Replace("--toggle ", "");

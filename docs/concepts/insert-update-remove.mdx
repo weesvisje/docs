@@ -1,14 +1,16 @@
 ---
-title: 'Insert, Update and Remove'
+title: 'Upsert, Update and Remove'
 sidebar_position: 2
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-## Inserting Documents
+## Upserting Documents
 
-Insert data into a collection with the insert function. It will return the `_id` of the document that was inserted.
+ __Upserting__ describes a behavior where you would want to insert a document into a collection if the document `_id` does not not exist. However if the `_id` does exist in your local store, Ditto will update the document in place. 
+ 
+ Upsert data into a collection with the `upsert` function. If the document does not exist, it will return the `_id` of the new document that was created. 
 
 <Tabs
   groupId="programming-language"
@@ -27,7 +29,7 @@ Insert data into a collection with the insert function. It will return the `_id`
 <TabItem value="javascript">
 
 ```js
-const docID = await ditto.store.collection('people').insert({
+const docID = await ditto.store.collection('people').upsert({
     name: "Susan",
     age: 31
 })
@@ -37,8 +39,8 @@ const docID = await ditto.store.collection('people').insert({
 <TabItem value="swift">
 
 ```swift
-// Insert JSON-compatible data into Ditto
-let docId = ditto.store["people"].insert([
+// upsert JSON-compatible data into Ditto
+let docId = ditto.store["people"].upsert([
     "name": "Susan",
     "age": 31
 ])
@@ -48,9 +50,9 @@ let docId = ditto.store["people"].insert([
 <TabItem value="objc">
 
 ```objc
-// Insert JSON-compatible data into Ditto
+// upsert JSON-compatible data into Ditto
 DITDocumentID *docID = [[ditto.store collection:@"people"]
-     insert:@{ @"name": @"Susan", @"age": [NSNumber numberWithInt:31] }
+     upsert:@{ @"name": @"Susan", @"age": [NSNumber numberWithInt:31] }
      isDefault:false
      error:nil];
 ```
@@ -59,7 +61,7 @@ DITDocumentID *docID = [[ditto.store collection:@"people"]
 <TabItem value="kotlin">
 
 ```kotlin
-val docId = ditto.store["people"].insert(mapOf(
+val docId = ditto.store["people"].upsert(mapOf(
     "name" to "Susan",
     "age" to 31
 ))
@@ -72,7 +74,7 @@ val docId = ditto.store["people"].insert(mapOf(
 Map<String, Object> content = new HashMap<>();
 content.put("name", "Susan");
 content.put("age", 31);
-DittoDocumentID docId = ditto.store.collection("people").insert(content);
+DittoDocumentID docId = ditto.store.collection("people").upsert(content);
 ```
 
 </TabItem>
@@ -84,7 +86,7 @@ var content = new Dictionary<string, object>
     { "name", "Susan" },
     { "age", 31 }
 };
-var docId = ditto.Store.Collection("people").Insert(content);
+var docId = ditto.Store.Collection("people").upsert(content);
 ```
 
 </TabItem>
@@ -95,7 +97,7 @@ json content = json({
     { "name", "Susan" },
     { "age", 31 }
 });
-DocumentId doc_id = ditto.store.collection("people").insert(content);
+DocumentId doc_id = ditto.store.collection("people").upsert(content);
 ```
 
 </TabItem>
@@ -107,16 +109,28 @@ DocumentId doc_id = ditto.store.collection("people").insert(content);
     "name": "Susan",
     "age": 31
   });
-  let doc_id = ditto.store().collection("people")?.insert(content, None, false)?;
+  let doc_id = ditto.store().collection("people")?.upsert(content, None, false)?;
 
   ```
 
 </TabItem>
 </Tabs>
 
-### Inserting with a specific `_id`
 
-There are times where you want to specify the `_id` of the document before insertion. Note that the `_id` is immutable. This means that you cannot change the `_id` once you have inserted the document.
+### Upserting with a specific `_id`
+
+There are times where you want to specify the `_id` of the document before upsertion. Note that the `_id` is immutable. This means that you cannot change the `_id` once you have upserted the document.
+
+As an example, let's say we have a document in the `people` collection that looks like this:
+
+```jsonc
+{
+  "_id": "123abc",
+  "name": "Sam",
+  "age": 45,
+  "isOnline": false
+}
+```
 
 <Tabs
   groupId="programming-language"
@@ -135,10 +149,10 @@ There are times where you want to specify the `_id` of the document before inser
 <TabItem value="javascript">
 
 ```js
-const docID = await ditto.store.collection('people').insert({
-    _id, "123abc",
-    name: "Susan", 
-    age: 31
+await ditto.store.collection('people').insertWithStrategy({
+  "_id": "123abc",
+  "name": "Joe",
+  "isOnline": true
 })
 ```
 
@@ -146,11 +160,10 @@ const docID = await ditto.store.collection('people').insert({
 <TabItem value="swift">
 
 ```swift
-// Insert JSON-compatible data into Ditto
-let docId = ditto.store["people"].insert([
-    "_id": "123abc",
-    "name": "Susan",
-    "age": 31
+try ditto.store["people"].insertWithStrategy([
+  "_id": "123abc",
+  "name": "Joe",
+  "isOnline": true
 ])
 ```
 
@@ -158,176 +171,98 @@ let docId = ditto.store["people"].insert([
 <TabItem value="objc">
 
 ```objc
-// Insert JSON-compatible data into Ditto
-DITDocumentID *docID = [[ditto.store collection:@"people"]
-     insert:@{ @"_id": "123abc", @"name": @"Susan", @"age": [NSNumber numberWithInt:31] }
-     isDefault:false
-     error:nil];
+DITCollection *collection = [ditto.store collection:@"people"];
+[collection upsert:@{
+    @"_id": @"123abc",
+    @"name": @"Joe",
+    @"isOnline": YES
+  }
+  withID:customID
+  error:nil];
 ```
 
 </TabItem>
 <TabItem value="kotlin">
 
 ```kotlin
-val docId = ditto.store["people"].insert(mapOf(
-    "_id" to "123abc",
-    "name" to "Susan",
-    "age" to 31
-), DittoDocumentID("123abc"))
-
+ditto.store["people"].upsert([
+  "_id" to "123abc",
+  "name" to "Joe",
+  "isOnline" to true
+])
 ```
 
 </TabItem>
 <TabItem value="java">
 
 ```java
-Map<String, Object> content = new HashMap<>();
-content.put("_id", "123abc");
-content.put("name", "Susan");
-content.put("age", 31);
-DittoDocumentID docId = ditto.store.collection("people").insert(content);
+Map<String, Object> map = new HashMap();
+map.put('_id', "123abc")
+map.put('name', "Joe")
+map.put('isOnline', true)
+ditto.store.collection("people").upsert(content)
 ```
 
 </TabItem>
 <TabItem value="csharp">
 
 ```csharp
-var content = new Dictionary<string, object>
+ditto.Store.Collection("people").Upsert(
+  new Dictionary<string, object> { 
+      { "_id", "123abc" }, 
+      {"name", "Joe"}, 
+      {"isOnline", true} 
+    }, 
+    DittoWriteStrategy.Merge)
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+ditto.store.collection("people").upsert(
+      {
+        {"_id", "123abc"},
+        {"name", "Joe"},
+        {"isOnline", true}
+      }, custom_id);
+```
+
+</TabItem>
+<TabItem value="rust">
+
+```rust
+ditto.store().collection("people")?.insert(
+        json!({
+          "_id": "123abc",
+          "name": "Joe",
+          "isOnline": true
+        })
+    )
+```
+
+</TabItem>
+</Tabs>
+
+Now the document will look like this:
+
+```jsonc
+// before
 {
-    { "_id_", "123abc" },
-    { "name", "Susan" },
-    { "age", 31 }
-};
-ditto.Store.Collection("people").Insert(content);
+  "_id": "123abc",
+  "name": "Sam",
+  "age": 45,
+  "isOnline": false
+}
+
+// after
+{
+  "_id": "123abc",
+  "name": "Joe", // updated 
+  "age": 45, // left alone, because the payload did not include this key
+  "isOnline": true  // update
+}
 ```
-
-</TabItem>
-<TabItem value="cpp">
-
-```cpp
-ditto.store.collection("people").insert({{"_id", "123abc"}, { "name", "Susan" }, { "age", 31 }});
-```
-
-</TabItem>
-<TabItem value="rust">
-
-  ```rust
-  ditto.store().collection("people")?.insert(json!({"_id": DocumentId::new("123abc")?, "name": "Susan", "age": 31}), None, false)?;
-  ```
-
-</TabItem>
-</Tabs>
-
-### Default Data
-
-Default Data can be thought of as "placeholder" data.  Default Data is useful when your app needs to load "starter" data from an external data source, like from a backend API, on multiple devices without creating odd "overwriting" behavior.
-
-Ditto's approach to conflict resolution orders changes by time. In most situations, this leads to predictable behavior. However, if your application is inserting the same initial data into multiple devices, such as common data from a central backend API, this could result in overwriting later changes:
-
-1. Device A inserts a document `{"firstName": "Adam"}` at time = 0 after downloading from a central API.
-2. Device A updates the document to `{"firstName": "Max"}` at time = 1.
-3. Device B synchronizes with Device A receiving the document `{"firstName": "Max"}` at time = 2.
-4. Device B downloads the same document from the backend API `{"firstName": "Adam"}` and inserts at t = 3, which overwrites the previous change synced at time = 1.
-
-In the above example, both Device A and B want to preserve the change by Device A that occurred after downloading the common data. To do so, Ditto offers an additional parameter: isDefault.
-
-<Tabs
-  groupId="programming-language"
-  defaultValue="javascript"
-  values={[
-    {label: 'JavaScript', value: 'javascript'},
-    {label: 'Swift', value: 'swift'},
-    {label: 'Objective-C', value: 'objc'},
-    {label: 'Kotlin', value: 'kotlin'},
-    {label: 'Java', value: 'java'},
-    {label: 'C#', value: 'csharp'},
-    {label: 'C++', value: 'cpp'},
-    {label: 'Rust', value: 'rust'},
-  ]
-}>
-<TabItem value="javascript">
-
-```js
-const docID = await ditto.store.collection('people').insert({
-    _id: new DocumentID(123),
-    name: "Susan",
-    age: 31
-}, { isDefault: true })
-```
-
-</TabItem>
-<TabItem value="swift">
-
-```swift
-let docId = ditto.store.collection("people").insert([
-    "name": "Susan",
-    "age": 31
-], isDefault: true)
-```
-
-</TabItem>
-<TabItem value="objc">
-
-```objc
-DITDocumentID *docID = [[ditto.store collection:@"people"]
-     insert:@{ @"name": @"Susan", @"age": [NSNumber numberWithInt:31] }
-     isDefault:true
-     error:nil];
-```
-
-</TabItem>
-<TabItem value="kotlin">
-
-```kotlin
-val docId = ditto.store.collection("people").insert(mapOf(
-    "name" to "Susan",
-    "age" to 31
-), isDefault: true)
-```
-
-</TabItem>
-<TabItem value="java">
-
-```java
-Map<String, Object> content = new HashMap<>();
-content.put("name", "Susan");
-content.put("age", 31);
-DittoDocumentID docId = ditto.store
-                             .collection("people")
-                             .insert(content, new DittoDocumentID("doc-id"), true);
-```
-
-</TabItem>
-<TabItem value="csharp">
-
-```csharp
-DittoDocumentID docID = ditto.Store
-                        .Collection("people")
-                        .Insert(
-                            {{"name", "Susan"}, {"age", 31}},
-                            new DittoDocumentID("doc-id"),
-                            true
-                        );
-```
-
-</TabItem>
-<TabItem value="cpp">
-
-```cpp
-json content = json({{ "name", "Susan" }, { "age", 31 }}):
-DocumentId doc_id = ditto.store.collection("people")
-                               .insert(content, DocumentId("doc-id"), true);
-```
-</TabItem>
-<TabItem value="rust">
-
-  ```rust
-  ditto.store().collection("people")?.insert(json!({"_id": DocumentId::new("123abc")?, "name": "Susan", "age": 31}), None, true)?;
-  ```
-
-</TabItem>
-</Tabs>
-
 
 ## Updating Documents
 
@@ -345,7 +280,7 @@ Counters
 
 Arrays
 
-* Push - inserts a value on to the end of an array at the document's key
+* Push - upserts a value on to the end of an array at the document's key
 * Pop - removes a value at the end of an array at the document's key
 
 <Tabs
@@ -365,7 +300,7 @@ Arrays
 <TabItem value="javascript">
 
 ```js
-const docID = await ditto.store.collection('people').insert({
+const docID = await ditto.store.collection('people').upsert({
   name: "Frank",
   age: 31,
   ownedCars: 0,
@@ -385,7 +320,7 @@ await ditto.store.collection('people').findByID(docID).update((mutableDoc) => {
 <TabItem value="swift">
 
 ```swift
-let docId = ditto.store["people"].insert([
+let docId = ditto.store["people"].upsert([
     "name": "Frank",
     "age": 31,
     "ownedCars": 0,
@@ -404,7 +339,7 @@ ditto.store["people"].findByID(docId).update { mutableDoc in
 <TabItem value="objc">
 
 ```objc
-NSString *docId = [[ditto.store collection:@"people"] insert:@{
+NSString *docId = [[ditto.store collection:@"people"] upsert:@{
     @"name": @"Frank",
     @"age": [NSNumber numberWithInt:31],
     @"ownedCars": [NSNumber numberWithInt:0],
@@ -423,7 +358,7 @@ NSString *docId = [[ditto.store collection:@"people"] insert:@{
 <TabItem value="kotlin">
 
 ```kotlin
-val docId = ditto.store["people"].insert(mapOf(
+val docId = ditto.store["people"].upsert(mapOf(
     "name" to "Frank",
     "age" to 31,
     "ownedCars" to 0,
@@ -450,7 +385,7 @@ content.put("name", "Frank");
 content.put("age", 31);
 content.put("ownedCars", 0);
 content.put("friends", Arrays.asList());
-DittoDocumentID docId = ditto.store.collection("people").insert(content);
+DittoDocumentID docId = ditto.store.collection("people").upsert(content);
 
 ditto.store.collection("people").findByID(docId).update(doc -> {
     try {
@@ -476,7 +411,7 @@ var content = new Dictionary<string, object>
     { "friends", new List<object>() }
 };
 
-var docId = ditto.Store.Collection("people").Insert(content);
+var docId = ditto.Store.Collection("people").Upsert(content);
 ditto.Store.Collection("people").FindById(docId).Update((mutableDoc) => {
     mutableDoc["age"].Set(32);
     mutableDoc["ownedCars"].ReplaceWithCounter();
@@ -489,7 +424,7 @@ ditto.Store.Collection("people").FindById(docId).Update((mutableDoc) => {
 <TabItem value="cpp">
 
 ```cpp
-DocumentId doc_id = ditto.store.collection("people").insert({
+DocumentId doc_id = ditto.store.collection("people").upsert({
   {"name", "Frank"},
   {"age", 31},
   {"ownedCars", 0},
@@ -527,7 +462,7 @@ let frank = Person {
   friends: Vec::with_capacity(0)
 };
 
-let doc_id = ditto.store().collection("people")?.insert(frank, None, false)?;
+let doc_id = ditto.store().collection("people")?.upsert(frank, None, false)?;
 ditto.store().collection("people")?.update(|x|{
   if let Some(doc) = x {
       doc.set("age", 32).unwrap();
@@ -540,581 +475,6 @@ ditto.store().collection("people")?.update(|x|{
 
 </TabItem>
 </Tabs>
-
-## Upserting Documents 
-
-Because Ditto is an eventually consistent system, you will definitely run into situations where you need to __upsert__ documents. __Upserting__ describes a behavior where you would want to insert a document into a collection if the document `_id` does not not exist. However if the `_id` does exist in your local store, Ditto will `.update` the document in place. 
-
-
-To upsert a document, use the `collection.insertWithStrategy` function. You will need to provide the payload of the document that you'd like upsert as well as a `DittoWriteStrategy`. We offer __4 strategies for upserting documents.  
-
-As an example, let's say we have a document in the `people` collection that looks like this:
-
-```jsonc
-{
-  "_id": "123abc",
-  "name": "Sam",
-  "age": 45,
-  "isOnline": false
-}
-```
-
-### Merge 
-
-An upsert with a merge strategy will set the properties on the document that match the existing document if it exists. Any properties that do not match are left alone.
-
-<Tabs
-  groupId="programming-language"
-  defaultValue="javascript"
-  values={[
-    {label: 'JavaScript', value: 'javascript'},
-    {label: 'Swift', value: 'swift'},
-    {label: 'Objective-C', value: 'objc'},
-    {label: 'Kotlin', value: 'kotlin'},
-    {label: 'Java', value: 'java'},
-    {label: 'C#', value: 'csharp'},
-    {label: 'C++', value: 'cpp'},
-    {label: 'Rust', value: 'rust'},
-  ]
-}>
-<TabItem value="javascript">
-
-```js
-await ditto.store.collection('people').insertWithStrategy({
-  "_id": "123abc",
-  "name": "Joe",
-  "isOnline": true
-}, { writeStrategy: 'merge' })
-```
-
-</TabItem>
-<TabItem value="swift">
-
-```swift
-try ditto.store["people"].insertWithStrategy([
-  "_id": "123abc",
-  "name": "Joe",
-  "isOnline": true
-], writeStrategy: .merge)
-```
-
-</TabItem>
-<TabItem value="objc">
-
-```objc
-DITCollection *collection = [ditto.store collection:@"people"];
-[collection insert:@{
-    @"_id": @"123abc",
-    @"name": @"Joe",
-    @"isOnline": YES
-  }
-  withID:customID
-  writeStrategy:DITWriteStrategyMerge
-  error:nil];
-```
-
-</TabItem>
-<TabItem value="kotlin">
-
-```kotlin
-ditto.store["people"].insertWithStrategy([
-  "_id" to "123abc",
-  "name" to "Joe",
-  "isOnline" to true
-], DittoWriteStrategy.Merge)
-```
-
-</TabItem>
-<TabItem value="java">
-
-```java
-Map<String, Object> map = new HashMap();
-map.put('_id', "123abc")
-map.put('name', "Joe")
-map.put('isOnline', true)
-ditto.store.collection("people").insertWithStrategy(content, null, DittoWriteStrategy.Merge)
-```
-
-</TabItem>
-<TabItem value="csharp">
-
-```csharp
-ditto.Store.Collection("people").InsertWithStrategy(
-  new Dictionary<string, object> { 
-      { "_id", "123abc" }, 
-      {"name", "Joe"}, 
-      {"isOnline", true} 
-    }, 
-    DittoWriteStrategy.Merge)
-```
-
-</TabItem>
-<TabItem value="cpp">
-
-```cpp
-ditto.store.collection("people").insert_with_strategy(
-      {
-        {"_id", "123abc"},
-        {"name", "Joe"},
-        {"isOnline", true}
-      }, custom_id, WriteStrategy::merge);
-```
-
-</TabItem>
-<TabItem value="rust">
-
-```rust
-ditto.store().collection("people")?.insert_with_strategy(
-        json!({
-          "_id": "123abc",
-          "name": "Joe",
-          "isOnline": true
-        }),
-        None,
-        WriteStrategy::InsertIfAbsent,
-    )
-```
-
-</TabItem>
-</Tabs>
-
-Now the document will look like this:
-
-```jsonc
-// before
-{
-  "_id": "123abc",
-  "name": "Sam",
-  "age": 45,
-  "isOnline": false
-}
-
-// after
-{
-  "_id": "123abc",
-  "name": "Joe", // updated 
-  "age": 45, // left alone, because the payload did not include this key
-  "isOnline": true  // update
-}
-```
-
-### Overwrite
-
-An overwrite strategy will remove the document if it exists and recreate with it's exact payload. You can think of it as calling `.remove` and `.insert` in one transaction.
-
-<Tabs
-  groupId="programming-language"
-  defaultValue="javascript"
-  values={[
-    {label: 'JavaScript', value: 'javascript'},
-    {label: 'Swift', value: 'swift'},
-    {label: 'Objective-C', value: 'objc'},
-    {label: 'Kotlin', value: 'kotlin'},
-    {label: 'Java', value: 'java'},
-    {label: 'C#', value: 'csharp'},
-    {label: 'C++', value: 'cpp'},
-    {label: 'Rust', value: 'rust'},
-  ]
-}>
-<TabItem value="javascript">
-
-```js
-await ditto.store.collection('people').insertWithStrategy({
-  "_id": "123abc",
-  "name": "Joe",
-  "isOnline": true
-}, { writeStrategy: 'overwrite' })
-```
-
-</TabItem>
-<TabItem value="swift">
-
-```swift
-try ditto.store["people"].insertWithStrategy([
-  "_id": "123abc",
-  "name": "Joe",
-  "isOnline": true
-], writeStrategy: .overwrite)
-```
-
-</TabItem>
-<TabItem value="objc">
-
-```objc
-DITCollection *collection = [ditto.store collection:@"people"];
-[collection insert:@{
-    @"_id": @"123abc",
-    @"name": @"Joe",
-    @"isOnline": YES
-  }
-  withID:customID
-  writeStrategy:DITWriteStrategyOverwrite
-  error:nil];
-```
-
-</TabItem>
-<TabItem value="kotlin">
-
-```kotlin
-ditto.store["people"].insertWithStrategy([
-  "_id" to "123abc",
-  "name" to "Joe",
-  "isOnline" to true
-], DittoWriteStrategy.Overwrite)
-```
-
-</TabItem>
-<TabItem value="java">
-
-```java
-Map<String, Object> map = new HashMap();
-map.put('_id', "123abc")
-map.put('name', "Joe")
-map.put('isOnline', true)
-ditto.store.collection("people").insertWithStrategy(content, null, DittoWriteStrategy.Overwrite)
-```
-
-</TabItem>
-<TabItem value="csharp">
-
-```csharp
-ditto.Store.Collection("people").InsertWithStrategy(
-  new Dictionary<string, object> { 
-      { "_id", "123abc" }, 
-      {"name", "Joe"}, 
-      {"isOnline", true} 
-    }, 
-    DittoWriteStrategy.Overwrite)
-```
-
-</TabItem>
-<TabItem value="cpp">
-
-```cpp
-ditto.store.collection("people").insert_with_strategy(
-      {
-        {"_id", "123abc"},
-        {"name", "Joe"},
-        {"isOnline", true}
-      }, custom_id, WriteStrategy::overwrite);
-```
-
-</TabItem>
-<TabItem value="rust">
-
-```rust
-ditto.store().collection("people")?.insert_with_strategy(
-            json!({
-              "_id": "123abc",
-              "name": "Joe",
-              "isOnline": true
-            }),
-            None,
-            WriteStrategy::Merge,
-        )
-```
-
-</TabItem>
-</Tabs>
-
-The final document will look like the following below. Since the `_id` matched, the document was removed and reinserted.
-
-```json
-// before
-{
-  "_id": "123abc",
-  "name": "Sam",
-  "age": 45,
-  "isOnline": false
-}
-
-// after
-{
-  "_id": "123abc",
-  "name": "Joe",
-  "isOnline": true
-}
-```
-
-### Insert If Absent
-
-The `.insertIfAbsent` strategy is quite straight forward. If the `_id` of the payload matched, then the document will not be inserted. If the document with the same `_id` does not exist, then the payload will be inserted. 
-
-
-<Tabs
-  groupId="programming-language"
-  defaultValue="javascript"
-  values={[
-    {label: 'JavaScript', value: 'javascript'},
-    {label: 'Swift', value: 'swift'},
-    {label: 'Objective-C', value: 'objc'},
-    {label: 'Kotlin', value: 'kotlin'},
-    {label: 'Java', value: 'java'},
-    {label: 'C#', value: 'csharp'},
-    {label: 'C++', value: 'cpp'},
-    {label: 'Rust', value: 'rust'},
-  ]
-}>
-<TabItem value="javascript">
-
-```js
-await ditto.store.collection('people').insertWithStrategy({
-  "_id": "123abc",
-  "name": "Joe",
-  "isOnline": true
-}, { writeStrategy: 'insertIfAbsent' })
-```
-
-</TabItem>
-<TabItem value="swift">
-
-```swift
-try ditto.store["people"].insertWithStrategy([
-  "_id": "123abc",
-  "name": "Joe",
-  "isOnline": true
-], writeStrategy: .insertIfAbsent)
-```
-
-</TabItem>
-<TabItem value="objc">
-
-```objc
-DITCollection *collection = [ditto.store collection:@"people"];
-[collection insert:@{
-    @"_id": @"123abc",
-    @"name": @"Joe",
-    @"isOnline": YES
-  }
-  withID:customID
-  writeStrategy:DITWriteStrategyInsertIfAbsent
-  error:nil];
-```
-
-</TabItem>
-<TabItem value="kotlin">
-
-```kotlin
-ditto.store["people"].insertWithStrategy([
-  "_id" to "123abc",
-  "name" to "Joe",
-  "isOnline" to true
-], DittoWriteStrategy.InsertIfAbsent)
-```
-
-</TabItem>
-<TabItem value="java">
-
-```java
-Map<String, Object> map = new HashMap();
-map.put('_id', "123abc")
-map.put('name', "Joe")
-map.put('isOnline', true)
-ditto.store.collection("people").insertWithStrategy(content, null, DittoWriteStrategy.InsertIfAbsent)
-```
-
-</TabItem>
-<TabItem value="csharp">
-
-```csharp
-ditto.Store.Collection("people").InsertWithStrategy(
-  new Dictionary<string, object> { 
-      { "_id", "123abc" }, 
-      {"name", "Joe"}, 
-      {"isOnline", true} 
-    }, 
-    DittoWriteStrategy.InsertIfAbsent)
-```
-
-</TabItem>
-<TabItem value="cpp">
-
-```cpp
-ditto.store.collection("people").insert_with_strategy(
-      {
-        {"_id", "123abc"},
-        {"name", "Joe"},
-        {"isOnline", true}
-      }, custom_id, WriteStrategy::insertIfAbsent);
-```
-
-</TabItem>
-<TabItem value="rust">
-
-```rust
-ditto.store().collection("people")?.insert_with_strategy(
-          json!({
-            "_id": "123abc",
-            "name": "Joe",
-            "isOnline": true
-          }),
-          None,
-          WriteStrategy::InsertIfAbsent,
-      )
-```
-
-</TabItem>
-</Tabs>
-
-Thus using our example, the document is left unchanged. 
-
-```json
-// before
-{
-  "_id": "123abc",
-  "name": "Sam",
-  "age": 45,
-  "isOnline": false
-}
-
-// after
-{
-  "_id": "123abc",
-  "name": "Sam",
-  "age": 45,
-  "isOnline": false
-}
-```
-
-### Insert Default If Absent
-
-The `insertDefaultIfAbsent` is a strategy that is best for _placeholder_ data. If a document does not exist, the payload will be inserted that will not overwrite other peer's changes when they sync. 
-
-
-<Tabs
-  groupId="programming-language"
-  defaultValue="javascript"
-  values={[
-    {label: 'JavaScript', value: 'javascript'},
-    {label: 'Swift', value: 'swift'},
-    {label: 'Objective-C', value: 'objc'},
-    {label: 'Kotlin', value: 'kotlin'},
-    {label: 'Java', value: 'java'},
-    {label: 'C#', value: 'csharp'},
-    {label: 'C++', value: 'cpp'},
-    {label: 'Rust', value: 'rust'},
-  ]
-}>
-<TabItem value="javascript">
-
-```js
-await ditto.store.collection('people').insertWithStrategy({
-  "_id": "123abc",
-  "name": "Joe",
-  "isOnline": true
-}, { writeStrategy: 'insertDefaultIfAbsent' })
-```
-
-</TabItem>
-<TabItem value="swift">
-
-```swift
-try ditto.store["people"].insertWithStrategy([
-  "_id": "123abc",
-  "name": "Joe",
-  "isOnline": true
-], writeStrategy: .insertDefaultIfAbsent)
-```
-
-</TabItem>
-<TabItem value="objc">
-
-```objc
-DITCollection *collection = [ditto.store collection:@"people"];
-[collection insert:@{
-    @"_id": @"123abc",
-    @"name": @"Joe",
-    @"isOnline": YES
-  }
-  withID:customID
-  writeStrategy:DITWriteStrategyInsertDefaultIfAbsent
-  error:nil];
-```
-
-</TabItem>
-<TabItem value="kotlin">
-
-```kotlin
-ditto.store["people"].insertWithStrategy([
-  "_id" to "123abc",
-  "name" to "Joe",
-  "isOnline" to true
-], DittoWriteStrategy.InsertDefaultIfAbsent)
-```
-
-</TabItem>
-<TabItem value="java">
-
-```java
-Map<String, Object> map = new HashMap();
-map.put('_id', "123abc")
-map.put('name', "Joe")
-map.put('isOnline', true)
-ditto.store.collection("people").insertWithStrategy(content, null, DittoWriteStrategy.InsertDefaultIfAbsent)
-```
-
-</TabItem>
-<TabItem value="csharp">
-
-```csharp
-ditto.Store.Collection("people").InsertWithStrategy(
-  new Dictionary<string, object> { 
-      { "_id", "123abc" }, 
-      {"name", "Joe"}, 
-      {"isOnline", true} 
-    }, 
-    DittoWriteStrategy.InsertDefaultIfAbsent)
-```
-
-</TabItem>
-<TabItem value="cpp">
-
-```cpp
-ditto.store.collection("people").insert_with_strategy(
-      {
-        {"_id", "123abc"},
-        {"name", "Joe"},
-        {"isOnline", true}
-      }, custom_id, WriteStrategy::insertDefaultIfAbsent);
-```
-
-</TabItem>
-<TabItem value="rust">
-
-```rust
-ditto.store().collection("people")?.insert_with_strategy(
-          json!({
-            "_id": "123abc",
-            "name": "Joe",
-            "isOnline": true
-          }),
-          None,
-          WriteStrategy::InsertDefaultIfAbsent,
-      )
-```
-
-</TabItem>
-</Tabs>
-
-Thus using our example, the document is left unchanged. 
-
-```json
-// before
-{
-  "_id": "123abc",
-  "name": "Sam",
-  "age": 45,
-  "isOnline": false
-}
-
-// after
-{
-  "_id": "123abc",
-  "name": "Sam",
-  "age": 45,
-  "isOnline": false
-}
-```
 
 ## Removing Documents
 
@@ -1154,7 +514,7 @@ ditto.store.collection('cars').update((mutableDoc) => {
 ```
 
 :::
-
+ 
 
 ### Removing by `_id`
 
@@ -1390,3 +750,115 @@ ditto.store.collection("people").find("age <= 32").evict();
 
 </TabItem>
 </Tabs>
+
+
+### Default Data
+
+Default Data can be thought of as "placeholder" data.  Default Data is useful when your app needs to load "starter" data from an external data source, like from a backend API, on multiple devices without creating odd "overwriting" behavior.
+
+Ditto's approach to conflict resolution orders changes by time. In most situations, this leads to predictable behavior. However, if your application is upserting the same initial data into multiple devices, such as common data from a central backend API, this could result in overwriting later changes:
+
+1. Device A upserts a document `{"firstName": "Adam"}` at time = 0 after downloading from a central API.
+2. Device A updates the document to `{"firstName": "Max"}` at time = 1.
+3. Device B synchronizes with Device A receiving the document `{"firstName": "Max"}` at time = 2.
+4. Device B downloads the same document from the backend API `{"firstName": "Adam"}` and upserts at t = 3, which overwrites the previous change synced at time = 1.
+
+In the above example, both Device A and B want to preserve the change by Device A that occurred after downloading the common data. To do so, Ditto offers an additional parameter: isDefault.
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+const docID = await ditto.store.collection('people').upsert({
+    _id: new DocumentID(123),
+    name: "Susan",
+    age: 31
+}, { isDefault: true })
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+let docId = ditto.store.collection("people").upsert([
+    "name": "Susan",
+    "age": 31
+], isDefault: true)
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITDocumentID *docID = [[ditto.store collection:@"people"]
+     upsert:@{ @"name": @"Susan", @"age": [NSNumber numberWithInt:31] }
+     isDefault:true
+     error:nil];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+val docId = ditto.store.collection("people").upsert(mapOf(
+    "name" to "Susan",
+    "age" to 31
+), isDefault: true)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Map<String, Object> content = new HashMap<>();
+content.put("name", "Susan");
+content.put("age", 31);
+DittoDocumentID docId = ditto.store
+                             .collection("people")
+                             .upsert(content, new DittoDocumentID("doc-id"), true);
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+DittoDocumentID docID = ditto.Store
+                        .Collection("people")
+                        .upsert(
+                            {{"name", "Susan"}, {"age", 31}},
+                            new DittoDocumentID("doc-id"),
+                            true
+                        );
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+json content = json({{ "name", "Susan" }, { "age", 31 }}):
+DocumentId doc_id = ditto.store.collection("people")
+                               .upsert(content, DocumentId("doc-id"), true);
+```
+</TabItem>
+<TabItem value="rust">
+
+  ```rust
+  ditto.store().collection("people")?.upsert(json!({"_id": DocumentId::new("123abc")?, "name": "Susan", "age": 31}), None, true)?;
+  ```
+
+</TabItem>
+</Tabs>
+

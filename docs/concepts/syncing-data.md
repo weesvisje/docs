@@ -305,7 +305,7 @@ const liveQuery = ditto.store.collection('cars')
 ```swift
 // --- Action somewhere in your application
 func userDidInsertCar() {
-    _ = ditto.store.collection("cars").insert([
+    _ = ditto.store.collection("cars").upsert([
         "model": "Ford",
         "color": "black"
     ])
@@ -324,7 +324,7 @@ let liveQuery = ditto.store.collection("cars").find("color == 'red'")
 ```objc
 // --- Action somewhere in your application
 -(void) userDidInsertCar() {
-    [[ditto.store collection:@"cars"] insert:@{
+    [[ditto.store collection:@"cars"] upsert:@{
         @"model": @"Ford",
         @"color": @"black"
     }];
@@ -344,7 +344,7 @@ DITLiveQuery *liveQuery = [[collection find:@"color == 'red'"]
 ```kotlin
 // --- Action somewhere in your application
 fun userDidInsertCar() {
-    ditto.store.collection("cars").insert(mapOf(
+    ditto.store.collection("cars").upsert(mapOf(
         "model" to "Ford",
         "color" to "black"
     ))
@@ -367,7 +367,7 @@ public void userDidInsertCar() {
     Map<String, Object> content = new HashMap<>();
     content.put("model", "Ford");
     content.put("color", "black");
-    ditto.store.collection("cars").insert(content);
+    ditto.store.collection("cars").upsert(content);
 }
 
 // --- Register live query to update UI
@@ -391,7 +391,7 @@ void user_did_insert_car()
         { "model", "Ford" },
         { "color", "black" }
     };
-    ditto.Store.Collection("cars").Insert(carsDocument);
+    ditto.Store.Collection("cars").Upsert(carsDocument);
 }
 
 // --- Register live query to update UI
@@ -407,7 +407,7 @@ var localLiveQuery = ditto.Store.Collection("cars").Find("color == 'red'").Obser
 ```cpp
 // --- Action somewhere in your application
 void user_did_insert_car() {
-    ditto.store.collection("cars").insert({
+    ditto.store.collection("cars").upsert({
         {"model", "Ford"},
         {"color", "black"}
     });

@@ -72,7 +72,7 @@ struct TaskRow_Previews: PreviewProvider {
 
 ## 3-2 Create a `TasksListScreenViewModel`
 
-In the world of SwiftUI, the most important design pattern is the MVVM, which stands for Model-View-ViewModel. MVVM strives to separate all data manipulation (Model and ViewModel) and data presentation (UI or View) into distinct areas of concern. When it comes to Ditto, we recommend that you never include references to edit `ditto` in `View.body`. All interactions with `ditto` for `insert`, `update`, `find`, `remove` and `observe` should be within a `ViewModel`. The View should only render data from observable variables from the `ViewModel` and only the `ViewModel` should make direct edits to these variables.
+In the world of SwiftUI, the most important design pattern is the MVVM, which stands for Model-View-ViewModel. MVVM strives to separate all data manipulation (Model and ViewModel) and data presentation (UI or View) into distinct areas of concern. When it comes to Ditto, we recommend that you never include references to edit `ditto` in `View.body`. All interactions with `ditto` for `upsert`, `update`, `find`, `remove` and `observe` should be within a `ViewModel`. The View should only render data from observable variables from the `ViewModel` and only the `ViewModel` should make direct edits to these variables.
 
 Typically we create a `ViewModel` per screen or per page of an application. For the `TasksListScreen` we need some functionality like:
 

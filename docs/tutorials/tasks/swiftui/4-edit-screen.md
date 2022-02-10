@@ -14,7 +14,7 @@ Like before, we need to create an `EditScreenViewModel` for the `EditScreen`. Si
 
 1. The `EditScreenViewModel` needs to be initialized with `ditto` and an optional `task: Task?` value. If the task value is `nil` we need to set the `canDelete` variable to `false`. This means that the user is attempting _create_ a new `Task`. We will use this value to show a delete `Button` in the `EditScreen` later. We will store the `_id: String?` from the `task` parameter and use it later in the `save()` function.
 2. We need two `@Published` variables to bind to a `TextField` and `Toggle` SwiftUI views for the task's `isCompleted` and `body` values. If the `task == nil`, we will set some default values like an empty string and a false `isCompleted` value.
-3. When the user wants to click a save `Button`, we need to `save()` and handle either an `.insert` or `.update` function appropriately. If the local `_id` variable is `nil`, we assume the user is attempting to create a `Task` and will call ditto's `.insert` function. Otherwise, we will attempt to `.update` an existing task with a known `_id`.
+3. When the user wants to click a save `Button`, we need to `save()` and handle either an `.upsert` or `.update` function appropriately. If the local `_id` variable is `nil`, we assume the user is attempting to create a `Task` and will call ditto's `.upsert` function. Otherwise, we will attempt to `.update` an existing task with a known `_id`.
 4. Finally if a delete button is clicked, we attempt to find the document and call `.remove`
 
 ```swift title="EditScreenViewModel.swift"
@@ -55,8 +55,8 @@ class EditScreenViewModel: ObservableObject {
                 mutableDoc?["body"].set(self.body)
             })
         } else {
-            // the user is attempting to insert
-            try! ditto.store["tasks"].insert([
+            // the user is attempting to upsert
+            try! ditto.store["tasks"].upsert([
                 "body": body,
                 "isCompleted": isCompleted
             ])
