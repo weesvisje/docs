@@ -149,7 +149,7 @@ As an example, let's say we have a document in the `people` collection that look
 <TabItem value="javascript">
 
 ```js
-await ditto.store.collection('people').insertWithStrategy({
+await ditto.store.collection('people').upsert({
   "_id": "123abc",
   "name": "Joe",
   "isOnline": true
@@ -160,7 +160,7 @@ await ditto.store.collection('people').insertWithStrategy({
 <TabItem value="swift">
 
 ```swift
-try ditto.store["people"].insertWithStrategy([
+try ditto.store["people"].upsert([
   "_id": "123abc",
   "name": "Joe",
   "isOnline": true
