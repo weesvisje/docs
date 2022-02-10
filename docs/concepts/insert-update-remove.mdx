@@ -8,9 +8,8 @@ import TabItem from '@theme/TabItem';
 
 ## Upserting Documents
 
- __Upserting__ describes a behavior where you would want to insert a document into a collection if the document `_id` does not not exist. However if the `_id` does exist in your local store, Ditto will update the document in place. 
+ __Upserting__ describes a behavior where you would want to insert a document into a collection if the document `_id` does not not exist.
  
- Upsert data into a collection with the `upsert` function. If the document does not exist, it will return the `_id` of the new document that was created. 
 
 <Tabs
   groupId="programming-language"
@@ -119,7 +118,7 @@ DocumentId doc_id = ditto.store.collection("people").upsert(content);
 
 ### Upserting with a specific `_id`
 
-There are times where you want to specify the `_id` of the document before upsertion. Note that the `_id` is immutable. This means that you cannot change the `_id` once you have upserted the document.
+There are times where you want to specify the `_id` of the document before upsertion.  If the `_id` exists, Ditto will update the document in place. Note that the `_id` is immutable. This means that you cannot change the `_id` once you have upserted the document.
 
 As an example, let's say we have a document in the `people` collection that looks like this:
 
@@ -150,7 +149,7 @@ As an example, let's say we have a document in the `people` collection that look
 
 ```js
 await ditto.store.collection('people').upsert({
-  "_id": "123abc",
+  "_id": docID,
   "name": "Joe",
   "isOnline": true
 })
@@ -161,7 +160,7 @@ await ditto.store.collection('people').upsert({
 
 ```swift
 try ditto.store["people"].upsert([
-  "_id": "123abc",
+  "_id": docId,
   "name": "Joe",
   "isOnline": true
 ])
@@ -185,11 +184,11 @@ DITCollection *collection = [ditto.store collection:@"people"];
 <TabItem value="kotlin">
 
 ```kotlin
-ditto.store["people"].upsert([
+ditto.store["people"].upsert(mapOf(
   "_id" to "123abc",
   "name" to "Joe",
   "isOnline" to true
-])
+))
 ```
 
 </TabItem>
@@ -197,7 +196,7 @@ ditto.store["people"].upsert([
 
 ```java
 Map<String, Object> map = new HashMap();
-map.put('_id', "123abc")
+map.put('_id', docId)
 map.put('name', "Joe")
 map.put('isOnline', true)
 ditto.store.collection("people").upsert(content)
@@ -207,26 +206,27 @@ ditto.store.collection("people").upsert(content)
 <TabItem value="csharp">
 
 ```csharp
-ditto.Store.Collection("people").Upsert(
-  new Dictionary<string, object> { 
-      { "_id", "123abc" }, 
-      {"name", "Joe"}, 
-      {"isOnline", true} 
-    }, 
-    DittoWriteStrategy.Merge)
+var update = new Dictionary<string, object>
+{
+  { "_id", docId }, 
+  {"name", "Joe"}, 
+  {"isOnline", true} 
+};
+ditto.Store.Collection("people").Upsert(update)
 ```
 
 </TabItem>
 <TabItem value="cpp">
 
 ```cpp
-ditto.store.collection("people").upsert(
-      {
-        {"_id", "123abc"},
-        {"name", "Joe"},
-        {"isOnline", true}
-      }, custom_id);
+json content = json({
+    { "_id", "123abc" },
+    { "name", "Joe" },
+    { "isOnline", true }
+});
+ditto.store.collection("people").upsert(content);
 ```
+
 
 </TabItem>
 <TabItem value="rust">
