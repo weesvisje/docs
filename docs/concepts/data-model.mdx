@@ -777,7 +777,7 @@ const metadata = { name: 'my_image.png' }
 // the attachment will be created from that file.
 const attachment = collection.newAttachment(myImageBytes, metadata)
 
-const docID = collection.insert({ some: 'string', my_attachment: attachment })
+const docID = collection.upsert({ some: 'string', my_attachment: attachment })
 
 // Later, find the document and then fetch the attachment
 
