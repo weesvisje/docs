@@ -106,6 +106,17 @@ export function parseFrameworks(dittoChangeLog: { [key: string]: any }): {
             if (framework === "cpp") {
               sdkInfo["friendlyName"] = "C++";
               sdkInfo["friendlyDescription"] = "C++11 and higher";
+              sdkInfo["installationSnippet"] = md.render(dedent`
+              iOS
+              ~~~shell
+              curl -O https://software.ditto.live/cpp-ios/Ditto/${version}/dist/Ditto.tar.gz && tar xvfz Ditto.tar.gz
+              ~~~
+
+              Linux x64_64
+              ~~~shell
+              curl -O https://software.ditto.live/cpp-linux-x86_64/Ditto/${version}/dist/Ditto.tar.gz && tar xvfz Ditto.tar.gz
+              ~~~
+              `);
             }
             if (framework === "dotnet") {
               sdkInfo["friendlyName"] = ".NET";
@@ -140,6 +151,12 @@ export function parseFrameworks(dittoChangeLog: { [key: string]: any }): {
             if (framework === "rustsdk") {
               sdkInfo["friendlyName"] = "Rust";
               sdkInfo["friendlyDescription"] = "Rust 1.31 (2018 Edition)";
+              sdkInfo["installationSnippet"] = md.render(dedent`
+              ~~~toml
+              [dependencies.dittolive-ditto]
+              version = ${version}
+              ~~~
+              `);
             }
             frameworks[framework].push(sdkInfo);
           });
@@ -310,11 +327,13 @@ export function InstallCode({
       break;
     case "cpp":
       installCode = `curl -O https://software.ditto.live/cpp-${variant}/Ditto/${latest.version}/dist/Ditto.tar.gz && tar xvfz Ditto.tar.gz`;
-    case "rust":
+      break;
+    case "rustsk":
       installCode = dedent`
       [dependencies.dittolive-ditto]
       version = "${latest.version}"
       `;
+      break;
     default:
       break;
   }
