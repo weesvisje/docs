@@ -32,7 +32,14 @@ export function parseFrameworks(dittoChangeLog: { [key: string]: any }): {
   const md = markdownIt();
   // We maintain an allowlist to ensure that we're only showing the frameworks
   // that we want to be public at any given time
-  const frameworkAllowlist = ["android", "cocoa", "cpp", "dotnet", "js"];
+  const frameworkAllowlist = [
+    "android",
+    "cocoa",
+    "cpp",
+    "dotnet",
+    "js",
+    "rustsdk",
+  ];
   let frameworks: { [framework: string]: SDKInfo[] } = {};
   Object.keys(dittoChangeLog).forEach((framework) => {
     // Ensure we're dealing with an allowed framework
@@ -122,13 +129,17 @@ export function parseFrameworks(dittoChangeLog: { [key: string]: any }): {
               ~~~shell
               npm install --save @dittolive/ditto@${version}
               ~~~
-              
+
               If you have yarn:
-              
+
               ~~~shell
               yarn add @dittolive/ditto@${version}
               ~~~
               `);
+            }
+            if (framework === "rustsdk") {
+              sdkInfo["friendlyName"] = "Rust";
+              sdkInfo["friendlyDescription"] = "Rust 1.31 (2018 Edition)";
             }
             frameworks[framework].push(sdkInfo);
           });
@@ -192,6 +203,7 @@ export default function Changelog() {
             { label: "Java", value: "java" },
             { label: "C#", value: "csharp" },
             { label: "C++", value: "cpp" },
+            { label: "Rust", value: "rust" },
           ]}
         >
           <TabItem value="javascript">
@@ -220,6 +232,9 @@ export default function Changelog() {
           </TabItem>
           <TabItem value="cpp">
             <TabContents title="C++ Linux / iOS" sdkInfos={frameworks["cpp"]} />
+          </TabItem>
+          <TabItem value="rust">
+            <TabContents title="Rust" sdkInfos={frameworks["rustsdk"]} />
           </TabItem>
         </Tabs>
       </div>
@@ -269,10 +284,10 @@ export function InstallCode({
         // ...
         implementation "live.ditto:ditto:${latest.version}"
       }
-        
+
       android {
         // ...
-  
+
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
@@ -280,22 +295,26 @@ export function InstallCode({
       }
       `;
     case "dotnet":
-
-      if (variant === 'package-manager') {
+      if (variant === "package-manager") {
         installCode = dedent`Install-Package Ditto -Version ${latest.version}`;
       }
-      
-      if (variant === 'cli') {
+
+      if (variant === "cli") {
         installCode = dedent`dotnet add package Ditto --version ${latest.version}`;
       }
 
-      if (variant === 'package-reference') {
+      if (variant === "package-reference") {
         installCode = dedent`<PackageReference Include="Ditto" Version="${latest.version}" />`;
       }
 
-      break
+      break;
     case "cpp":
-      installCode = `curl -O https://software.ditto.live/cpp-${variant}/Ditto/${latest.version}/dist/Ditto.tar.gz && tar xvfz Ditto.tar.gz`
+      installCode = `curl -O https://software.ditto.live/cpp-${variant}/Ditto/${latest.version}/dist/Ditto.tar.gz && tar xvfz Ditto.tar.gz`;
+    case "rust":
+      installCode = dedent`
+      [dependencies.dittolive-ditto]
+      version = "${latest.version}"
+      `;
     default:
       break;
   }
