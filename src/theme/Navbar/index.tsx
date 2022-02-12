@@ -10,16 +10,16 @@ import clsx from "clsx";
 import Translate from "@docusaurus/Translate";
 import SearchBar from "@theme/SearchBar";
 import Toggle from "@theme/Toggle";
-import useThemeContext from "@docusaurus/theme-common";
 import {
-  useThemeConfig,
+  useColorMode,
+  useHideableNavbar,
+  useHistoryPopHandler,
+  useLockBodyScroll,
   useMobileSecondaryMenuRenderer,
   usePrevious,
-  useHistoryPopHandler,
+  useThemeConfig,
+  useWindowSize,
 } from "@docusaurus/theme-common";
-import useHideableNavbar from "@docusaurus/theme-common";
-import useLockBodyScroll from "@docusaurus/theme-common";
-import useWindowSize from "@docusaurus/theme-common";
 import { useActivePlugin } from "@docusaurus/plugin-content-docs/client";
 import NavbarItem, { Props as NavbarItemConfig } from "@theme/NavbarItem";
 import Logo from "@theme/Logo";
@@ -87,7 +87,7 @@ function useColorModeToggle() {
   const {
     colorMode: { disableSwitch },
   } = useThemeConfig();
-  const { isDarkTheme, setLightTheme, setDarkTheme } = useThemeContext();
+  const { isDarkTheme, setLightTheme, setDarkTheme } = useColorMode();
   const toggle = useCallback(
     (e) => (e.target.checked ? setDarkTheme() : setLightTheme()),
     [setLightTheme, setDarkTheme]
