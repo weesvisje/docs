@@ -198,7 +198,7 @@ export default function Changelog() {
           values={[
             { label: "JavaScript", value: "javascript" },
             { label: "Swift", value: "swift" },
-            { label: "Obj-C", value: "objc" },
+            { label: "ObjC", value: "objc" },
             { label: "Kotlin", value: "kotlin" },
             { label: "Java", value: "java" },
             { label: "C#", value: "csharp" },
