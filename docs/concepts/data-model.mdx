@@ -27,6 +27,7 @@ To get a reference to a collection:
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -91,6 +92,10 @@ let cars_collection = store.collection("cars")?;
 ```
 
 </TabItem>
+<TabItem value="http">
+An HTTP client creates a new collection by adding a new document (see below).
+</TabItem>
+
 </Tabs>
 
 ## Documents
@@ -113,6 +118,7 @@ You can supply your own unique identifier when creating a document:
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'},
   ]
 }>
 <TabItem value="javascript">
@@ -219,6 +225,17 @@ let _doc_id = ditto.store().collection("people")?.insert(person, Some(&doc_id), 
 ```
 
 </TabItem>
+
+<TabItem value="http">
+
+```bash
+curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/123abc' \
+    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{"name": "Susan", "age": 31}'
+```
+
+</TabItem>
 </Tabs>
 
 The id parameter is optional during insertion. If you do not supply a document `_id`, Ditto will automatically generate a random, unique string and use that as the document's `_id` instead.
@@ -235,6 +252,7 @@ The id parameter is optional during insertion. If you do not supply a document `
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -334,6 +352,18 @@ let doc_id = ditto.store().collection("people")?.insert(person, None, is_default
 ```
 
 </TabItem>
+
+<TabItem value="http">
+
+```bash
+curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents' \
+  --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+  --header 'Content-Type: application/json' \
+  --data-raw '{"name": "Susan", "age": 31}'
+```
+
+</TabItem>
+
 </Tabs>
 
 ### Composite Primary Keys
@@ -353,6 +383,7 @@ You may have a data model where documents are considered unique due to two or mo
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -475,6 +506,16 @@ DocumentId doc_id = ditto.store
   ```
 
 </TabItem>
+<TabItem value="http">
+
+  ```bash
+  curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents' \
+      --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+      --header 'Content-Type: application/json' \
+      --data-raw "{"_id": {"user_id": "456abc", "work_id": 789}, "name": "Susan", "age": 31}"
+  ```
+
+</TabItem>
 </Tabs>
 
 
@@ -531,9 +572,11 @@ Document values support all JSON compatible values like `string`, `boolean`, `nu
     </tr>
     <tr>
       <td>
-        <p><code>null</code></p>
+        <code>null</code>
       </td>
-      <td>This represents an absence of value</td>
+      <td>
+        This represents an absence of value
+      </td>
     </tr>
     <tr>
       <td>
@@ -590,6 +633,7 @@ The following snippets show a various set of data types
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -729,6 +773,16 @@ ditto.store.collection("foo").insert({
 
 </TabItem>
 
+<TabItem value="http">
+
+```bash
+curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/123abc' \
+    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{ "boolean": true, "string": "Hello World", "number": 10, "map": { "key": "value"}, "array": [1, 2, 3], "null": null }'
+```
+</TabItem>
+
 </Tabs>
 
 ## Binary Data - Attachments
@@ -749,6 +803,7 @@ Attachments do not get synced between devices by default, even if they are part 
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'},
   ]
 }>
 <TabItem value="javascript">
@@ -1018,6 +1073,9 @@ std::unique_ptr<AttachmentFetcher> fetcher = collection.fetch_attachment(
   ```
 
 </TabItem>
+<TabItem value="http">
+  Attachments are not supported by the HTTP API.
+</TabItem>
 </Tabs>
 
 
@@ -1043,6 +1101,7 @@ Once the value in the document is a counter, you can proceed to increment or dec
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -1181,4 +1240,10 @@ ditto.store
   ```
 
 </TabItem>
+<TabItem value="http">
+
+Counters are not supported by the HTTP API.
+
+</TabItem>
+
 </Tabs>

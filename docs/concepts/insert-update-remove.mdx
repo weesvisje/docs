@@ -22,6 +22,7 @@ Insert data into a collection with the insert function. It will return the `_id`
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'},
   ]
 }>
 <TabItem value="javascript">
@@ -112,6 +113,18 @@ DocumentId doc_id = ditto.store.collection("people").insert(content);
   ```
 
 </TabItem>
+<TabItem value="http">
+
+  ```bash
+  curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents' \
+    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{"name": "Susan", "age": 31}'
+  ```
+
+  NOTE: The HTTP API does not return the id, but a `txn_id` which can be used to request the document `_id`. See [HTTP API Reference](/concepts/http#transactions) for more details.
+
+</TabItem>
 </Tabs>
 
 ### Inserting with a specific `_id`
@@ -130,6 +143,7 @@ There are times where you want to specify the `_id` of the document before inser
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -216,6 +230,17 @@ ditto.store.collection("people").insert({{"_id", "123abc"}, { "name", "Susan" },
   ```
 
 </TabItem>
+
+<TabItem value="http">
+
+  ```bash
+  curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/123abc' \
+    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{"name": "Susan", "age": 31}'
+  ```
+
+</TabItem>
 </Tabs>
 
 ### Default Data
@@ -243,6 +268,7 @@ In the above example, both Device A and B want to preserve the change by Device 
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'},
   ]
 }>
 <TabItem value="javascript">
@@ -326,6 +352,9 @@ DocumentId doc_id = ditto.store.collection("people")
   ```
 
 </TabItem>
+<TabItem value="http">
+  Default data is not supported by the HTTP API.
+</TabItem>
 </Tabs>
 
 
@@ -360,6 +389,7 @@ Arrays
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -537,7 +567,15 @@ ditto.store().collection("people")?.update(|x|{
   }
 })?;
 ```
+</TabItem>
+<TabItem value="http">
 
+  ```bash
+  curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/<DOC_ID>' \
+    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{"age": 32, "friends": ["Susan"]}'
+  ```
 </TabItem>
 </Tabs>
 
@@ -575,6 +613,7 @@ An upsert with a merge strategy will set the properties on the document that mat
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -676,6 +715,9 @@ ditto.store().collection("people")?.insert_with_strategy(
 ```
 
 </TabItem>
+<TabItem value="http">
+  Insert with Strategy is not supported by the HTTP API.
+</TabItem>
 </Tabs>
 
 Now the document will look like this:
@@ -714,6 +756,7 @@ An overwrite strategy will remove the document if it exists and recreate with it
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -815,6 +858,10 @@ ditto.store().collection("people")?.insert_with_strategy(
 ```
 
 </TabItem>
+
+<TabItem value="http">
+  Insert with Strategy is not supported by the HTTP API.
+</TabItem>
 </Tabs>
 
 The final document will look like the following below. Since the `_id` matched, the document was removed and reinserted.
@@ -853,6 +900,7 @@ The `.insertIfAbsent` strategy is quite straight forward. If the `_id` of the pa
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -954,6 +1002,9 @@ ditto.store().collection("people")?.insert_with_strategy(
 ```
 
 </TabItem>
+<TabItem value="http">
+  Insert with Strategy is not supported by the HTTP API.
+</TabItem>
 </Tabs>
 
 Thus using our example, the document is left unchanged. 
@@ -993,6 +1044,7 @@ The `insertDefaultIfAbsent` is a strategy that is best for _placeholder_ data. I
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'},
   ]
 }>
 <TabItem value="javascript">
@@ -1094,6 +1146,9 @@ ditto.store().collection("people")?.insert_with_strategy(
 ```
 
 </TabItem>
+<TabItem value="http">
+  Insert with Strategy is not supported by the HTTP API.
+</TabItem>
 </Tabs>
 
 Thus using our example, the document is left unchanged. 
@@ -1170,6 +1225,7 @@ ditto.store.collection('cars').update((mutableDoc) => {
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'},
   ]
 }>
 <TabItem value="javascript">
@@ -1229,6 +1285,14 @@ ditto.store.collection("people").find_by_id(docId).remove();
   ```
 
 </TabItem>
+<TabItem value="http">
+
+  ```bash
+  curl -X DELETE 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/<doc_id>' \
+    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'Content-Type: application/json' 
+  ```
+</TabItem>
 </Tabs>
 
 ### Removing by query
@@ -1248,6 +1312,7 @@ You can also remove several documents with a query string. This example will rem
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -1307,6 +1372,10 @@ ditto.store.collection("people").find("age <= 32").remove();
   ```
 
 </TabItem>
+<TabItem value="http">
+  Delete by query is not supported by the HTTP API.
+</TabItem>
+
 </Tabs>
 
 ## Evicting Data
@@ -1330,6 +1399,7 @@ The API is extremely similar to the `remove()` API, however it uses `evict()` in
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -1389,4 +1459,9 @@ ditto.store.collection("people").find("age <= 32").evict();
   ```
 
 </TabItem>
+
+<TabItem value="http">
+  Evict is not supported by the HTTP API.
+</TabItem>
+
 </Tabs>
