@@ -20,6 +20,7 @@ Ditto provides a robust query engine that supports different filter operations. 
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -97,6 +98,13 @@ let docs = ditto.store().collection("people")
 .find("favoriteBooks[0].title == \'The Great Gatsby\'")
 .exec()?;
 ```
+
+</TabItem>
+<TabItem value="http">
+
+  ```bash
+  curl -X GET 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents?find=favoriteBooks[0].title=="The Great Gatsby"'
+  ```
 
 </TabItem>
 </Tabs>
@@ -416,6 +424,7 @@ The following example will sort on documents that have a mileage property
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'},
   ]
 }>
 <TabItem value="javascript">
@@ -497,6 +506,9 @@ let results = ditto.store().collection("cars").find("color == \'red\'")
   .exec()?;
 ```
 </TabItem>
+<TabItem value="http">
+Arbitrary sorting is not supported by the HTTP API. If you're interested in sorting by datetime, see [HTTP API Reference](/concepts/http#common-query-parameters).
+</TabItem>
 </Tabs>
 
 ## Limit 
@@ -515,6 +527,7 @@ There are times where you need to limit the number of results that a query. Call
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'},
   ]
 }>
 <TabItem value="javascript">
@@ -599,6 +612,13 @@ let results = ditto.store().collection("cars").find("color == \'red\'")
   .limit(100)
   .exec()?;
 ```
+
+</TabItem>
+<TabItem value="http">
+
+  ```bash
+  curl -X GET 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents?find=color=="red"&limit=100'
+  ```
 
 </TabItem>
 </Tabs>

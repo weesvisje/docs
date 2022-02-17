@@ -23,6 +23,7 @@ import TabItem from '@theme/TabItem';
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'},
   ]
 }>
 <TabItem value="javascript">
@@ -113,6 +114,18 @@ DocumentId doc_id = ditto.store.collection("people").upsert(content);
   ```
 
 </TabItem>
+<TabItem value="http">
+
+  ```bash
+  curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents' \
+    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{"name": "Susan", "age": 31}'
+  ```
+
+  NOTE: The HTTP API does not return the id, but a `txn_id` which can be used to request the document `_id`. See [HTTP API Reference](/concepts/http#transactions) for more details.
+
+</TabItem>
 </Tabs>
 
 
@@ -143,6 +156,7 @@ As an example, let's say we have a document in the `people` collection that look
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -219,50 +233,146 @@ ditto.Store.Collection("people").Upsert(update)
 <TabItem value="cpp">
 
 ```cpp
-json content = json({
-    { "_id", "123abc" },
-    { "name", "Joe" },
-    { "isOnline", true }
-});
-ditto.store.collection("people").upsert(content);
+ditto.store.collection("people").upsert({{"_id", "123abc"}, { "name", "Susan" }, { "age", 31 }});
 ```
-
 
 </TabItem>
 <TabItem value="rust">
 
-```rust
-ditto.store().collection("people")?.insert(
-        json!({
-          "_id": "123abc",
-          "name": "Joe",
-          "isOnline": true
-        })
-    )
-```
+  ```rust
+  ditto.store().collection("people")?.upsert(json!({"_id": DocumentId::new("123abc")?, "name": "Susan", "age": 31}), None, false)?;
+  ```
+
+</TabItem>
+
+<TabItem value="http">
+
+  ```bash
+  curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/123abc' \
+    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{"name": "Susan", "age": 31}'
+  ```
 
 </TabItem>
 </Tabs>
 
-Now the document will look like this:
+### Default Data
 
-```jsonc
-// before
-{
-  "_id": "123abc",
-  "name": "Sam",
-  "age": 45,
-  "isOnline": false
-}
+Default Data can be thought of as "placeholder" data.  Default Data is useful when your app needs to load "starter" data from an external data source, like from a backend API, on multiple devices without creating odd "overwriting" behavior.
 
-// after
-{
-  "_id": "123abc",
-  "name": "Joe", // updated 
-  "age": 45, // left alone, because the payload did not include this key
-  "isOnline": true  // update
-}
+Ditto's approach to conflict resolution orders changes by time. In most situations, this leads to predictable behavior. However, if your application is upserting the same initial data into multiple devices, such as common data from a central backend API, this could result in overwriting later changes:
+
+1. Device A upserts a document `{"firstName": "Adam"}` at time = 0 after downloading from a central API.
+2. Device A updates the document to `{"firstName": "Max"}` at time = 1.
+3. Device B synchronizes with Device A receiving the document `{"firstName": "Max"}` at time = 2.
+4. Device B downloads the same document from the backend API `{"firstName": "Adam"}` and upserts at t = 3, which overwrites the previous change synced at time = 1.
+
+In the above example, both Device A and B want to preserve the change by Device A that occurred after downloading the common data. To do so, Ditto offers an additional parameter: isDefault.
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+const docID = await ditto.store.collection('people').upsert({
+    _id: new DocumentID(123),
+    name: "Susan",
+    age: 31
+}, { isDefault: true })
 ```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+let docId = ditto.store.collection("people").upsert([
+    "name": "Susan",
+    "age": 31
+], isDefault: true)
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITDocumentID *docID = [[ditto.store collection:@"people"]
+     upsert:@{ @"name": @"Susan", @"age": [NSNumber numberWithInt:31] }
+     isDefault:true
+     error:nil];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+val docId = ditto.store.collection("people").upsert(mapOf(
+    "name" to "Susan",
+    "age" to 31
+), isDefault: true)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Map<String, Object> content = new HashMap<>();
+content.put("name", "Susan");
+content.put("age", 31);
+DittoDocumentID docId = ditto.store
+                             .collection("people")
+                             .upsert(content, new DittoDocumentID("doc-id"), true);
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+DittoDocumentID docID = ditto.Store
+                        .Collection("people")
+                        .upsert(
+                            {{"name", "Susan"}, {"age", 31}},
+                            new DittoDocumentID("doc-id"),
+                            true
+                        );
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+json content = json({{ "name", "Susan" }, { "age", 31 }}):
+DocumentId doc_id = ditto.store.collection("people")
+                               .upsert(content, DocumentId("doc-id"), true);
+```
+</TabItem>
+<TabItem value="rust">
+
+  ```rust
+  ditto.store().collection("people")?.upsert(json!({"_id": DocumentId::new("123abc")?, "name": "Susan", "age": 31}), None, true)?;
+  ```
+
+</TabItem>
+
+<TabItem value="http">
+  Default Data is not supported by the HTTP API.
+</TabItem>
+
+</Tabs>
+
 
 ## Updating Documents
 
@@ -295,6 +405,7 @@ Arrays
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -472,7 +583,15 @@ ditto.store().collection("people")?.update(|x|{
   }
 })?;
 ```
+</TabItem>
+<TabItem value="http">
 
+  ```bash
+  curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/<DOC_ID>' \
+    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{"age": 32, "friends": ["Susan"]}'
+  ```
 </TabItem>
 </Tabs>
 
@@ -530,6 +649,7 @@ ditto.store.collection('cars').update((mutableDoc) => {
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -589,6 +709,9 @@ ditto.store.collection("people").find_by_id(docId).remove();
   ```
 
 </TabItem>
+<TabItem value="http">
+  Removing by ID is not supported by the HTTP API.
+</TabItem>
 </Tabs>
 
 ### Removing by query
@@ -608,6 +731,7 @@ You can also remove several documents with a query string. This example will rem
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
   ]
 }>
 <TabItem value="javascript">
@@ -667,6 +791,9 @@ ditto.store.collection("people").find("age <= 32").remove();
   ```
 
 </TabItem>
+<TabItem value="http">
+  Removing by query is not supported by the HTTP API.
+</TabItem>
 </Tabs>
 
 ## Evicting Data
@@ -690,6 +817,7 @@ The API is extremely similar to the `remove()` API, however it uses `evict()` in
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'},
   ]
 }>
 <TabItem value="javascript">
@@ -749,116 +877,12 @@ ditto.store.collection("people").find("age <= 32").evict();
   ```
 
 </TabItem>
-</Tabs>
+<TabItem value="http">
 
-
-### Default Data
-
-Default Data can be thought of as "placeholder" data.  Default Data is useful when your app needs to load "starter" data from an external data source, like from a backend API, on multiple devices without creating odd "overwriting" behavior.
-
-Ditto's approach to conflict resolution orders changes by time. In most situations, this leads to predictable behavior. However, if your application is upserting the same initial data into multiple devices, such as common data from a central backend API, this could result in overwriting later changes:
-
-1. Device A upserts a document `{"firstName": "Adam"}` at time = 0 after downloading from a central API.
-2. Device A updates the document to `{"firstName": "Max"}` at time = 1.
-3. Device B synchronizes with Device A receiving the document `{"firstName": "Max"}` at time = 2.
-4. Device B downloads the same document from the backend API `{"firstName": "Adam"}` and upserts at t = 3, which overwrites the previous change synced at time = 1.
-
-In the above example, both Device A and B want to preserve the change by Device A that occurred after downloading the common data. To do so, Ditto offers an additional parameter: isDefault.
-
-<Tabs
-  groupId="programming-language"
-  defaultValue="javascript"
-  values={[
-    {label: 'JavaScript', value: 'javascript'},
-    {label: 'Swift', value: 'swift'},
-    {label: 'Objective-C', value: 'objc'},
-    {label: 'Kotlin', value: 'kotlin'},
-    {label: 'Java', value: 'java'},
-    {label: 'C#', value: 'csharp'},
-    {label: 'C++', value: 'cpp'},
-    {label: 'Rust', value: 'rust'},
-  ]
-}>
-<TabItem value="javascript">
-
-```js
-const docID = await ditto.store.collection('people').upsert({
-    _id: new DocumentID(123),
-    name: "Susan",
-    age: 31
-}, { isDefault: true })
-```
-
-</TabItem>
-<TabItem value="swift">
-
-```swift
-let docId = ditto.store.collection("people").upsert([
-    "name": "Susan",
-    "age": 31
-], isDefault: true)
-```
-
-</TabItem>
-<TabItem value="objc">
-
-```objc
-DITDocumentID *docID = [[ditto.store collection:@"people"]
-     upsert:@{ @"name": @"Susan", @"age": [NSNumber numberWithInt:31] }
-     isDefault:true
-     error:nil];
-```
-
-</TabItem>
-<TabItem value="kotlin">
-
-```kotlin
-val docId = ditto.store.collection("people").upsert(mapOf(
-    "name" to "Susan",
-    "age" to 31
-), isDefault: true)
-```
-
-</TabItem>
-<TabItem value="java">
-
-```java
-Map<String, Object> content = new HashMap<>();
-content.put("name", "Susan");
-content.put("age", 31);
-DittoDocumentID docId = ditto.store
-                             .collection("people")
-                             .upsert(content, new DittoDocumentID("doc-id"), true);
-```
-
-</TabItem>
-<TabItem value="csharp">
-
-```csharp
-DittoDocumentID docID = ditto.Store
-                        .Collection("people")
-                        .upsert(
-                            {{"name", "Susan"}, {"age", 31}},
-                            new DittoDocumentID("doc-id"),
-                            true
-                        );
-```
-
-</TabItem>
-<TabItem value="cpp">
-
-```cpp
-json content = json({{ "name", "Susan" }, { "age", 31 }}):
-DocumentId doc_id = ditto.store.collection("people")
-                               .upsert(content, DocumentId("doc-id"), true);
-```
-</TabItem>
-<TabItem value="rust">
-
-  ```rust
-  ditto.store().collection("people")?.upsert(json!({"_id": DocumentId::new("123abc")?, "name": "Susan", "age": 31}), None, true)?;
+  ```bash
+  curl -X DELETE 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/<doc_id>' \
+    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'Content-Type: application/json' 
   ```
-
 </TabItem>
 </Tabs>
-
