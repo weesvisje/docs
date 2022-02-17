@@ -110,7 +110,6 @@ DocumentId doc_id = ditto.store.collection("people").upsert(content);
     "age": 31
   });
   let doc_id = ditto.store().collection("people")?.upsert(content, None, false)?;
-
   ```
 
 </TabItem>
@@ -592,6 +591,7 @@ ditto.store().collection("people")?.update(|x|{
     --header 'Content-Type: application/json' \
     --data-raw '{"age": 32, "friends": ["Susan"]}'
   ```
+
 </TabItem>
 </Tabs>
 
@@ -710,7 +710,13 @@ ditto.store.collection("people").find_by_id(docId).remove();
 
 </TabItem>
 <TabItem value="http">
-  Removing by ID is not supported by the HTTP API.
+
+  ```bash
+  curl -X DELETE 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/<doc_id>' \
+    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'Content-Type: application/json' 
+  ```
+
 </TabItem>
 </Tabs>
 
@@ -878,11 +884,8 @@ ditto.store.collection("people").find("age <= 32").evict();
 
 </TabItem>
 <TabItem value="http">
+  Evict is not supported by the HTTP API.
 
-  ```bash
-  curl -X DELETE 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/<doc_id>' \
-    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
-    --header 'Content-Type: application/json' 
-  ```
 </TabItem>
 </Tabs>
+
