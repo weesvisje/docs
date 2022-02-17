@@ -24,10 +24,11 @@ iOS and Android devices are able connect with each other over a standard Bluetoo
 * If two Bluetooth 5.x devices are syncing with each other: about 2.1 megabits per second (that's a lot faster!)
 * If a Bluetooth 4.x device is trying to sync with a Bluetooth 5.x device, then we are still looking at 2.5 kilobits per second.
 
-### What is the minimum iOS version that Ditto can run on?
+### What are the device and operating system requirements?
 
 * iOS: Ditto can run on devices as low as iOS 12. As of October 28th, 2019 - This constitutes almost 98% of iOS devices as measured by the App Store. See here for more information.
 * Android: We support Android Version 7.1 or higher. If you need a version that is lower please contact our team through the [Ditto Portal](https://portal.ditto.live).
+* System Requirements: Ditto has been tested on devices similar to [Raspberry Pi Zero](https://www.raspberrypi.com/products/raspberry-pi-zero/) (1GHz single-core CPU and 512MB RAM). We recommend at least those specifications or better.
 
 ### How does Ditto still enable offline data?
 At the heart of Ditto is a realtime database that takes in JSON-like data structures. That means that even if a device with Ditto is completely disconnected from other devices, it will still have the data stored locally. That means even in a completely offline environment, users will still be able to edit, read, and observe data. When devices reconnect, they will exchange relevant information that was edited when they were offline. You can think of this as a similar behavior to Google Docs or Google Sheets.
