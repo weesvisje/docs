@@ -102,7 +102,20 @@ An HTTP client creates a new collection by adding a new document (see below).
 A Ditto document is a schema flexible unit of data in Ditto. If collections are similar to tables, then a document is similar to a row. A document, at its highest level, is a map that can contain arbitrarily nested keys and values. Each document has a primary key, often referred to as an id.
 
 ## Document `_id`, the Primary Key
-In order for documents to sync, each document must have a unique identifier which we refer to as the id. This is the primary key of the document and is not optional.
+In order for documents to sync, each document must have a unique identifier
+which we refer to as the id. This is the primary key of the document and is not
+optional.
+
+As an example, let's say we have a document in the `people` collection that looks like this:
+
+```jsonc
+{
+  "_id": "123abc",
+  "name": "Sam",
+  "age": 45,
+  "isOnline": false
+}
+```
 
 You can supply your own unique identifier when creating a document:
 
@@ -124,7 +137,7 @@ You can supply your own unique identifier when creating a document:
 <TabItem value="javascript">
 
 ```js
-let docId = ditto.store.collection("people").insert({
+let docId = ditto.store.collection("people").upsert({
     "_id": "123abc",
     "name": "Susan",
     "age": 31
@@ -136,7 +149,7 @@ console.log(docId) // "123abc"
 <TabItem value="swift">
 
 ```swift
-let docId = ditto.store["people"].insert([
+let docId = ditto.store["people"].upsert([
     "_id": "123abc"
     "name": "Susan",
     "age": 31
@@ -149,7 +162,7 @@ print(docId) // "123abc"
 
 ```objc
 NSString *docId = [[ditto.store collection:@"people"]
-                    insert:@{ @"_id": @"123abc" @"name": @"Susan", @"age": @31 }
+                    upsert:@{ @"_id": @"123abc" @"name": @"Susan", @"age": @31 }
                     isDefault:false
                     error:nil];
 NSLog(@"%@", docId); // => "123abc"
@@ -159,7 +172,7 @@ NSLog(@"%@", docId); // => "123abc"
 <TabItem value="kotlin">
 
 ```kotlin
-val docId = ditto.store["people"].insert(
+val docId = ditto.store["people"].upsert(
     mapOf(
         "_id" to "123abc"
         "name" to "Susan",
@@ -178,7 +191,7 @@ Map<String, Object> content = new HashMap<>();
 content.put("_id", "123abc");
 content.put("name", "Susan");
 content.put("age", 31);
-DittoDocumentID docId = ditto.store.collection("people").insert(content);
+DittoDocumentID docId = ditto.store.collection("people").upsert(content);
 Log.d("Debug", docId); // => 123abc
 ```
 
@@ -193,7 +206,7 @@ var content = new Dictionary<string, object>
     { "name", "Susan" },
     { "age", 31 }
 };
-ditto.Store.Collection("people").Insert(content);
+ditto.Store.Collection("people").Upsert(content);
 docId; // => "123abc"
 ```
 
@@ -208,7 +221,7 @@ json person = json({
 });
 DocumentId doc_id = ditto.store
                          .collection("people")
-                         .insert(person);
+                         .upsert(person);
 ```
 
 </TabItem>
@@ -258,7 +271,7 @@ The id parameter is optional during insertion. If you do not supply a document `
 <TabItem value="javascript">
 
 ```js
-let docId = ditto.store.collection("people").insert({
+let docId = ditto.store.collection("people").upsert({
     "name": "Susan",
     "age": 31
 })
@@ -269,7 +282,7 @@ console.log(docId) // "507f191e810c19729de860ea"
 <TabItem value="swift">
 
 ```swift
-let docId = ditto.store["people"].insert([
+let docId = ditto.store["people"].upsert([
     "name": "Susan",
     "age": 31
 ])
@@ -281,7 +294,7 @@ print(docId) // "507f191e810c19729de860ea"
 
 ```objc
 NSString *docId = [[ditto.store collection:@"people"]
-                    insert:@{ @"name": @"Susan", @"age": @31 }
+                    upsert:@{ @"name": @"Susan", @"age": @31 }
                     isDefault:false
                     error:nil];
 NSLog(@"%@", docId); // => "507f191e810c19729de860ea"
@@ -291,7 +304,7 @@ NSLog(@"%@", docId); // => "507f191e810c19729de860ea"
 <TabItem value="kotlin">
 
 ```kotlin
-val docId = ditto.store["people"].insert(
+val docId = ditto.store["people"].upsert(
     mapOf(
         "name" to "Susan",
         "age" to 31
@@ -308,7 +321,7 @@ docId // => "507f191e810c19729de860ea"
 Map<String, Object> content = new HashMap<>();
 content.put("name", "Susan");
 content.put("age", 31);
-DittoDocumentID docId = ditto.store.collection("people").insert(content);
+DittoDocumentID docId = ditto.store.collection("people").upsert(content);
 Log.d("Debug", docId); // => 507f191e810c19729de860ea
 ```
 
@@ -322,7 +335,7 @@ var content = new Dictionary<string, object>
     { "name", "Susan" },
     { "age", 31 }
 };
-ditto.Store.Collection("people").Insert(content);
+ditto.Store.Collection("people").Upsert(content);
 docId; // => "123abc"
 ```
 
@@ -336,7 +349,7 @@ json person = json({
 });
 DocumentId doc_id = ditto.store
                          .collection("people")
-                         .insert(person);
+                         .upsert(person);
 ```
 
 </TabItem>
@@ -389,7 +402,7 @@ You may have a data model where documents are considered unique due to two or mo
 <TabItem value="javascript">
 
 ```js
-let docId = ditto.store.collection("people").insert({
+let docId = ditto.store.collection("people").upsert({
     "_id": { "userId": "456abc", "workId": 789 }
     "name": "Susan",
     "age": 31
@@ -401,7 +414,7 @@ console.log(docId) // "{ "userId": "456abc", "workId": 789 }"
 <TabItem value="swift">
 
 ```swift
-let docId = ditto.store["people"].insert([
+let docId = ditto.store["people"].upsert([
     "_id": [ "userId": "456abc", "workId": 789 ]
     "name": "Susan",
     "age": 31
@@ -414,7 +427,7 @@ print(docId) // "[ "userId": "456abc", "workId": 789 ]"
 
 ```objc
 NSString *docId = [[ditto.store collection:@"people"]
-                    insert:@{ 
+                    upsert:@{ 
                       @"_id": @{ @"userId": "456abc": @"workId": @789 }
                       @"name": @"Susan", 
                       @"age": @31 }
@@ -427,7 +440,7 @@ NSLog(@"%@", docId); // => "NSDictionary @{ @"userId": "456abc": @"workId": @789
 <TabItem value="kotlin">
 
 ```kotlin
-val docId = ditto.store["people"].insert(
+val docId = ditto.store["people"].upsert(
     mapOf(
         "_id": mapOf( "userId": "456abc", "workId": 789),
         "name" to "Susan",
@@ -450,7 +463,7 @@ Map<String, Object> content = new HashMap<>();
 content.put("_id", _id)
 content.put("name", "Susan");
 content.put("age", 31);
-DittoDocumentID docId = ditto.store.collection("people").insert(content);
+DittoDocumentID docId = ditto.store.collection("people").upsert(content);
 Log.d("Debug", docId); // => "_id.put("userId", "456abc"); _id.put("workId", 789);"
 ```
 
@@ -465,7 +478,7 @@ var content = new Dictionary<string, object>
     { "name", "Susan" },
     { "age", 31 }
 };
-ditto.Store.Collection("people").Insert(content);
+ditto.Store.Collection("people").Upsert(content);
 docId; // => "{{ "userId", "456abc" }, { "workId": 789 }}"
 ```
 
@@ -483,7 +496,7 @@ json person = json({
 });
 DocumentId doc_id = ditto.store
                          .collection("people")
-                         .insert(person);
+                         .upsert(person);
 ```
 
 </TabItem>
@@ -640,7 +653,7 @@ The following snippets show a various set of data types
 
 ```js
 // Insert JSON-compatible data into Ditto
-await ditto.store.collection('foo').insert({
+await ditto.store.collection('foo').upsert({
     value: {
         "boolean": true,
         "string": "Hello World",
@@ -657,7 +670,7 @@ await ditto.store.collection('foo').insert({
 
 ```swift
 // Insert JSON-compatible data into Ditto
-ditto.store["foo"].insert([
+ditto.store["foo"].upsert([
     "boolean": true,
     "string": "Hello World",
     "number": 10,
@@ -673,7 +686,7 @@ ditto.store["foo"].insert([
 ```objc
 // Insert JSON-compatible data into Ditto
 [[ditto.store collection:@"foo"]
-  insert:@{
+  upsert:@{
       @"boolean": @true,
       @"string": @"Hello World",
       @"number": @10,
@@ -689,7 +702,7 @@ ditto.store["foo"].insert([
 <TabItem value="kotlin">
 
 ```kotlin
-ditto.store["foo"].insert(mapOf(
+ditto.store["foo"].upsert(mapOf(
     "boolean" to true,
     "string" to "Hello World",
     "number" to 10,
@@ -713,7 +726,7 @@ innerMap.put("key", "value");
 content.put("map", innerMap);
 content.put("array", Arrays.asList(1, 2, 3));
 content.put("null", null);
-ditto.store.collection("foo").insert(content);
+ditto.store.collection("foo").upsert(content);
 ```
 
 </TabItem>
@@ -730,7 +743,7 @@ var content = new Dictionary<string, object>
     { "array", new int[] {1, 2, 3} },
     { "null", null }
 };
-ditto.Store.Collection("foo").Insert(content);
+ditto.Store.Collection("foo").Upsert(content);
 ```
 
 </TabItem>
@@ -738,7 +751,7 @@ ditto.Store.Collection("foo").Insert(content);
 
 ```cpp
 // Insert JSON-compatible data into Ditto
-ditto.store.collection("foo").insert({
+ditto.store.collection("foo").upsert({
     {"boolean", true},
     {"string", "Hello World"},
     {"number", 10},
@@ -819,7 +832,7 @@ const metadata = { name: 'my_image.png' }
 // the attachment will be created from that file.
 const attachment = collection.newAttachment(myImageBytes, metadata)
 
-const docID = collection.insert({ some: 'string', my_attachment: attachment })
+const docID = collection.upsert({ some: 'string', my_attachment: attachment })
 
 // Later, find the document and then fetch the attachment
 
@@ -859,7 +872,7 @@ let attachment = collection.newAttachment(
     metadata: metadata
 )!
 
-try! collection.insert(["some": "string", "my_attachment": attachment])
+try! collection.upsert(["some": "string", "my_attachment": attachment])
 
 // Later, find the document and the fetch the attachment
 
@@ -888,7 +901,7 @@ NSDictionary<NSString *, NSString *> *metadata = @{@"name": @"my_image.png"};
 DITAttachment *attachment = [collection newAttachment:myImageURL.path
                                              metadata:metadata];
 
-[collection insert:@{@"some": @"string", @"my_attachment": attachment} error:nil];
+[collection upsert:@{@"some": @"string", @"my_attachment": attachment} error:nil];
 
 // Later, find the document and the fetch the attachment
 
@@ -919,7 +932,7 @@ val attachmentStream =  context.assets.open("image.png")
 val metadata = mapOf("name" to "my_image.png")
 val attachment = coll.newAttachment(attachmentStream, metadata)
 
-val docID =  coll.insert(mapOf("some" to "string", "my_attachment" to attachment))
+val docID =  coll.upsert(mapOf("some" to "string", "my_attachment" to attachment))
 
 // Later, find the document and the fetch the attachment
 
@@ -950,7 +963,7 @@ DittoAttachment attachment = coll.newAttachment(attachmentStream, metadata);
 Map<String, Object> content = new HashMap<>();
 content.put("some", "string");
 content.put("my_attachment", attachment);
-DittoDocumentID docID = coll.insert(content);
+DittoDocumentID docID = coll.upsert(content);
 
 // Later, find the document and the fetch the attachment
 
@@ -982,7 +995,7 @@ var coll = ditto.Store.Collection("people");
 var path = "path/to/image.png";
 var metadata = new Dictionary<string, string> { { "name", "my_image.png" } };
 var attachment = coll.NewAttachment(path, metadata);
-var docID = coll.Insert(new Dictionary<string, object> { { "some", "string" }, { "my_attachment", attachment } });
+var docID = coll.Upsert(new Dictionary<string, object> { { "some", "string" }, { "my_attachment", attachment } });
 
 // Later, find the document and the fetch the attachment
 
@@ -1012,7 +1025,7 @@ std::map<std::string, std::string> metadata = {{"some", "string"}};
 Attachment attachment =
     collection.new_attachment(attachment_file_path, metadata);
 
-collection.insert({{"some", "string"}, {"my_attachment", attachment}});
+collection.upsert({{"some", "string"}, {"my_attachment", attachment}});
 
 // Later, find the document and the fetch the attachment
 
@@ -1107,7 +1120,7 @@ Once the value in the document is a counter, you can proceed to increment or dec
 <TabItem value="javascript">
 
 ```js
-let docID = ditto.store["people"].insert({
+let docID = ditto.store["people"].upsert({
     name: 'Frank',
     ownedCars: 0 // here 0 is a number
 })
@@ -1122,7 +1135,7 @@ ditto.store.collection('people').findByID(docID).update((mutableDoc) => {
 <TabItem value="swift">
 
 ```swift
-let docId = ditto.store["people"].insert([
+let docId = ditto.store["people"].upsert([
     "name": "Frank",
     "ownedCars": 0 // here 0 is a number
 ])
@@ -1138,7 +1151,7 @@ ditto.store.["people"].findByID(docId).update({ mutableDoc in
 
 ```objc
 NSString *docId = [[ditto.store collection:@"people"]
-                    insert:@{ @"model": @"Frank", @"ownedCars": @0 }
+                    upsert:@{ @"model": @"Frank", @"ownedCars": @0 }
                     isDefault:false
                     error:nil];
 
@@ -1152,7 +1165,7 @@ NSString *docId = [[ditto.store collection:@"people"]
 <TabItem value="kotlin">
 
 ```kotlin
-val docID = ditto.store["people"].insert(mapOf(
+val docID = ditto.store["people"].upsert(mapOf(
     "name" to "Frank",
     "ownedCars" to 0
 ))
@@ -1170,7 +1183,7 @@ ditto.store.collection("people").findByID(docID).update { mutableDoc ->
 Map<String, Object> content = new HashMap<>();
 content.put("name", "Frank");
 content.put("ownedCars", 0);
-DittoDocumentID docID = ditto.store.collection("people").insert(content);
+DittoDocumentID docID = ditto.store.collection("people").upsert(content);
 
 ditto.store.collection("people").findByID(docID).update(mutDoc -> {
     try {
@@ -1191,7 +1204,7 @@ var content = new Dictionary<string, object>
     { "name", "Frank" },
     { "ownedCars", 0 }
 };
-ditto.Store.Collection("people").Insert(content);
+ditto.Store.Collection("people").Upsert(content);
 ditto.Store.Collection("people").FindById(docId).Update((mutableDoc) => {
     mutableDoc["ownedCars"].ReplaceWithCounter();
     mutableDoc["ownedCars"].Increment(1);
@@ -1202,7 +1215,7 @@ ditto.Store.Collection("people").FindById(docId).Update((mutableDoc) => {
 <TabItem value="cpp">
 
 ```cpp
-DocumentId docID = ditto.store.collection("people").insert({
+DocumentId docID = ditto.store.collection("people").upsert({
     {"name", "Frank"},
     {"ownedCars", 0}
 };
