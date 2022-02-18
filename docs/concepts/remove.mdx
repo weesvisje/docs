@@ -1,0 +1,214 @@
+---
+title: 'Remove'
+sidebar_position: 5
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Removing Documents
+
+Removes will delete or remove one or more documents from the collection. Calling remove __will sync removals to the local device and to other devices as well__. 
+
+
+:::danger
+
+Removing documents will remove documents from the local device _and other peers_. Your application code should consider `remove`  calls to be destructive. In other words, if you call remove on document, your application should consider this document _gone_ throughout your system.
+
+__Alternatively:__ consider using a "soft-delete" pattern in your application for most use cases. For example, use a field like `isArchived: true` and query for documents to represent a "soft-delete". 
+
+```json
+{
+  "_id": "123abc",
+  "name": "Foo",
+  "isArchived": true // add this field
+}
+```
+
+And query non-archived documents like so:
+
+```js
+let liveQuery = ditto
+  .store.collection('cars')
+  .find('isArchived == $args.isArchived', { isArchived: false }).observe((documents) => {
+    console.log('these are the unarchived documents', documents)
+  })
+```
+
+You can easily un-archive these documents by calling update on that field like so:
+
+```js
+ditto.store.collection('cars').update((mutableDoc) => {
+  mutableDoc["isArchived"] = false
+})
+```
+
+:::
+ 
+
+### Removing by `_id`
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+await ditto.store.collection('people').findByID(docID).remove()
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+ditto.store["people"].findByID(docId).remove()
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITCollection *collection = [ditto.store collection:@"people"];
+[[collection findByID:@"123"] remove];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+ditto.store["people"].findByID(docId).remove()
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+ditto.store.collection("people").findByID(docId).remove();
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+ditto.Store.Collection("people").FindByID(docId).Remove();
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+ditto.store.collection("people").find_by_id(docId).remove();
+```
+
+</TabItem>
+<TabItem value="rust">
+
+  ```rust
+  ditto.store().collection("people")?.find_by_id(doc_id).remove()?;
+  ```
+
+</TabItem>
+<TabItem value="http">
+
+  ```bash
+  curl -X DELETE 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/<doc_id>' \
+    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'Content-Type: application/json' 
+  ```
+
+</TabItem>
+</Tabs>
+
+### Removing by query
+
+You can also remove several documents with a query string. This example will remove all documents in the "people" collection who has an age property lower than or equal to 32 (`"age <= 32"`)
+
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'}
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+await ditto.store.collection('people').find('age <= 32').remove()
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+ditto.store["people"].find("age <= 32").remove()
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITCollection *collection = [ditto.store collection:@"people"];
+[[collection find:@"age <= 32"] remove];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+ditto.store["people"].find("age <= 32").remove()
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+ditto.store.collection("people").find("age <= 32").remove();
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+ditto.Store.Collection("people").Find("age <= 32").Remove();
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+ditto.store.collection("people").find("age <= 32").remove();
+```
+
+</TabItem>
+<TabItem value="rust">
+
+  ```rust
+  ditto.store().collection("people")?.find("age <= 32").remove()?;
+  ```
+
+</TabItem>
+<TabItem value="http">
+  Removing by query is not supported by the HTTP API.
+</TabItem>
+</Tabs>

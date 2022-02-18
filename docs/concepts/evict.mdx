@@ -1,0 +1,95 @@
+---
+title: 'Evict'
+sidebar_position: 6
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Evicting Data
+
+There are times where you want to remove data _without_ syncing the delete operation. This operation is different than remove in that it only removes one of more documents from the local storage and **does not sync the change to other devices.**
+
+For example, you might use this operation when a device has completed an activity that involved synchronizing data with other devices and has transmitted the data to a backend. At this point, the device can evict the data locally to free up storage, but it does not want to remove the data from any other device.
+
+The API is extremely similar to the `remove()` API, however it uses `evict()` instead.
+
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'},
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+await ditto.store.collection('people').find('age <= 32').evict()
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+ditto.store["people"].find("age <= 32").evict()
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITCollection *collection = [ditto.store collection:@"people"];
+[[collection find:@"age <= 32"] evict];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+ditto.store["people"].find("age <= 32").evict()
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+ditto.store.collection("people").find("age <= 32").evict();
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+ditto.Store.Collection("people").Find("age <= 32").evict();
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+ditto.store.collection("people").find("age <= 32").evict();
+```
+
+</TabItem>
+<TabItem value="rust">
+
+  ```rust
+  ditto.store().collection("people")?.find("age <= 32").evict()?;
+  ```
+
+</TabItem>
+<TabItem value="http">
+  Evict is not supported by the HTTP API.
+
+</TabItem>
+</Tabs>
+
