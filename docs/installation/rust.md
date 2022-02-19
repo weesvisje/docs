@@ -5,15 +5,11 @@ pagination_prev: intro
 pagination_next: concepts/overview
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import { InstallCode } from "../../src/components/Changelog.tsx";
 
 Create a new project with `cargo init --bin` and add the following to your `Cargo.toml` file.
 
-```toml
-[dependencies.dittolive-ditto]
-version = "1.0"
-```
+<InstallCode framework="rustsdk" />
 
 ```console
 cargo build
