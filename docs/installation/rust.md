@@ -37,7 +37,10 @@ The rust compiler is natively capable of cross-compiling for a wide range of tar
 ### I get an error: "error: could not find native static library `dittoffi`, perhaps an -L flag is missing". What should I do?
 
 #### Diagnosis
-The Ditto SDK build.rs script failed to download an appropriate ditto binary for your target platform. Check your internet connection is live and Ditto version number is correct. Inspect the downloaded library in the cargo build cache (default is `target/<profile>/build/dittolive-ditto-sys-<hash>/out/libdittoffi.{a,dylib,so,dll}`) using your platforms utilties such as `file`, `otool`, `readelf` or similar. Try updating to the latest release of `dittolive-ditto`. You can also manually download the binary yourself.
+The Ditto SDK build.rs script failed to download an appropriate ditto binary for your target platform.  Look at the build script's log at `target/<profile>/build/dittolive-ditto-sys-<hash>/stderr` for any errors.
+
+Check your internet connection is live and Ditto version number is correct. Inspect the downloaded library in the cargo build cache (default is `target/<profile>/build/dittolive-ditto-sys-<hash>/out/libdittoffi.{a,dylib,so,dll}`) using your platforms utilties such as `file`, `otool`, `readelf` or similar. Try updating to the latest release of `dittolive-ditto`. You can also manually download the binary yourself.
+
 
 #### Solutions
 
