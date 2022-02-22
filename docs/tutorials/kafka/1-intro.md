@@ -14,46 +14,56 @@ The Kafka settings are only enabled if your Organization is on a dedicated clust
 
 ## Installing Kafka
 
-First, follow the instructions on [Kafka Quickstart](https://kafka.apache.org/quickstart) to try out basic Kafka locally. 
+If you aren't familiar with Kafka, first follow the instructions on [Kafka Quickstart](https://kafka.apache.org/quickstart) to try out basic Kafka locally. In this tutorial, we used scripts in the `bin` directory of `kafka_2.13-3.1.0`.
 
 ## Handling credentials 
 
-When you query the Big Peer, you must provide the proper credentials. In your organization page, click "Live Query Settings" and you will see the credentials for your cluster. Copy the Cluster Certificate and User Certificate into text files locally and give them good names. Keep these files safe!
+To connect to your Kafka instance, you need to have an SSL connection. In your organization page, click "Live Query Settings" and you will see the credentials for your cluster. Download the Cluster Certificate and User Certificate. Keep these files safe!
+
+**Organization Apps > Your App Name > Live Query Settings > Kafka Connection Data**
 
 ![kafka credentials](kafka-browser.png)
 
-## Simple test
-
-You can use the following command to test out your cluster.
-
-```bash
-bin/kafka-console-consumer.sh --bootstrap-server <your-endpoint>:443 \
---consumer-property security.protocol=SSL \
---consumer-property ssl.truststore.password=<CLUSTER_CERTIFICATE_PASSWORD> \
---consumer-property ssl.truststore.location=/path/to/my/cluster_certificate.txt \
---consumer-property ssl.keystore.location=<USER_CERTIFICATE_PASSWORD> \
---consumer-property ssl.keystore.password=/path/to/my/user_certificate.txt \
---group user-consumable-<your-app_id> \
---topic user-consumable-<your_app_id>
-```
-
-## Using configuration files
-
-Kafka instances have a `conf/server.properties` configuration file which can be used to specify the credentials so you don't need to pass them in on every consumer call.
+Here is how these authentication tokens match to the Kafka configuration:
 
 | | Ditto Name | Description |
 | --- | --- | --- |
-| `ssl.truststore.location` |   Cluster Certificate |  The CA cert to be used for kafka in PKCS12 format.|
-| `ssl.truststore.password` |  Cluster Certificate Password | The password used to decrypt the PKCS12 value. |
-| `ssl.keystore.location` |  User Certificate | User cert again in PKCS12 format once base64 decoded.|
-| `ssl.keystore.password` |  User Certificate password | The password used to decrypt the PKCS value. |
+| `ssl.truststore.location` |  Cluster Certificate |  The CA cert in PKCS12 format.|
+| `ssl.truststore.password` |  Cluster certificate password | The password used to decrypt the CA Cert value. |
+| `ssl.keystore.location` |  User Certificate | User cert in PKCS12 format.|
+| `ssl.keystore.password` |  User certificate password | The password used to decrypt the user cert. |
 
 
-For example, adding the above fields to `server.properties` would look something like:
+## Simple test
 
+You can use the following bash script to test out your cluster. Replace each variable with the corresponding information displayed in your app's live query settings.
+
+If it's working, you won't see any errors and the script will not shut down. Leave this script running in a terminal, and open a new terminal for the next section.
+
+
+```sh
+CLUSTER_CERT_LOCATION=/path/to/cluster.p12
+CLUSTER_CERT_PW=<YOUR_CLUSTER_CERT_PASSWORD>
+
+USER_CERT_LOCATION=/path/to/user.p12
+USER_CERT_PW=<YOUR_USER_CERT_PASSWORD>
+
+CLOUD_ENDPOINT=<YOUR_ENDPOINT>
+TOPIC=<YOUR_TOPIC>
+
+KAFKA=/path/to/kafka_2.13-3.1.0
+
+$KAFKA/bin/kafka-console-consumer.sh \
+ --bootstrap-server $CLOUD_ENDPOINT \
+ --consumer-property security.protocol=SSL \
+ --consumer-property ssl.truststore.password=$CLUSTER_CERT_PW \
+ --consumer-property ssl.truststore.location=$CLUSTER_CERT_LOCATION \
+ --consumer-property ssl.keystore.password=$USER_CERT_PW \
+ --consumer-property ssl.keystore.location=$USER_CERT_LOCATION \
+ --group $TOPIC \
+ --topic $TOPIC 
 ```
-ssl.truststore.location=/path/to/my/cluster_certificate.txt
-ssl.truststore.password=<CLUSTER_CERTIFICATE_PASSWORD>
-ssl.keystore.location=/path/to/my/user_certificate.txt
-ssl.keystore.password=<USER_CERTIFICATE_PASSWORD>
-```
+
+:::info
+The Kafka `Group` and `Topic` should both be set to the same string displayed in the Ditto portal.
+:::
