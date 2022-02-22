@@ -26,11 +26,12 @@ iOS and Android devices are able connect with each other over a standard Bluetoo
 
 ### What are the device and operating system requirements?
 
-* iOS: Ditto can run on devices as low as iOS 12. As of October 28th, 2019 - This constitutes almost 98% of iOS devices as measured by the App Store. See here for more information.
+* iOS: Ditto can run on devices as low as iOS 12. This is over 98% of iOS devices as measured by the App Store. [See here for more information](https://developer.apple.com/support/app-store/).
 * Android: We support Android Version 7.1 or higher. If you need a version that is lower please contact our team through the [Ditto Portal](https://portal.ditto.live).
-* System Requirements: Ditto has been tested on devices similar to [Raspberry Pi Zero](https://www.raspberrypi.com/products/raspberry-pi-zero/) (1GHz single-core CPU and 512MB RAM). We recommend at least those specifications or better.
+* System Requirements: Ditto is regularly tested on devices similar to a [Raspberry Pi Zero](https://www.raspberrypi.com/products/raspberry-pi-zero/) (1GHz single-core CPU and 512MB RAM). We recommend at least 128MB RAM for applications using Ditto, depending on the size of data and number of sync connections.
 
 ### How does Ditto still enable offline data?
+
 At the heart of Ditto is a realtime database that takes in JSON-like data structures. That means that even if a device with Ditto is completely disconnected from other devices, it will still have the data stored locally. That means even in a completely offline environment, users will still be able to edit, read, and observe data. When devices reconnect, they will exchange relevant information that was edited when they were offline. You can think of this as a similar behavior to Google Docs or Google Sheets.
 
 
