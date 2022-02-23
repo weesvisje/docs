@@ -270,9 +270,11 @@ At present our log is Kafka, as it suits our needs well. Though Kafka
 is at the heart of Big Peer it is not a core architectural feature: any
 log will do. At present, we use a single partition of a single topic,
 but we can partition the log by Application and still maintain the
-same consistency guarantees. When we do partition the log the
-properties are the same, the throughput increases, and the UST becomes
-a vector.
+same consistency guarantees. When we do partition the log the properties are the
+same, the throughput increases, and the UST becomes
+a vector.  Developers can [register Kafka consumers](tutorials/kafka/intro)
+where Big Peer will deliver data change events that match a defined query -
+similar to how Small Peers can `observe` queries to react to data changes.
 
 ### Storage Nodes
 
@@ -593,9 +595,9 @@ Big Peer is approaching beta. Some customers are already putting production work
 
 Completing the cycle of data in Big Peer is CDC ([Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture)). Work in progress where each transaction produces a Change Data Message containing the type of change (eg insert, delete, update) and the details of the change. CDC is a way for customer to react to data changes that occur from the mesh or elsewhere, or even to keep external legacy databases in sync with Big Peer.
 
-Data from CDC will first be available via webhooks. Developers can register HTTP endpoints where Big Peer will deliver data change events that match a defined query - similar to how Small Peers can `observe` queries to react to data changes.
+Data from CDC is available from Kafka. Developers can [register Kafka consumers](tutorials/kafka/intro) where Big Peer will deliver data change events that match a defined query - similar to how Small Peers can `observe` queries to react to data changes.
 
-This will enable delivery of data within Big Peer into other systems or to build server-side logic that reacts to data change events - such as performing data aggregations that write back into Big Peer or to trigger an email to a user based off an event from a Small Peer. These data change events fit into "serverless" patterns and will work with any "functions-as-a-service" (FaaS) systems, such as AWS Lambda or others.
+We also provide webhoooks will enable delivery of data within Big Peer into other systems or to build server-side logic that reacts to data change events - such as performing data aggregations that write back into Big Peer or to trigger an email to a user based off an event from a Small Peer. These data change events fit into "serverless" patterns and will work with any "functions-as-a-service" (FaaS) systems, such as AWS Lambda or others.
 
 Care is being taken to ensure the delivery of these events are reliable. Endpoints will be able to persist a unique marker that corresponds to the event, and later restart events from that same marker onward so that events are not missed during periods of interruption.
 
