@@ -219,11 +219,37 @@ ditto.store().collection("people")?.update(|x|{
 <TabItem value="http">
 
   ```bash
-  curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/<DOC_ID>' \
+  curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/store' \
     --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
     --header 'Content-Type: application/json' \
-    --data-raw '{"age": 32, "friends": ["Susan"]}'
+    --data-raw '{
+      "method": "write",
+      "parameters": {
+        "commands": [{
+          "method": "upsert",
+          "collection": "people",
+          "value": {
+            "_id": "123abc",
+            "name": "Frank", 
+            "age": 32,
+            "friends": ["Susan"],
+            "owned_cars": 0
+          }
+        }]
+      }
+    }'
   ```
+
+:::info
+
+**Can I do a query inside of an upsert as part of the HTTP API?**
+
+Unfortunately no. The HTTP API will look to see if a document with that _id
+exists, if so it will merge the two and then insert. To implement `update`
+behavior, you must issue two HTTP requests. First, send a [find
+request](/concepts/querying), and then based on that, you can `upsert` the
+document.
+:::
 
 </TabItem>
 </Tabs>

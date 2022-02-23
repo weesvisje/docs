@@ -116,10 +116,21 @@ DocumentId doc_id = ditto.store.collection("people").upsert(content);
 <TabItem value="http">
 
   ```bash
-  curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents' \
+  curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/store' \
     --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
     --header 'Content-Type: application/json' \
-    --data-raw '{"name": "Susan", "age": 31}'
+    --data-raw '{
+      "method": "write",
+      "parameters": {
+        "commands": [{
+          "method": "upsert",
+          "collection": "people",
+          "value": {
+            "name": "Susan", "age": 31
+          }
+        }]
+      }
+    }'
   ```
 
   NOTE: The HTTP API does not return the id, but a `txn_id` which can be used to request the document `_id`. See [HTTP API Reference](/concepts/http#transactions) for more details.
@@ -246,11 +257,24 @@ ditto.store.collection("people").upsert({{"_id", "123abc"}, { "name", "Susan" },
 
 <TabItem value="http">
 
-  ```bash
-  curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/123abc' \
+  ```json
+  curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/store' \
     --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
     --header 'Content-Type: application/json' \
-    --data-raw '{"name": "Susan", "age": 31}'
+    --data-raw '{
+      "method": "write",
+      "parameters": {
+        "commands": [{
+          "method": "upsert",
+          "collection": "people",
+          "value": {
+            "_id": "123abc",
+            "name": "Susan", 
+            "age": 31
+          }
+        }]
+      }
+    }'
   ```
 
 </TabItem>

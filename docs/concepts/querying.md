@@ -103,7 +103,16 @@ let docs = ditto.store().collection("people")
 <TabItem value="http">
 
   ```bash
-  curl -X GET 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents?find=favoriteBooks[0].title=="The Great Gatsby"'
+  curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/store' \
+  --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+  --header 'Content-Type: application/json' \
+  --data-raw '{
+      "method": "find",
+      "parameters": {
+        "collection": "people",
+        "query": "favoriteBooks[0].title == 'The Great Gatsby'"
+      }
+    }'
   ```
 
 </TabItem>
@@ -151,6 +160,7 @@ Often, you will query with runtime variables. Instead of building or interpolati
     {label: 'C#', value: 'csharp'},
     {label: 'C++', value: 'cpp'},
     {label: 'Rust', value: 'rust'},
+    {label: 'HTTP', value: 'http'},
   ]
 }>
 <TabItem value="javascript">
@@ -235,6 +245,26 @@ let docs = ditto.store().collection("people")?
   .exec()?;
 ```
 
+</TabItem>
+
+<TabItem value="http">
+
+```bash
+curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/store' \
+--header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "method": "find",
+    "parameters": {
+      "args": {
+        "name": "max",
+        "age": 32
+      },
+      "collection": "people",
+      "query": "name == $args.name && age <= $args.age"
+    }
+  }'
+  ```
 </TabItem>
 </Tabs>
 
@@ -507,7 +537,7 @@ let results = ditto.store().collection("cars").find("color == \'red\'")
 ```
 </TabItem>
 <TabItem value="http">
-Arbitrary sorting is not supported by the HTTP API. If you're interested in sorting by datetime, see [HTTP API Reference](/concepts/http#common-query-parameters).
+Arbitrary sorting is not supported by the HTTP API. If you're interested in sorting by datetime, see <a href="/concepts/http#common-query-parameters">HTTP API Reference</a>
 </TabItem>
 </Tabs>
 
@@ -617,7 +647,17 @@ let results = ditto.store().collection("cars").find("color == \'red\'")
 <TabItem value="http">
 
   ```bash
-  curl -X GET 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents?find=color=="red"&limit=100'
+ curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/store' \
+    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+      "method": "find",
+      "parameters": {
+        "collection": "people",
+        "query": "color == 'red'",
+        "limit": 100
+      }
+    }'
   ```
 
 </TabItem>
