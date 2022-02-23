@@ -44,7 +44,6 @@ import { init, Ditto } from "@dittolive/ditto"
   await init() // you need to call this at least once before using any of the Ditto API
   const identity = { type: 'onlinePlayground', appID: 'REPLACE_ME_WITH_YOUR_APP_ID' }
   const ditto = new Ditto(identity, '/persistence/file/path')
-  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
   ditto.tryStartSync()
 })()
 ```
@@ -54,7 +53,6 @@ import { init, Ditto } from "@dittolive/ditto"
 
 ```swift
 let ditto = Ditto(identity: DittoIdentity.onlinePlayground(appID: "REPLACE_ME_WITH_YOUR_APP_ID"))
-try! ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
 try! ditto.tryStartSync()
 ```
 
@@ -65,7 +63,6 @@ try! ditto.tryStartSync()
 DITIdentity *identity = [[DITIdentity alloc] initOnlinePlaygroundWithAppID:@"REPLACE_ME_WITH_YOUR_APP_ID"];
 DITDitto *ditto = [[DITDitto alloc] initWithIdentity:identity];
 NSError *error = nil;
-[ditto setLicenseToken: @"REPLACE_ME_WITH_YOUR_LICENSE_TOKEN" error:&error];
 [ditto tryStartSync:&error];
 ```
 
@@ -77,7 +74,6 @@ try {
   val androidDependencies = AndroidDittoDependencies(context)
   val identity = DittoIdentity.OnlinePlayground(androidDependencies, appID = "REPLACE_ME_WITH_YOUR_APP_ID")
   val ditto = Ditto(androidDependencies, identity)
-  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
   ditto.tryStartSync()
 } catch(e: DittoError) {
   Log.e("Ditto error", e.message!!)
@@ -93,7 +89,6 @@ DittoIdentity identity = new DittoIdentity.OnlinePlayground(androidDependencies,
 Ditto ditto = new Ditto(androidDependencies, identity);
 
 try {
-  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN");
   ditto.tryStartSync();
 } catch(DittoError e) {
   Log.e("Ditto Error", e.getMessage())
@@ -107,7 +102,6 @@ try {
 try
 {
     var ditto = new Ditto(DittoIdentity.OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID"));
-    ditto.SetLicenseToken(tamperedLicense);
     ditto.TryStartSync();
 }
 catch (DittoException ex)
@@ -123,7 +117,6 @@ catch (DittoException ex)
 auto identity = Identity::OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID");
 try {
   Ditto ditto = Ditto(identity, "/your-persistence-path");
-  ditto.set_license_token(invalid_license);
   ditto.try_start_sync();
 } catch (const DittoError &err) {
   std::cout << err.what() << std::endl;
@@ -155,7 +148,6 @@ let mut ditto = Ditto::builder()
     })
     .build()?;
 
-ditto.set_license_from_env("DITTO_LICENSE")?; // May also be provided as a string
 ditto.try_start_sync()?;
 ```
 

@@ -2,7 +2,13 @@
 title: '2 - Configure Ditto'
 ---
 
-## 2-1 Create Application Class
+## 2-1 Create Your Ditto App
+
+Before we start coding, we first need to create a new app in the [portal](https://portal.ditto.live). Apps created on the portal will automatically sync data between them and also to the Ditto cloud.
+
+Each app created on the portal has a unique `appID` which can be seen on your app's settings page once the app has been created. This ID is used in subsequent sections to configure your Ditto instance.
+
+## 2-2 Create Application Class
 
 Typically, applications with Ditto will need to run Ditto as a singleton. To construct Ditto it'll need access to a live Android `Context`. Since the Application class is a singleton and has the necessary `Context`, we can create a subclass called __TasksApplication.kt__
 
@@ -28,7 +34,7 @@ class TasksApplication: Application() {
         // construct a DefaultAndroidDittoDependencies object with the applicationContext
         val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
         // for this example we will use a Development identity
-        val identity = DittoIdentity.Development(appName = "live.ditto.tasks", dependencies = androidDependencies);
+        val identity = DittoIdentity.OnlinePlayground(appID = "REPLACE_ME", dependencies = androidDependencies);
         ditto = Ditto(androidDependencies, identity)
     }
 
@@ -41,7 +47,7 @@ Now you will be able to access this Ditto anywhere in your application like so:
 val docs = TasksApplication.ditto!!.store["tasks].findAll().exec()
 ```
 
-## 2-2 Add Permissions and Register Class
+## 2-3 Add Permissions and Register Class
 
 In order for Ditto to sync, we will need to add permissions to the __AndroidManifest.xml__ file. [For more information about these permissions, click here](/advanced/platform-permissions/android-platform-permissions). In addition we will need to register our custom `TasksApplication` as the main Application class in the `<application>` tag.
 
@@ -79,13 +85,11 @@ In order for Ditto to sync, we will need to add permissions to the __AndroidMani
 
 ```
 
-## 2-3 Start Ditto Sync
+## 2-4 Start Ditto Sync
 
 When Android studio created the project, it should have created a file called __MainActivity.kt__. In this file, we will take the singleton `TasksApplication.ditto!!` and begin to start the sync process with `tryStartSync()`
 
-1. Notice the line `ditto!!.setLicenseToken("<REPLACE_ME>")`, please add your Ditto license token. For more information about how to get a license token please go to https://portal.ditto.live, sign up and create an app.
-
-2. The app will show a `Toast` error if `tryStartSync` encounters a mistake. Don't worry if an error occurs or if you omit this step, Ditto will continue to work as a local database. However, it's advised that you fix the errors to see the app sync across multiple devices.
+The app will show a `Toast` error if `tryStartSync` encounters a mistake. Don't worry if an error occurs or if you omit this step, Ditto will continue to work as a local database. However, it's advised that you fix the errors to see the app sync across multiple devices.
 
 ```kotlin title="MainActivity" {5-18}
 class MainActivity : ComponentActivity() {
@@ -94,8 +98,6 @@ class MainActivity : ComponentActivity() {
 
       val ditto = TasksApplication.ditto
       try {
-          // 1.
-          ditto!!.setLicenseToken("<REPLACE_ME>")
           ditto!!.tryStartSync()
       } catch (e: DittoError) {
           // 2.
@@ -117,7 +119,7 @@ class MainActivity : ComponentActivity() {
 ```
 
 
-## 2-4 Create a Task data class
+## 2-5 Create a Task data class
 
 Ditto is a document database, which represents all of its rows in the database a JSON-like structure. In this tutorial, we will define each task like so:
 

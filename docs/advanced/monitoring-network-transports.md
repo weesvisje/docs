@@ -34,9 +34,8 @@ ditto.tryStartSync()
 
 ```swift
 // Setting up inside a ViewController
-ditto = Ditto()
+let ditto = Ditto(identity: DittoIdentity.onlinePlayground(appID: "REPLACE_ME_WITH_YOUR_APP_ID"))
 ditto.delegate = self
-ditto.setLicenseToken("...")
 try! ditto.tryStartSync()
 ```
 
@@ -45,9 +44,9 @@ try! ditto.tryStartSync()
 
 ```objc
 // Setting up inside a ViewController
-DITDitto *ditto = [[DITDitto alloc] init];
+DITIdentity *identity = [[DITIdentity alloc] initOnlinePlaygroundWithAppID:@"REPLACE_WITH_APP_ID"];
+DITDitto *ditto = [[DITDitto alloc] initWithIdentity:identity];
 ditto.delegate = self;
-[ditto setLicenseToken: @"..."];
 [ditto tryStartSync:nil];
 ```
 
@@ -57,9 +56,8 @@ ditto.delegate = self;
 ```kotlin
 // Setting up inside an Activity
 val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
-val ditto = Ditto(androidDependencies)
+val ditto = Ditto(androidDependencies, DittoIdentity.OnlinePlayground(androidDependencies, "REPLACE_WITH_APP_ID"))
 ditto.callback = this
-ditto.setLicenseToken("...")
 ditto.tryStartSync()
 ```
 
@@ -69,9 +67,8 @@ ditto.tryStartSync()
 ```java
 // Setting up inside an Activity
 DefaultAndroidDittoDependencies androidDependencies = new DefaultAndroidDittoDependencies(getApplicationContext());
-Ditto ditto = new Ditto(androidDependencies);
+Ditto ditto = new Ditto(androidDependencies, new DittoIdentity.OnlinePlayground(androidDependenciesOne, "REPLACE_WITH_APP_ID"));
 ditto.callback = this;
-ditto.setLicenseToken("...");
 ditto.tryStartSync();
 ```
 
@@ -80,8 +77,8 @@ ditto.tryStartSync();
 
 ```csharp
 // Setting up inside Main
-Ditto ditto = new Ditto();
-ditto.setLicenseToken("...");
+DittoIdentity identity = DittoIdentity.OnlinePlayground("REPLACE_WITH_APP_ID");
+Ditto onlineDitto = new Ditto(identity);
 ditto.tryStartSync();
 ```
 

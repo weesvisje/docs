@@ -46,9 +46,9 @@ Depending on the Identity used, the Ditto instance may then request the Ditto Cl
 
 * `OnlineWithAuthentication` - Use this identity for most production Apps. The `OnlineWithAuthentication` identity supports both Cloud and peer-to-peer sync with secure authentication, encryption, and access control. Use typically requires configuring an Authentication Provider for your App within the Ditto Cloud portal, which can validate user-provided credentials. This identity also requires a developer-provided implementation of the `DittoAuthEventHandler` (`DittoAuthCallback`) interface.
 * `OnlinePlayground` - A simplified version of the `OnlineWithAuthentication` Identity for prototyping and development use. All modes of sync are supported but no Authentication Provider needs to be configured. Instead, all users will receive full read and write permissions to all App collections and timeseries. Do not use this Identity in production. No `DittoAuthEventHandler` needs to be provided.
-* `SharedKey` - A secure Identity used for "private" Apps where the developer trusts all users, the Ditto-based App, and devices and would prefer a fully self-contained deployment. Ditto instances are each provided with a pre-shared key that is used for mutual authentication. This Identity does NOT support Cloud sync. Typically used with some external device management solution which can provide and rotate the pre-shared key.
-* `Manual` - An advanced Identity where the App developer will provide each Ditto instance with an x509 Client Certificate signed by a common, trusted Certificate Authority. Like `SharedKey` typically deployed along side existing PKI and device management solutions. This Identity cannot sync with `cloud.ditto.live` but may sync with a custom deployment of a Big Peer.
-* `OfflinePlayground` - An *unsecured* identity suitable for local testing, CI/CD pipelines, and peer-to-peer sync. Cloud sync is not permitted. All peers are automatically trusted and no authentication takes place. Do *not* use this Identity in production.
+* `SharedKey` - A secure Identity used for "private" Apps where the developer trusts all users, the Ditto-based App, and devices and would prefer a fully self-contained deployment. Ditto instances are each provided with a pre-shared key that is used for mutual authentication. This Identity does NOT support Cloud sync. Typically used with some external device management solution which can provide and rotate the pre-shared key. Given that this identity doesn't use the Ditto cloud, Ditto instances using this identity must be activated with an offline only license token that can be requested from the app settings page on the [portal](https://portal.ditto.live).
+* `Manual` - An advanced Identity where the App developer will provide each Ditto instance with an x509 Client Certificate signed by a common, trusted Certificate Authority. Like `SharedKey` typically deployed along side existing PKI and device management solutions. This Identity cannot sync with `cloud.ditto.live` but may sync with a custom deployment of a Big Peer. Given that this identity doesn't use the Ditto cloud, Ditto instances using this identity must be activated with an offline only license token that can be requested from the app settings page on the [portal](https://portal.ditto.live).
+* `OfflinePlayground` - An *unsecured* identity suitable for local testing, CI/CD pipelines, and peer-to-peer sync. Cloud sync is not permitted. All peers are automatically trusted and no authentication takes place. Do *not* use this Identity in production. Given that this identity doesn't use the Ditto cloud, Ditto instances using this identity must be activated with an offline only license token that can be requested from the app settings page on the [portal](https://portal.ditto.live).
 
 
 ## Configuring an OnlineWithAuthentication Ditto Identity
@@ -92,7 +92,6 @@ import { init, Ditto } from "@dittolive/ditto"
     authHandler
   }
   const ditto = new Ditto(identity, '/persistence/file/path')
-  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
   ditto.tryStartSync()
 })()
 ```
@@ -117,7 +116,6 @@ let identity = DittoIdentity.onlineWithAuthentication(
     authenticationDelegate: AuthDelegate()
 )
 let ditto = Ditto(identity: identity)
-try! ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
 try! ditto.tryStartSync()
 ```
 
@@ -144,7 +142,6 @@ DITIdentity *identity = [[DITIdentity alloc] initOnlineWithAuthenticationWithApp
                                                             authenticationDelegate:[[AuthDelegate alloc] init];
 DITDitto *ditto = [[DITDitto alloc] initWithIdentity:identity];
 NSError *error = nil;
-[ditto setLicenseToken: @"REPLACE_ME_WITH_YOUR_LICENSE_TOKEN" error:&error];
 [ditto tryStartSync:&error];
 ```
 
@@ -175,7 +172,6 @@ try {
       AuthCallback()
   )
   val ditto = Ditto(androidDependencies, identity)
-  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
   ditto.tryStartSync()
 } catch(e: DittoError) {
   Log.e("Ditto error", e.message!!)
@@ -210,7 +206,6 @@ DittoIdentity identity = new DittoIdentity.OnlineWithAuthentication(
 Ditto ditto = new Ditto(androidDependencies);
 
 try {
-  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN");
   ditto.tryStartSync();
 } catch(DittoError e) {
   Log.e("Ditto Error", e.getMessage())
@@ -242,7 +237,6 @@ var identity = DittoIdentity.OnlineWithAuthentication(
 try
 {
     var ditto = new Ditto(identity);
-    ditto.SetLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN");
     ditto.TryStartSync();
 }
 catch (DittoException ex)
@@ -275,7 +269,6 @@ Identity identity = Identity::OnlineWithAuthentication(
 );
 try {
   Ditto ditto = Ditto(identity, "/your-persistence-path");
-  ditto.set_license_token("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN");
   ditto.try_start_sync();
 } catch (const DittoError &err) {
   std::cout << err.what() << std::endl;
@@ -347,7 +340,6 @@ let mut ditto = Ditto::builder()
     })
     .build()?;
 
-ditto.set_license_from_env("DITTO_LICENSE")?; // May also be provided as a string
 ditto.try_start_sync()?;
 ```
 
@@ -380,7 +372,6 @@ import { init, Ditto } from "@dittolive/ditto"
   await init() // you need to call this at least once before using any of the Ditto API
   const identity = { type: 'onlinePlayground', appID: 'REPLACE_ME_WITH_YOUR_APP_ID' }
   const ditto = new Ditto(identity, '/persistence/file/path')
-  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
   ditto.tryStartSync()
 })()
 ```
@@ -390,7 +381,6 @@ import { init, Ditto } from "@dittolive/ditto"
 
 ```swift
 let ditto = Ditto(identity: DittoIdentity.onlinePlayground(appID: "REPLACE_ME_WITH_YOUR_APP_ID"))
-try! ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
 try! ditto.tryStartSync()
 ```
 
@@ -402,7 +392,6 @@ try! ditto.tryStartSync()
 DITIdentity *identity = [[DITIdentity alloc] initOnlinePlaygroundWithAppID:@"REPLACE_ME_WITH_YOUR_APP_ID"];
 DITDitto *ditto = [[DITDitto alloc] initWithIdentity:identity];
 NSError *error = nil;
-[ditto setLicenseToken: @"REPLACE_ME_WITH_YOUR_LICENSE_TOKEN" error:&error];
 [ditto tryStartSync:&error];
 ```
 
@@ -414,7 +403,6 @@ try {
   val androidDependencies = AndroidDittoDependencies(context)
   val identity = DittoIdentity.OnlinePlayground(androidDependencies, appID = "REPLACE_ME_WITH_YOUR_APP_ID")
   val ditto = Ditto(androidDependencies, identity)
-  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
   ditto.tryStartSync()
 } catch(e: DittoError) {
   Log.e("Ditto error", e.message!!)
@@ -431,7 +419,6 @@ DittoIdentity identity = new DittoIdentity.OnlinePlayground(androidDependencies,
 Ditto ditto = new Ditto(androidDependencies, identity);
 
 try {
-  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN");
   ditto.tryStartSync();
 } catch(DittoError e) {
   Log.e("Ditto Error", e.getMessage())
@@ -446,7 +433,6 @@ try
 {
     var identity = DittoIdentity.OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID");
     var ditto = new Ditto(identity);
-    ditto.SetLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN");
     ditto.TryStartSync();
 }
 catch (DittoException ex)
@@ -462,7 +448,6 @@ catch (DittoException ex)
 auto identity = Identity::OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID");
 try {
   Ditto ditto = Ditto(identity, "/your-persistence-path");
-  ditto.set_license_token(invalid_license);
   ditto.try_start_sync();
 } catch (const DittoError &err) {
   std::cout << err.what() << std::endl;
@@ -493,7 +478,6 @@ let mut ditto = Ditto::builder()
     })
     .build()?;
 
-ditto.set_license_from_env("DITTO_LICENSE")?; // May also be provided as a string
 ditto.try_start_sync()?;
 ```
 
