@@ -4,7 +4,7 @@ title: '1 - Enabling Kafka'
 
 # Enabling Kafka
 
-Ditto supports connecting to Kafka and retrieving updates and events for your data through a Kafka topic. 
+The document change stream is a coarse user-consumable Kafka queue that allows you to react to changes made as documents are inserted, updated, or deleted from Ditto's Big Peer. You should use this in conjunction with the HTTP API.  Ditto supports connecting to Kafka and retrieving updates and events for your data through a Kafka topic. 
 
 :::info
 

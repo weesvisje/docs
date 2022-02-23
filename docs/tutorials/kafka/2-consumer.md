@@ -130,11 +130,13 @@ DocumentId doc_id = ditto.store.collection("people").upsert(content);
 
 After changing a document, look at the terminal running the `bin/kafka-console-consumer.sh` script. 
 
-
 ## New document created
 
 When a new document is created, `method` is `upsert` and the property `change.oldValue` will always be null.
 
+:::info
+Please take note of the `txnID` field which describes a timestamp of when the big peer internally replicated data modifications from small peers. This number is an always increasing value.
+:::
 
 ```json
 {
@@ -153,7 +155,6 @@ When a new document is created, `method` is `upsert` and the property `change.ol
   }
 }
 ```
-
 
 
 ## Update
@@ -217,3 +218,4 @@ When a document was removed, `method` is `remove`, and the property `change.valu
   }
 }
 ```
+
