@@ -38,14 +38,14 @@ module.exports = {
     navbar: {
       title: "Ditto",
       logo: {
-        href: "/",
+        href: "https://ditto.live",
         alt: "Ditto Logo",
         src: "img/logo.png",
       },
       items: [
         { href: "/", label: "Home", position: "left" },
         {
-          label: "Samples Apps",
+          label: "Sample Apps",
           href: "https://github.com/getditto/samples",
         },
         {
