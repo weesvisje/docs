@@ -1,5 +1,5 @@
 ---
-title: '2 - Consuming events'
+title: '2 - Ditto events'
 ---
 
 import Tabs from '@theme/Tabs';
