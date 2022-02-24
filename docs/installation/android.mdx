@@ -46,8 +46,9 @@ buildscript {
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 ```
+5. Access the [portal](https://portal.ditto.live) to create a new app. Apps created on the portal will automatically sync data between them and also to the Ditto cloud. Each app created on the portal has a unique `appID` which can be seen on your app's settings page once the app has been created. This ID is used in subsequent sections to configure your Ditto instance.
 
-5. Register your license token as below. We recommend placing this in your Application.onCreate method:
+6. Create your Ditto instance as below. We recommend placing this in your Application.onCreate method:
 
 
 <Tabs
@@ -62,8 +63,7 @@ buildscript {
 
 ```kotlin
 val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
-val ditto = Ditto(androidDependencies)
-ditto.setLicenseToken("<ditto_license_token>")
+val ditto = Ditto(androidDependencies, DittoIdentity.OnlinePlayground(androidDependencies, "REPLACE_WITH_APP_ID"))
 ditto.tryStartSync()
 ```
 
@@ -72,8 +72,7 @@ ditto.tryStartSync()
 
 ```java
 DefaultAndroidDittoDependencies androidDependencies = new DefaultAndroidDittoDependencies(applicationContext);
-Ditto ditto = new Ditto(androidDependencies);
-ditto.setLicenseToken("<ditto_license_token>");
+Ditto ditto = new Ditto(androidDependencies, new DittoIdentity.OnlinePlayground(androidDependenciesOne, "REPLACE_WITH_APP_ID"));
 ditto.tryStartSync();
 ```
 

@@ -2,7 +2,13 @@
 title: "4 - Integrate Ditto"
 ---
 
-## 4-1 Integrate Ditto
+## 4-1 Create Your Ditto App on the Portal
+
+In order to integrate Ditto into our app we first need to create a new app on the [portal](https://portal.ditto.live). Apps created on the portal will automatically sync data between them and also to the Ditto cloud.
+
+Each app created on the portal has a unique `appID` which can be seen on your app's settings page once the app has been created. This ID is used in subsequent sections to configure your Ditto instance.
+
+## 4-2 Integrate Ditto
 
 To finish the app, we now need to integrate Ditto. We will initialize it in the `onCreate()` function within `MainActivity`. Furthermore, we will add handlers for the swipe to delete and listening for row clicks to mark a task as completed (or in-completed). Replace the existing `onCreate()` code with this:
 
@@ -27,12 +33,8 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
     // Create an instance of Ditto
     val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
-    val ditto = Ditto(androidDependencies)
+    val ditto = Ditto(androidDependencies, DittoIdentity.OnlinePlayground(androidDependencies, "REPLACE_WITH_YOUR_APP_ID"))
     this.ditto = ditto
-
-    // Set your Ditto access license
-    // The SDK will not work without this!
-    ditto.setLicenseToken("<INSERT ACCESS LICENSE>")
 
     // This starts Ditto's background synchronization
     ditto.tryStartSync()
@@ -77,7 +79,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
 The important things to note is that you need an access license to use Ditto. If you do not have one yet, reach out and we can supply one. To enable background synchronization, we need to call `tryStartSync()` which allows you to control when synchronization occurs. For this application we want it to run the entire time the app is in use.
 
-## 4-2 Setup Live Query
+## 4-3 Setup Live Query
 
 Finally, we then use Ditto's key API to observe changes to the database by creating a live-query in the `setupTaskList()` function. This allows us to set the initial state of the `RecyclerView` after the query is immediately run and then subsequently get callbacks for any new data changes that occur locally or that were synced from other devices:
 
@@ -113,7 +115,7 @@ fun setupTaskList() {
 
 This is a best-practice when using Ditto, since it allows your UI to simply react to data changes which can come at any time given the ad-hoc nature of how Ditto synchronizes with nearby devices.
 
-## 4-3 Check For Location Permissions
+## 4-4 Check For Location Permissions
 
 Android requires you to request location permissions to fully enable Bluetooth Low Energy (since Bluetooth can be involved with location tracking). Insert this function in `MainActivity`:
 
@@ -131,7 +133,7 @@ fun checkLocationPermission() {
 
 ```
 
-## 4-4 Ensure Imports
+## 4-5 Ensure Imports
 
 Just in case your project did not auto import as you went along, you can replace the import statements in `MainActivity` with these:
 

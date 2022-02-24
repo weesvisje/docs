@@ -4,7 +4,15 @@ title: "3 - Showing the List of Tasks"
 
 Almost done! We have our UI in place and Ditto installed, so let's add the logic to create and display tasks by using Ditto's APIs.
 
-## 3-1 Setup TasksTableViewController
+
+## 3-1 Create Your Ditto App on the Portal
+
+Before we start coding, we first need to create a new app in the [portal](https://portal.ditto.live). Apps created on the portal will automatically sync data between them and also to the Ditto cloud.
+
+Each app created on the portal has a unique `appID` which can be seen on your app's settings page once the app has been created. This ID is used in subsequent sections to configure your Ditto instance.
+
+
+## 3-2 Setup TasksTableViewController
 
 First, we need to add some variables that will be created on `viewDidLoad` of the `TasksTableViewController` so adjust the class to match this code:
 
@@ -24,13 +32,9 @@ class TaskTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Create an instance of Ditto
-        ditto = Ditto()
-
-        // Set your Ditto access license
-        // The SDK will not work without this!
-        ditto.setLicenseToken("<INSERT ACCESS LICENSE>")
+        ditto = Ditto(identity: .onlinePlayground(appID: "REPLACE_ME"))
 
         // This starts Ditto's background synchronization
         ditto.tryStartSync()
@@ -95,7 +99,7 @@ class TaskTableViewController: UITableViewController {
 }
 ```
 
-Let's breakdown what this code does. First, we create the variables needed and then initialize them in `viewDidLoad()` . The important things to note is that you need an access license to use Ditto. If you do not have one yet, reach out and we can supply one. To enable background synchronization, we need to call `tryStartSync()` which allows you to control when synchronization occurs. For this application we want it to run the entire time the app is in use.
+Let's breakdown what this code does. First, we create the variables needed and then initialize them in `viewDidLoad()` . To enable background synchronization, we need to call `tryStartSync()` which allows you to control when synchronization occurs. For this application we want it to run the entire time the app is in use.
 
 ```swift
 // These hold references to Ditto for easy access
@@ -111,11 +115,7 @@ override func viewDidLoad() {
     super.viewDidLoad()
 
     // Create an instance of Ditto
-    ditto = Ditto()
-
-    // Set your Ditto access license
-    // The SDK will not work without this!
-    ditto.setLicenseToken("<INSERT ACCESS LICENSE>")
+    ditto = Ditto(identity: .onlinePlayground(appID: "REPLACE_ME"))
 
     // This starts Ditto's background synchronization
     ditto.tryStartSync()
@@ -182,7 +182,7 @@ func setupTaskList() {
 
 This is a best-practice when using Ditto, since it allows your UI to simply react to data changes which can come at any time given the ad-hoc nature of how Ditto synchronizes with nearby devices. With this in place, we can now add user actions and configure the `UITableview` to display the tasks.
 
-## 3-2 Add A Task
+## 3-3 Add A Task
 
 To allow the user to create a task we want to display an alert view in response to clicking the add bar item. Add the following code to the `didClickAddTask()` function we added earlier:
 code-tabs
@@ -228,7 +228,7 @@ _ = try! self.collection.insert([
 ])
 ```
 
-## 3-3 Configure UITableView To Display Task List
+## 3-4 Configure UITableView To Display Task List
 
 To ensure the UITableView can display the tasks, we need to configure it. Adjust
 your `TasksTableViewController` to include the following code (these functions

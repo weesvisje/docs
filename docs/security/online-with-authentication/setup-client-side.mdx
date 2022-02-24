@@ -45,7 +45,6 @@ import { init, Ditto } from "@dittolive/ditto"
   }
 
   const ditto = new Ditto(identity, '/persistence/file/path')
-  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
   ditto.tryStartSync()
 })()
 ```
@@ -72,7 +71,6 @@ let identity = DittoIdentity.onlineWithAuthentication(
 )
 
 let ditto = Ditto(identity: identity)
-try! ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
 try! ditto.tryStartSync()
 ```
 
@@ -100,7 +98,6 @@ DITIdentity *identity = [[DITIdentity alloc] initOnlineWithAuthenticationWithApp
                                                             authenticationDelegate:[[AuthDelegate alloc] init];
 DITDitto *ditto = [[DITDitto alloc] initWithIdentity:identity];
 NSError *error = nil;
-[ditto setLicenseToken: @"REPLACE_ME_WITH_YOUR_LICENSE_TOKEN" error:&error];
 [ditto tryStartSync:&error];
 ```
 
@@ -131,7 +128,6 @@ val identity = DittoIdentity.OnlineWithAuthentication(
 )
 val ditto = Ditto(androidDependencies, identity)
 try {
-  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN")
   ditto.tryStartSync()
 } catch(e: DittoError) {
   Log.e("Ditto error", e.message!!)
@@ -165,7 +161,6 @@ DittoIdentity identity = new DittoIdentity.OnlineWithAuthentication(
 Ditto ditto = new Ditto(androidDependencies);
 
 try {
-  ditto.setLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN");
   ditto.tryStartSync();
 } catch(DittoError e) {
   Log.e("Ditto Error", e.getMessage())
@@ -197,7 +192,6 @@ var identity = DittoIdentity.OnlineWithAuthentication(
 try
 {
     var ditto = new Ditto(identity);
-    ditto.SetLicenseToken("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN");
     ditto.TryStartSync();
 }
 catch (DittoException ex)
@@ -230,7 +224,6 @@ Identity identity = Identity::OnlineWithAuthentication(
 );
 try {
   Ditto ditto = Ditto(identity, "/your-persistence-path");
-  ditto.set_license_token("REPLACE_ME_WITH_YOUR_LICENSE_TOKEN");
   ditto.try_start_sync();
 } catch (const DittoError &err) {
   std::cout << err.what() << std::endl;
@@ -302,7 +295,6 @@ let mut ditto = Ditto::builder()
     })
     .build()?;
 
-ditto.set_license_from_env("DITTO_LICENSE")?; // May also be provided as a string
 ditto.try_start_sync()?;
 ```
 

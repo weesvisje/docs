@@ -138,7 +138,9 @@ If your app already has an **Info.plist** file, you can right click on it and **
 
 The values like `Uses WiFi to connect and sync with nearby devices` will be displayed in a prompt. Replace it with whatever language is best for your users.
 
-6. You can now use Ditto in your application:
+6. Access the [portal](https://portal.ditto.live) to create a new app. Apps created on the portal will automatically sync data between them and also to the Ditto cloud. Each app created on the portal has a unique `appID` which can be seen on your app's settings page once the app has been created. This ID is used in subsequent sections to configure your Ditto instance.
+
+7. You can now use Ditto in your application:
 
 <Tabs
   groupId="programming-language"
@@ -153,8 +155,7 @@ The values like `Uses WiFi to connect and sync with nearby devices` will be disp
 ```swift
 import DittoSwift
 
-let ditto = Ditto()
-try! ditto.setLicenseToken("my license token")
+let ditto = Ditto(identity: .onlinePlayground(appID: "REPLACE_WITH_APP_ID"))
 try! ditto.tryStartSync()
 ```
 
@@ -164,13 +165,9 @@ try! ditto.tryStartSync()
 ```objc
 #import <DittoObjC/DittoObjC.h>
 
-
-DITDitto *ditto = [[DITDitto alloc] init];
+DITIdentity *identity = [[DITIdentity alloc] initOnlinePlaygroundWithAppID:@"REPLACE_WITH_APP_ID"];
+DITDitto *ditto = [[DITDitto alloc] initWithIdentity:identity];
 NSError *error = nil;
-
-if (![ditto setLicenseToken:@"my license token": error:&error]) {
-  NSLog(@"Error setting license token: %@", error);
-}
 
 if (![ditto tryStartSync:&error]) {
   NSLog(@"Error starting sync: %@", error);

@@ -2,7 +2,13 @@
 title: '2 - Configure Ditto'
 ---
 
-## 2-1 Add Permissions to the `Info.plist`
+## 2-1 Create Your Ditto App
+
+Before we start coding, we first need to create a new app in the [portal](https://portal.ditto.live). Apps created on the portal will automatically sync data between them and also to the Ditto cloud.
+
+Each app created on the portal has a unique `appID` which can be seen on your app's settings page once the app has been created. This ID is used in subsequent sections to configure your Ditto instance.
+
+## 2-2 Add Permissions to the `Info.plist`
 
 For Ditto to fully use all the network transports like Bluetooth Low Energy, Local Area Network, Apple Wireless Direct, the app will need to ask the user for permissions. These permission prompts need to be in the __Info.plist__ file of your project.
 
@@ -28,12 +34,12 @@ For Ditto to fully use all the network transports like Bluetooth Low Energy, Loc
 
 For more information on these permissions [click here](/advanced/platform-permissions/ios-platform-permissions)
 
-## 2-2 Add `ditto` to `TasksApp.swift`
+## 2-3 Add `ditto` to `TasksApp.swift`
 
 When Xcode generated your project, there should be a file called __TasksApp.swift__. We will need an instance of Ditto throughout this tutorial and the app's lifecycle.
 
 1. First import Ditto with `import DittoSwift`
-2. Construct an instance of Ditto with a development identity with an app name `"live.ditto.tasks"`. This value is important if you are interested in sync with another device with the TasksApp. We are using a `.development` setup, which should suffice for this tutorial. However, you should never deploy this to a production environment like the Apple App Store.
+2. Construct an instance of Ditto with an online playground identity using the APP ID of the app that you just created on the portal. We are using an `.onlinePlayground` setup, which should suffice for this tutorial. However, you should never deploy this to a production environment like the Apple App Store.
 3. We will call `tryStartSync` as soon as the app's `ContentView` appears. This method can throw an error in the event that the license token is invalid or expired. Add two `@State` variables to capture if `ditto.tryStartSync` throws an error. One variable will be `@State var isPresentingAlert = false` and the other is a `@State var errorMessage = ""`.
 4. Add an `.onAppear` function and give it a license token. Look for `"<REPLACE_ME>"` and insert your valid license token. You can get a license token from our [cloud portal](https://portal.ditto.live). If the `tryStartSync()` fails, we will set `isPresentingAlert = true` and set the `errorMessage` to the error's `.localizedDescription`.
 5. We will then present a `.alert` if `isPresentingAlert` is true. Notice that we will pass a `@State` variable as a binding type, which is why we denoted `$isPresentingAlert` prefixed with a `$`. To learn more about SwiftUI's `Binding` types like `@State` [click here.](https://developer.apple.com/documentation/swiftui/state-and-data-flow)
@@ -49,7 +55,7 @@ struct TasksApp: App {
 
     // 2.
     // highlight-next-line
-    var ditto = Ditto(identity: .offlinePlayground(appID: "live.ditto.tasks"))
+    var ditto = Ditto(identity: .onlinePlayground(appID: "<REPLACE_ME>"))
 
     // 3.
     // highlight-start
@@ -65,7 +71,6 @@ struct TasksApp: App {
                 // highlight-start
                 .onAppear(perform: {
                     do {
-                        try ditto.setLicenseToken("<REPLACE_ME>")
                         try ditto.tryStartSync()
                     } catch (let err){
                         isPresentingAlert = true
@@ -85,7 +90,7 @@ struct TasksApp: App {
 ```
 
 
-## 2-3 Create a `Task` struct
+## 2-4 Create a `Task` struct
 
 Ditto is a document database, which represents all of its rows in the database a JSON-like structure. In this tutorial, we will define each task like so:
 
@@ -152,7 +157,7 @@ let tasks: [Task] = ditto.store["tasks"].findAll().exec().map({ Task(document: $
 
 Once we set up our user interface, you'll notice that reading these values becomes a bit easier with this added structure.
 
-## 2-4 Create a `TasksListScreen` view
+## 2-5 Create a `TasksListScreen` view
 
 When we generated the project, Xcode created a default `ContentView`, which need to swap out for a better starter view. Let's create a view called `TasksListScreen` which will show the list of the views.
 
