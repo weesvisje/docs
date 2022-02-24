@@ -4,15 +4,311 @@
 
 The Ditto HTTP API provides a programmatic interface for interactions with Ditto-powered Apps which expose an HTTP Server Interface. A primary use case for the HTTP API is external systems which integrate with `cloud.ditto.live`.
 
-## Root URL
+## Overview
 
 The canonical root URL for the HTTP API is `https://<app-uuid>.cloud.ditto.live/api/v1/`. The standard port 443 is used.
 
-_Example_
-
 ```bash
-curl https://f81d4fae-7dec-11d0-a765-00a0c91e6bf6.cloud.ditto.live/api/v1/collections/cars/abc123
+curl https://f81d4fae-7dec-11d0-a765-00a0c91e6bf6.cloud.ditto.live/api/v1
 ```
+
+For simple examples for using the HTTP API for document storage, see the corresponding sections in the Concepts section for [querying](/concepts/querying), [update](/concepts/update), and [remove](/concepts/remove). 
+
+Ditto Big Peer also provides HTTP APIs for querying timeseries data. See the [timeseries section](#timeseries) for more information.
+
+In addition to these examples, we also have JSON schema documents that help describe the request bodies and responses. They can be helpful if you have any questions on what any field means or what the server might return.
+
+<details>
+<summary>RPC Request Schema</summary>
+
+  ```json
+  {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "RPC Request",
+    "description": "This is defines the contents of any request to /api/v1/store.  This object should be serialized as JSON or CBOR and be in the body of the POST",
+    "oneOf": [
+      {
+        "title": "Find Parameters",
+        "type": "object",
+        "required": [
+          "method",
+          "parameters"
+        ],
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "find"
+            ]
+          },
+          "parameters": {
+            "type": "object",
+            "required": [
+              "args",
+              "collection",
+              "query"
+            ],
+            "properties": {
+              "args": {
+                "title": "Query Arguments",
+                "description": "If any variables are used in the query then the values should be passed in here.",
+                "type": [
+                  "object",
+                  "null"
+                ]
+              },
+              "collection": {
+                "title": "Collection",
+                "description": "The name of the collection to query",
+                "type": "string"
+              },
+              "limit": {
+                "title": "Limit",
+                "description": "The maximum number of values to return",
+                "default": 1000,
+                "type": "integer",
+                "format": "uint32",
+                "maximum": 10000.0,
+                "minimum": 0.0
+              },
+              "offset": {
+                "title": "Offset",
+                "description": "The number of records to skip at the beginning of a query",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "query": {
+                "title": "Query",
+                "description": "The query to run",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      {
+        "title": "FindById Parameters",
+        "type": "object",
+        "required": [
+          "method",
+          "parameters"
+        ],
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "findById"
+            ]
+          },
+          "parameters": {
+            "type": "object",
+            "required": [
+              "_id",
+              "collection"
+            ],
+            "properties": {
+              "_id": {
+                "$ref": "#/definitions/AnyValue"
+              },
+              "collection": {
+                "title": "Collection",
+                "description": "The name of the collection to query",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      {
+        "title": "Write Parameters",
+        "type": "object",
+        "required": [
+          "method",
+          "parameters"
+        ],
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "write"
+            ]
+          },
+          "parameters": {
+            "type": "object",
+            "required": [
+              "commands"
+            ],
+            "properties": {
+              "commands": {
+                "title": "Commands",
+                "description": "The list of all write commands to be run",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/WriteCommand"
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "definitions": {
+      "AnyValue": true,
+      "WriteCommand": {
+        "oneOf": [
+          {
+            "title": "Upsert Command",
+            "description": "If a value matching this ID exists, update it with the contents of value.  If it doesn't exist, insert it.",
+            "type": "object",
+            "required": [
+              "collection",
+              "method",
+              "value"
+            ],
+            "properties": {
+              "collection": {
+                "type": "string"
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "upsert"
+                ]
+              },
+              "value": {
+                "title": "Value to Upsert",
+                "description": "The new document to insert.  This must document be an object with an _id parameter",
+                "type": "object"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+  ```
+</details>
+
+<details>
+<summary>RPC Response Schema</summary>
+
+
+  ```json
+  {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "RpcResponse",
+    "anyOf": [
+      {
+        "title": "FindById Response",
+        "type": "object",
+        "properties": {
+          "document": {
+            "title": "Document",
+            "description": "The contents of the document, if found",
+            "anyOf": [
+              {
+                "$ref": "#/definitions/AnyValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "version": {
+            "title": "Version",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint64",
+            "minimum": 0.0
+          }
+        }
+      },
+      {
+        "title": "Find Response",
+        "type": "object",
+        "required": [
+          "documents"
+        ],
+        "properties": {
+          "documents": {
+            "title": "Documents",
+            "description": "All documents matching the query.  If none the array will be empty",
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/AnyValue"
+            }
+          },
+          "version": {
+            "title": "Version",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint64",
+            "minimum": 0.0
+          }
+        }
+      },
+      {
+        "title": "Write Response",
+        "type": "object",
+        "required": [
+          "results"
+        ],
+        "properties": {
+          "results": {
+            "title": "Results",
+            "description": "The individual results of each write command in the call",
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/WriteCommandResult"
+            }
+          }
+        }
+      }
+    ],
+    "definitions": {
+      "AnyValue": true,
+      "WriteCommandResult": {
+        "oneOf": [
+          {
+            "title": "Upsert Command Result",
+            "type": "object",
+            "required": [
+              "method",
+              "transactionId"
+            ],
+            "properties": {
+              "method": {
+                "type": "string",
+                "enum": [
+                  "upsert"
+                ]
+              },
+              "transactionId": {
+                "title": "Transaction ID",
+                "description": "The ID of the transaction for the insert or update.  Use this to ensure read-follows-writes consistency.",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+  ```
+
+
+</details>
+
 
 ## Authorization
 
@@ -32,25 +328,6 @@ In the example above, we mentioned that the insertion occurred in Transaction 17
 
 Ditto uses "delete-wins" semantics, so in some situations the client may want to force Ditto to first read its current data and ensure another peer hasn't issued a concurrent DELETE request before attempting an insertion with a POST request. To do this, the client provides the HTTP HEADER `X-HYDRA-ENSURE-INSERT: true`.
 
-<!-- Note that PATCH and PUT update operations are not yet implemented but likely will have similar rules -->
-
-## HTTP Methods
-
-Ditto's HTTP API uses HTTP Methods (aka "verbs") to distinguish between typical insertion, deletion, update, fetch, and query operations. The mapping is based on common convention seen in RESTful HTTP APIs. The meaning of various HTTP methods by be slightly changed depending on the value of headers like `Content-Type` and if the requested resource is a single document or multiple documents.
-
-- GET - Used to get the version of an individual resource and to query a collection of resources.
-- POST - Used to create one or more Documents in a Collection or Events in a TimeSeries. Requests that would insert a duplicate copy of a resource may result in a client error. The specific behavior for individual resources is described below.
-- DELETE - Used to remove a resource. As discussed above other clients may try to concurrently insert or modify this resource, but DELETE requests take precedence.
-
-## Common Query Parameters
-
-- find - A JMESPath formatted string used to filter the target collection
-- limit - Used to limit the number of resources returned in a query. Most endpoints will define a default value, such as 1000.
-- start - a date time for start, if none specified then from the start of collection.
-- end - a date time for end, if none specified then to the end of the collection.
-- timeout_millis - the number of milliseconds that hydra will wait for a full result set from the query
-
-NOTE: if end < start, then the query is a descending order query.
 
 ## Errors
 
@@ -85,106 +362,38 @@ The Ditto HTTP API follows a RESTful pattern and is organized into several resou
 
 ### Collection and Document Resources
 
-#### URL Template: `/api/v1/collections`
+All RPC requests are POSTs to `/api/v1/store`.  All methods will accept or return JSON or CBOR depending on the accept and content-type headers you use.  There are a few parameters that are required for all methods.  First is the `method` field; today the valid options are `write`, `find` and `findById`.  The second required field is `parameters` which will contain an object of parameters to that method.  The contents of the parameter field will depend on which method is being used.  
 
-_Reserved for future use_
+#### Example
 
-#### URL TEMPLATE: `/api/v1/collections/{collection_name}/documents`
+Below see an example HTTP request. Notice that commands is an array.  You are able to string together multiple write commands together in order here and each will be performed serially.  The response will contain an individual result object for each write command.  Each write will be in a separate transaction and the transaction IDs can be found in the response.
 
-- GET - Query the documents in a collection
+```bash
+curl --verbose -X POST --data '{
+   "method": "write",
+   "parameters": {
+      "commands": [{
+         "method": "upsert",
+         "collection": "cars",
+         "value": {
+            "_id": "car",
+            "make": "Toyota",
+            "year": 2004
+         }
+      }]
+   }
+}'  -H 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAAew==' -H 'Content-Type: application/json' -H 'Accept: application/json' http://${APP_DOMAIN}/api/v1/store
+```
 
-  Example Request
+The resulting response will be:
 
-  ```
-  GET /api/v1/collections/my-collection/documents?find=color%3D%3D'red' HTTP/1.1
-  Accept: application/json-l
-  Authorization: Bearer ${DITTO_JWT}
-  X-HYDRA-VERSION: 1
-  ```
+```
+{"results":[{"method":"upsert","transactionId":62}]}
+```
 
-  ```
-  Query:
+For more examples, see the corresponding sections in the Concepts section for [querying](/concepts/querying), [update](/concepts/update), and [remove](/concepts/remove).
 
-  find: "color=='red'"
-  ```
-
-  <!-- Propose also support GET request body parsing in the future as this may be easier to pass complex query logic -->
-
-  Response
-
-  ```
-  HTTP\1.1 200 OK
-  Content-Type: application/json-l
-
-  {"foo": 1, "color": "red"}
-  {"bar": 2000, "color": "red"}
-  ```
-
-#### URL TEMPLATE: `/api/v1/collections/{collection_name}/documents/{document_id}`
-
-- POST - Insert a new document into a collection with given ID {id}.
-
-  Example Request
-
-  ```
-  POST /api/v1/collections/my-collection/documents/car3781 HTTP/1.1
-  Authorization: Bearer ${DITTO_JWT}
-  Content-Type: application/json
-  X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==
-
-  { "color": "blue" }
-  ```
-
-  Response
-
-  ```
-  HTTP/1.1 202 Accepted
-  X-HYDRA-VERSION: 12
-  Content-Type: application/json
-
-  {"txn_id": 12}
-  ```
-
-- GET - Fetch a single document by its Document ID
-
-  Example Request
-
-  ```
-  GET /api/v1/collections/my-collection/documents/cars3781 HTTP/1.1
-  Authorization: Bearer ${DITTO_JWT}
-  Accept: application/json
-  X-HYDRA-VERSION: 12
-  ```
-
-  Response
-
-  ```
-  HTTP/1.1 200 OK
-  Content-Type: application/json
-
-  {"foo": 45, "color": "blue"}
-  ```
-
-- DELETE - Remove a document from a collection
-
-  Example Request
-
-  ```
-  DELETE /api/v1/collections/my-collection/documents/cars3781 HTTP/1.1
-  Authorization: Bearer ${DITTO_JWT}
-  X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==
-  ```
-
-  Response
-
-  ```
-  HTTP/1.1 202 Accepted
-  Content-Type: application/json
-
-  {"txn_id": 9}
-  ```
-
-### TimeSeries and Events Resources
+### TimeSeries 
 
 #### URL Template: `/api/v1/timeseries`
 
