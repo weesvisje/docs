@@ -328,7 +328,7 @@ export function InstallCode({
     case "cpp":
       installCode = `curl -O https://software.ditto.live/cpp-${variant}/Ditto/${latest.version}/dist/Ditto.tar.gz && tar xvfz Ditto.tar.gz`;
       break;
-    case "rustsk":
+    case "rustsdk":
       installCode = dedent`
       [dependencies.dittolive-ditto]
       version = "${latest.version}"

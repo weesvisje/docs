@@ -132,9 +132,9 @@ use dittolive_ditto::prelude::*;
 use std::sync::Arc;
 use std::time::Duration;
 
-let mut ditto = Ditto::builder()
+let ditto = Ditto::builder()
     // creates a `ditto_data` folder in the directory containing the executing process
-    .with_root(Arc::new(PersistentRoot::current_exe()?))
+    .with_root(Arc::new(PersistentRoot::from_current_exe()?))
     .with_identity(|ditto_root| {
       // Provided as an env var, may also be provided as hardcoded string
       let app_id = AppId::from_env("DITTO_APP_ID")?;
@@ -142,10 +142,12 @@ let mut ditto = Ditto::builder()
       let custom_auth_url = None;
       // return the Result<Identity, _> at the end of this closure
       OnlinePlayground::new(ditto_root, app_id, enable_cloud_sync, custom_auth_url)
-    })
+    })?
     .with_transport_config(|_identity| {
-        let mut config = TransportConfig::enable_all_peer_to_peer()
-    })
+        let mut config = TransportConfig::new();
+        config.enable_all_peer_to_peer();
+        config
+    })?
     .build()?;
 
 ditto.try_start_sync()?;
