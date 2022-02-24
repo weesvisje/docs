@@ -48,11 +48,11 @@ In a new terminal, pipe events from the Kafka script to the response:
 ./all.sh | node echo.js
 ```
 
-If all is working, you should see events streaming into terminal as you data is changed with the Ditto SDK.
+If all is working, you should see events streaming into terminal as data is changed.
 
-## Homework
+## Exercise
 
-Now, update this script to send an HTTP request to an external server on every event. Use this script as a starting place:
+Now, update this script to send an HTTP request to an external server on every event. Use this script as a start and fill in the TODO.
 
 ```js
 let es = require('event-stream')
