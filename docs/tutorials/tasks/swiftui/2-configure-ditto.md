@@ -32,7 +32,7 @@ For Ditto to fully use all the network transports like Bluetooth Low Energy, Loc
 </array>
 ```
 
-For more information on these permissions [click here](/advanced/platform-permissions/ios-platform-permissions)
+For more information on these permissions [click here](/installation/ios#platform-permissions)
 
 ## 2-3 Add `ditto` to `TasksApp.swift`
 

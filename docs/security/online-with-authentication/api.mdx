@@ -1,11 +1,20 @@
 ---
-title: 'Setup Client Side'
+title: 'Authentication API'
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-## Configure your Client App
+## Creating your client
+
+Create the ditto client with the `onlineWithAuthentication` identity. This
+identity requires an authentication handler `authHandler`.
+
+:::warning
+You must refresh the auth token when it expires. You can do that by implementing
+`authenticationExpiringSoon`. If you do not implement this, then sync will stop when the token
+expires. 
+:::
 
 <Tabs
   groupId="programming-language"
@@ -30,8 +39,7 @@ import { init, Ditto } from "@dittolive/ditto"
 
   const authHandler = {
     authenticationRequired: async function(authenticator) {
-      await authenticator.loginWithToken(ThirdPartyAuth.getToken(), "third_party");
-      console.log("Login request completed.");
+      console.log("Login request.");
     },
     authenticationExpiringSoon: function(authenticator, secondsRemaining) {
       console.log(`Auth token expiring in ${secondsRemaining} seconds`)
@@ -55,9 +63,7 @@ import { init, Ditto } from "@dittolive/ditto"
 ```swift
 struct AuthDelegate: DittoAuthenticationDelegate {
     func authenticationRequired(authenticator: DittoAuthenticator) {
-        authenticator.loginWithToken(ThirdPartyAuth.getToken(), provider: "third_party") { err in
-            print("Login request completed. Error? \(err)")
-        }
+        print("Login request.)
     }
 
     func authenticationExpiringSoon(authenticator: DittoAuthenticator, secondsRemaining: Int64) {
@@ -83,9 +89,7 @@ try! ditto.tryStartSync()
 
 @implementation AuthDelegate
 - (void)authenticationRequired:(nonnull DITAuthenticator *)authenticator {
-    [authenticator loginWithToken:[ThirdPartyAuth getToken] provider:@"third_party" completion:^(NSError * _Nullable err) {
-        NSLog(@"Login request completed. Error? %@", err);
-    }];
+      NSLog(@"Login request.");
 }
 
 - (void)authenticationExpiringSoon:(nonnull DITAuthenticator *)authenticator
@@ -107,9 +111,7 @@ NSError *error = nil;
 ```kotlin
 class AuthCallback: DittoAuthenticationCallback {
     override fun authenticationRequired(authenticator: DittoAuthenticator) {
-        authenticator.loginWithToken(ThirdPartyAuth.getToken(), "third_party") { err ->
-            println("Login request completed. Error? $err")
-        }
+        println("Login request.")
     }
 
     override fun authenticationExpiringSoon(
@@ -138,12 +140,11 @@ try {
 <TabItem value="java">
 
 ```java
+
 class AuthCallback implements DittoAuthenticationCallback {
     @Override
     public void authenticationRequired(@NonNull DittoAuthenticator authenticator) {
-        authenticator.loginWithToken(ThirdPartyAuth.getToken(), "third_party", err -> {
-            System.out.println("Login request completed. Error? " + err.toString());
-        });
+        System.out.println("Login request.");
     }
 
     @Override
@@ -175,8 +176,7 @@ class AuthDelegate : IDittoAuthenticationDelegate
 {
     public async void AuthenticationRequired(DittoAuthenticator authenticator)
     {
-        var res = await authenticator.LoginWithToken(ThirdPartyAuth.GetToken(), "third_party");
-        System.Console.WriteLine($"Login request completed. Error? {res}");
+        System.Console.WriteLine($"Login request");
     }
 
     public async void AuthenticationExpiringSoon(DittoAuthenticator authenticator, long secondsRemaining)
@@ -207,9 +207,7 @@ catch (DittoException ex)
 class AuthCallback: public AuthenticationCallback {
 public:
   void authentication_required(std::shared_ptr<Authenticator> authenticator) {
-    authenticator->login_with_token("123", "third_party", [](std::unique_ptr<DittoError> err) {
-      std::cout << "Login request completed. Error?" << err->what() << std::endl;
-    });
+      std::cout << "Login request" << std::endl;
   }
 
   void authentication_expiring_soon(std::shared_ptr<Authenticator> authenticator,
@@ -246,9 +244,7 @@ struct AuthHandler {
 
 impl DittoAuthenticationEventHandler for AuthHandler {
     fn authentication_required(&self, auth: dittolive_ditto::auth::DittoAuthenticator) {
-        auth.login_with_token(&self.token, &self.provider) {
-            ::log::info!("Login request completed. Error? {:?}", &e);
-        }
+        ::log::info!("Login request.");
     }
 
     fn authentication_expiring_soon(
@@ -267,7 +263,7 @@ impl Default for AuthHandler {
     fn default() -> Self {
         AuthHandler {
             token: ThirdPartyAuth::get_token(),
-            provider: String::from("third_party"),
+            provider: String::from("my-auth"),
         }
     }
 }
@@ -297,6 +293,302 @@ let mut ditto = Ditto::builder()
 
 ditto.try_start_sync()?;
 ```
+
+</TabItem>
+</Tabs>
+
+## Login
+
+Login takes two paramters: the first is `token`, which should be a JSON web
+token (JWT). The second paramter is the name of the provider which you must add
+through the Ditto portal.
+
+![Sample Authentication Webhook Endpoint in the Portal](./sample-authentication-webhook-endpoint.png)
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'}
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+let accessToken = await ThirdPartyAuth.getToken()
+await ditto.auth.loginWithToken(accessToken, 'my-auth')
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+ditto.auth.loginWithToken(ThirdPartyAuth.getToken(), provider: "my-auth") { err in
+    print("Login request completed. Error? \(err)")
+}
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+[ditto auth loginWithToken:[ThirdPartyAuth getToken] provider:@"my-auth" completion:^(NSError * _Nullable err) {
+    NSLog(@"Login request completed. Error? %@", err);
+}];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+ditto.auth.loginWithToken(ThirdPartyAuth.getToken(), "my-auth") { err ->
+    println("Login request completed. Error? $err")
+}
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+ditto.auth.loginWithToken(credentials.accessToken, "my-auth", err -> {
+    System.out.println("Login request completed. Error? " + err.toString());
+});
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+var res = await authenticator.LoginWithToken(ThirdPartyAuth.GetToken(), "my-auth");
+System.Console.WriteLine($"Login request completed. Error? {res}");
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+authenticator->login_with_token("123", "my-auth", [](std::unique_ptr<DittoError> err) {
+  std::cout << "Login request completed. Error?" << err->what() << std::endl;
+});
+```
+
+</TabItem>
+<TabItem value="rust">
+
+  ```rust
+  auth.login_with_token(&self.token, &self.provider) {
+      ::log::info!("Login request completed. Error? {:?}", &e);
+  }
+  ```
+
+</TabItem>
+<TabItem value="http">
+
+  ```bash
+  curl -X DELETE 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/<doc_id>' \
+    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'Content-Type: application/json' 
+  ```
+
+</TabItem>
+</Tabs>
+
+## Logout
+
+Logout will stop sync, shut down all replication sessions, and remove any cached
+authentication credentials. Note that this does not remove any data from the
+store. If you wish to delete data from the store then use the optional
+`cleanupFn` parameter to perform any required cleanup.
+
+The `cleanupFn` is an optional function that will be called with the relevant Ditto
+instance as the sole argument that allows you to perform any required cleanup of
+the store as part of the logout process.
+
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'}
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+async function cleanupFn (ditto) {
+  await ditto.store.collection('cars').findAll().evict()
+}
+await ditto.auth.logout(cleanupFn)
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+ditto.auth.logout(cleanup: { ditto in
+    ditto.store.collection("cars").findAll().evict()
+})
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+[ditto.auth logout:^(DITDitto *ditto) {
+  DITCollection *collection = [ditto.store collection:@"cars"];
+  [[collection findAll] evict];
+}];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+ditto.auth.logout {
+  ditto.store["cars"].findAll().evict()
+}
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+ ditto.auth.logout(ditto -> {
+  ditto.store.collection("cars").findAll().evict();
+ })
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+ditto.Auth.Logout((Ditto ditto) =>
+{
+  ditto.Store.Collection("cars").FindAll().evict();
+});
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+ditto.auth.logout({
+  ditto.store.collection("cars").findAll().evict();
+})
+```
+
+</TabItem>
+<TabItem value="rust">
+
+```rust
+ditto.auth.logout(|ditto| {
+  ditto.store().collection("cars")?.find_all().evict()?;
+});
+```
+
+</TabItem>
+</Tabs>
+
+
+## Observe Status
+
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'}
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+ditto.auth.observeStatus((status) => {
+  if (status.isAuthenticated) {
+    // do something
+  }
+})
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+ditto.store["people"].findByID(docId).remove()
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITCollection *collection = [ditto.store collection:@"people"];
+[[collection findByID:@"123"] remove];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+ditto.store["people"].findByID(docId).remove()
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+ditto.store.collection("people").findByID(docId).remove();
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+ditto.Store.Collection("people").FindByID(docId).Remove();
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+ditto.store.collection("people").find_by_id(docId).remove();
+```
+
+</TabItem>
+<TabItem value="rust">
+
+  ```rust
+  ditto.store().collection("people")?.find_by_id(doc_id).remove()?;
+  ```
+
+</TabItem>
+<TabItem value="http">
+
+  ```bash
+  curl -X DELETE 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/<doc_id>' \
+    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'Content-Type: application/json' 
+  ```
 
 </TabItem>
 </Tabs>

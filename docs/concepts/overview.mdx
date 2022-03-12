@@ -14,7 +14,7 @@ __Big Peers__ and __Small Peers__ can sync with eachother with a common __appID_
 __Big Peer__
 
 * Big Peers will try to sync everything from the Small Peers. If a small peer adds, removes, or updates data, the big peer will be notified of these changes. We call this an __altruistic replication strategy__.
-* The Big Peer is capable of storing a tremendous amount of data is capable of of sharding and partitioning. While it still looks like any peer, underneath the hood, it is capable of scaling to meet the demands of large amount of data. [Read more about it's internal architecture here.](/advanced/architecture/big-peer-internals)
+* The Big Peer is capable of storing a tremendous amount of data and is capable of of sharding and partitioning. While it still looks like any peer, underneath the hood, it is capable of scaling to meet the demands of large amount of data. [Read more about its internal architecture here.](/how-it-works/big-peer)
 * To get data in or out of the Big Peer, you can use a Small Peer or the [HTTP API](/concepts/http), or using our Server Side Webhooks.
 
 __Small Peer__

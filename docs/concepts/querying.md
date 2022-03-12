@@ -410,18 +410,18 @@ find("contains('Stephen King', (books[*].authors)[])")
 
 ### String Operations
 
-Use `beginsWith(property, test)` to test if a property with a string value __begins__ with a test string
+Use `starts_with(property, test)` to test if a property with a string value __starts__ with a test string
 
 ```js
 // finds documents with a title property that begins with "Lord"
-find("beginsWith(title, 'Lord')")
+find("starts_with(title, 'Lord')")
 ```
 
-Use `endsWith(property, test)` to test if a property with a string value __ends__ with a test string
+Use `ends_with(property, test)` to test if a property with a string value __ends__ with a test string
 
 ```js
-// finds documents with a title property that begins with "Lord"
-find("endsWith(title, 'Rings')")
+// finds documents with a title property that ends with "Lord"
+find("ends_with(title, 'Rings')")
 ```
 
 Use `regex(property, test)` to see if a property with a string value passes a [Regular Expression. Click here for a reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions). 

@@ -1,6 +1,6 @@
 ---
 title: "Supported Network Transports"
-sidebar_position: 4
+sidebar_position: 10
 ---
 
 import { CheckIcon } from '@heroicons/react/solid'

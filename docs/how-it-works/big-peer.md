@@ -1,5 +1,5 @@
 ---
-title: "Big Peer Internals"
+title: "Big Peer"
 ---
 
 export function ImageHolder(props) {
@@ -25,7 +25,7 @@ Previously, we referred to the Big Peer with the code name "HyDRA". This stood f
 Even with the Small Peer's wireless mesh networking capabilities, some pair of devices may not be able to
 exchange data. Maybe they are miles apart, or they are never online at the same time. That is where Big Peer fits in. The Big Peer is a database that Small Peer devices can sync with to propagate changes across disconnected meshes, and even back to the enterprise. So often databases are used as channels, which is also one of Big Peer's purposes.
 
-There exist many distributed databases, but Big Peer is specifically designed for Ditto: It stores Ditto's CRDTs by default; it can store and merge Ditto [CRDT](/advanced/architecture/crdt) Diffs; it "speaks" Ditto's mesh replication protocol, meaning it appears as just another peer to Ditto mesh devices; and it provides causally consistent transactions.
+There exist many distributed databases, but Big Peer is specifically designed for Ditto: It stores Ditto's CRDTs by default; it can store and merge Ditto [CRDT](/how-it-works/crdt) Diffs; it "speaks" Ditto's mesh replication protocol, meaning it appears as just another peer to Ditto mesh devices; and it provides causally consistent transactions.
 
 ## How Does It Work?
 
@@ -49,7 +49,7 @@ The following drawing is a rough overview of the architecture.
 ### Ditto CRDTs
 
 The core data type in Ditto is the CRDT. It is documented in detail
-[here](/advanced/architecture/crdt). Understanding some
+[here](/how-it-works/crdt). Understanding some
 of how the CRDT works helps understand the concepts below. It is
 enough to know that if the same CRDT is modified by multiple Ditto
 mesh Small Peer devices concurrently there is a way to deterministically
@@ -57,7 +57,7 @@ _merge_ the conflicting versions into a single meaningful value.
 
 ### Ditto Mesh Replication
 
-This is also covered in [other documents](/advanced/architecture/mesh-network). All we need know
+This is also covered in [other documents](/how-it-works/mesh-network). All we need know
 here is that Small Peer devices replicate with Big Peer by sending
 CRDT Documents, and CRDT Diffs to Big Peer's Subscription Server API, and
 receive in return Documents and Diffs that they are subscribed to. A
@@ -272,7 +272,7 @@ log will do. At present, we use a single partition of a single topic,
 but we can partition the log by Application and still maintain the
 same consistency guarantees. When we do partition the log the properties are the
 same, the throughput increases, and the UST becomes
-a vector.  Developers can [register Kafka consumers](tutorials/kafka/intro)
+a vector.  Developers can [register Kafka consumers](/tutorials/kafka/intro)
 where Big Peer will deliver data change events that match a defined query -
 similar to how Small Peers can `observe` queries to react to data changes.
 
@@ -595,7 +595,7 @@ Big Peer is approaching beta. Some customers are already putting production work
 
 Completing the cycle of data in Big Peer is CDC ([Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture)). Work in progress where each transaction produces a Change Data Message containing the type of change (eg insert, delete, update) and the details of the change. CDC is a way for customer to react to data changes that occur from the mesh or elsewhere, or even to keep external legacy databases in sync with Big Peer.
 
-Data from CDC is available from Kafka. Developers can [register Kafka consumers](tutorials/kafka/intro) where Big Peer will deliver data change events that match a defined query - similar to how Small Peers can `observe` queries to react to data changes.
+Data from CDC is available from Kafka. Developers can [register Kafka consumers](/tutorials/kafka/intro) where Big Peer will deliver data change events that match a defined query - similar to how Small Peers can `observe` queries to react to data changes.
 
 We also provide webhoooks will enable delivery of data within Big Peer into other systems or to build server-side logic that reacts to data change events - such as performing data aggregations that write back into Big Peer or to trigger an email to a user based off an event from a Small Peer. These data change events fit into "serverless" patterns and will work with any "functions-as-a-service" (FaaS) systems, such as AWS Lambda or others.
 

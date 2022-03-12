@@ -1,6 +1,6 @@
 ---
 title: "iOS"
-sidebar_position: 2
+sidebar_position: 3
 pagination_prev: intro
 pagination_next: concepts/overview
 ---
@@ -81,7 +81,35 @@ And run `pod install --repo-update` to install the latest versions.
 
 ![Xcode 13 Info Plist Edit](./xcode13-infoplist.png)
 
-5. _Add_ the following keys to your Info.plist.
+
+### Platform permissions
+
+<details>
+<summary>Q: Why does Ditto need iOS Platform Permissions?</summary>
+
+  Ditto attempts to use all the available networking capabilities of your device
+  to locate and sync with other users of your app. This includes standard Wi-Fi
+  (which we often refer to as LAN or Local Area Network) and peer-to-peer
+  functionality such as AWDL and Bluetooth Low Energy.
+
+  iOS restricts access to some of this functionality for the sake of user
+  control and privacy. To unlock the full capabilities of Ditto, it is important
+  to configure your app so that it requests all the permissions that it needs.
+  These permissions are only asked once when you attempt to start the
+  synchronization.
+
+  Since iOS 13 and Xcode 11 an app must ask the user's permission to use
+  Bluetooth. However, Ditto will activate Bluetooth by default, which means the
+  user will receive a permission prompt automatically. In addition, since iOS 14
+  an app must ask the user's permission to use the Local Area Network to discover
+  devices.
+
+  * Privacy - Local Network Usage Description
+  * Privacy - Bluetooth Peripheral Usage Description
+  * Privacy - Bluetooth Always Usage Description
+  * A Bonjour service `_http-alt._tcp`.
+
+</details>
 
 <Tabs
 groupId="info-plist"
@@ -94,7 +122,7 @@ groupId="info-plist"
 
 <TabItem value="info-tab">
 
-Add the following values to your Info tab.
+5. _Add_ the following values to your Info tab.
 
 ```
 Key: NSBluetoothAlwaysUsageDescription
@@ -117,7 +145,7 @@ Value: _http-alt._tcp.
 </TabItem>
 <TabItem value="source-code">
 
-If your app already has an **Info.plist** file, you can right click on it and **Open As Source** and add the following values.
+5. _Add_ the following keys to your Info.plist. 
 
 ```xml title=Info.plist
 <key>NSBluetoothAlwaysUsageDescription</key>

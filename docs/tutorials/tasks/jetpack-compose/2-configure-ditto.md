@@ -49,7 +49,7 @@ val docs = TasksApplication.ditto!!.store["tasks].findAll().exec()
 
 ## 2-3 Add Permissions and Register Class
 
-In order for Ditto to sync, we will need to add permissions to the __AndroidManifest.xml__ file. [For more information about these permissions, click here](/advanced/platform-permissions/android-platform-permissions). In addition we will need to register our custom `TasksApplication` as the main Application class in the `<application>` tag.
+In order for Ditto to sync, we will need to add permissions to the __AndroidManifest.xml__ file. [For more information about these permissions, click here](/installation/android#android-platform-permissions). In addition we will need to register our custom `TasksApplication` as the main Application class in the `<application>` tag.
 
 ```diff title="AndroidManifest.xml" {5-15,18}
 <?xml version="1.0" encoding="utf-8"?>

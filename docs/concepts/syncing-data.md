@@ -1,6 +1,6 @@
 ---
 title: 'Syncing Data'
-sidebar_position: 4
+sidebar_position: 6
 ---
 
 import Tabs from '@theme/Tabs';

@@ -1,5 +1,5 @@
 ---
-title: 'Intro - Tasks App Tutorial'
+title: 'Introduction'
 sidebar_position: 1
 ---
 
