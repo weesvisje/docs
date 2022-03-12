@@ -503,3 +503,83 @@ ditto.auth.logout(|ditto| {
 </TabItem>
 </Tabs>
 
+
+## Observe Status
+
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'},
+    {label: 'Objective-C', value: 'objc'},
+    {label: 'Kotlin', value: 'kotlin'},
+    {label: 'Java', value: 'java'},
+    {label: 'C#', value: 'csharp'},
+    {label: 'C++', value: 'cpp'},
+    {label: 'Rust', value: 'rust'}
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+ditto.auth.observeStatus((status) => {
+  if (status.isAuthenticated) {
+    // do something
+  }
+})
+```
+
+</TabItem>
+<TabItem value="swift">
+
+```swift
+ditto.store["people"].findByID(docId).remove()
+```
+
+</TabItem>
+<TabItem value="objc">
+
+```objc
+DITCollection *collection = [ditto.store collection:@"people"];
+[[collection findByID:@"123"] remove];
+```
+
+</TabItem>
+<TabItem value="kotlin">
+
+```kotlin
+ditto.store["people"].findByID(docId).remove()
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+ditto.store.collection("people").findByID(docId).remove();
+```
+
+</TabItem>
+<TabItem value="csharp">
+
+```csharp
+ditto.Store.Collection("people").FindByID(docId).Remove();
+```
+
+</TabItem>
+<TabItem value="cpp">
+
+```cpp
+ditto.store.collection("people").find_by_id(docId).remove();
+```
+
+</TabItem>
+<TabItem value="rust">
+
+  ```rust
+  ditto.store().collection("people")?.find_by_id(doc_id).remove()?;
+  ```
+
+</TabItem>
+</Tabs>
