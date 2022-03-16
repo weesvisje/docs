@@ -1,0 +1,40 @@
+---
+title: 'Introduction'
+---
+
+The "Online With Authentication" identity type is geared towards apps will be
+deployed in real world settings. "Online With Authentication" identity types
+are: 
+
+* for apps that need to integrate with existing permissions
+* for apps that need to integrate with existing authentication systems
+
+:::info
+* __This section will require knowledge of writing server side HTTP endpoints and handlers.__ The server side sample code is written in JavaScript (NodeJS with an [Express](https://expressjs.com/)-like API), however you can use any framework or language of your choosing.
+* __We will use Auth0 in this tutorial.__ But you can use any third-party identity provider. Each app can use multiple identity providers. Identity providers can be: 
+  * Your own service
+  * Facebook, Twitter, GitHub, etc...
+  * Okta, Auth0, Stytch, etc...
+:::
+
+
+## How it works
+
+To use the "Online With Authentication" system, your client application is expected to authenticate with your identity system and retrieve some sort of token _prior_ to syncing with Ditto. Often times this token is some sort of identity token, access token, commonly in the format of a JWT (JSON Web Token).
+
+Once your client application successfully has retrieved this token, it should pass it to the Ditto `authenticator` which will pass it to an authentication webhook. As the developer, you are responsible for writing code and deploying the this webhook to an accessible URL. The authentication webhook will validate and decode the token from the client side and return identity and access control information back to your Ditto instance. 
+
+The full flow is detailed in the diagram below:
+
+```mermaid
+sequenceDiagram
+    Client App->>Your Authentication Mechanism: Send Credentials
+    Your Authentication Mechanism->>Client App: Return JWT
+    Client App->>Ditto Cloud: JWT
+    Ditto Cloud->>Auth Webhook: JWT 
+    Auth Webhook->>Ditto Cloud: Formatted Ditto Auth Response
+    Ditto Cloud->>Client App: Ditto Credentials
+    rect rgba(0, 0, 255, .1)
+      Client App->Ditto Cloud: Ditto Sync
+    end
+```

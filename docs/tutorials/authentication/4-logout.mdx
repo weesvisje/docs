@@ -1,0 +1,126 @@
+---
+title: 'Logout'
+sidebar_position: 4
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Logout 
+
+First, we need some sort of way to monitor the state of the login flow. This
+allows us to display a Logout button when the user has already logged in.
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'}
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+let loggedIn = false
+if (auth0.isAuthenticated()) {
+  loggedIn = true
+}
+```
+ 
+```html
+if (loggedIn) {
+  // render the logout button
+  <button onClick={onLogoutClick}>Logout</button>
+} else {
+  <button onClick={login}>Login</button>
+}
+```
+
+
+And then we can write the logout function and attach it to the button.
+
+We also recommend calling `ditto.auth.logout` with a callback function that
+evicts any data from the local database. 
+
+```js
+function onLogoutClick() {
+  ditto.auth.logout(() => {
+    ditto.store.collection('cars').findAll().evict()
+  })
+  await auth0.logout({ returnTo: window.location.origin })
+}
+```
+
+</TabItem>
+<TabItem value="swift">
+
+``` swift
+class ProfileViewModel: ObservableObject {
+  //highlight-start
+  @Published private(set) var state = State.isLoading
+
+  enum State {
+      case isLoading
+      case loaded(UserInfo)
+  }
+  //highlight-end
+
+}
+
+struct ContentView: View {
+    @ObservedObject var viewModel: ProfileViewModel = ProfileViewModel()
+    
+    var body: some View {
+       
+        switch viewModel.state {
+          case .isLoading:
+              Button("Login", action: viewModel.login)
+          case .loaded(let user):
+              Text(user.name ?? "Anonymous Ditto User")
+              Button("Logout", action: viewModel.logout)
+          }
+    
+        Text("Cars:" + String(viewModel.docs.count))
+        
+    }
+}
+```
+
+And then we can write the logout function and attach it to the button.
+
+We also recommend calling `ditto.auth.logout` with a callback function that
+evicts any data from the local database. 
+
+```swift
+class ProfileViewModel: ObservableObject {
+  ...
+  
+  func logout () {
+      Auth0
+          .webAuth()
+          .clearSession(federated: false) { result in
+              if result {
+                  if (self.ditto != nil) {
+                    // Clean up the cars collection after logout
+                    // highlight-start
+                      self.ditto!.auth?.logout(cleanup: { ditto in
+                          ditto.store.collection("cars").findAll().evict()
+                      })
+                    // highlight-end
+                  }
+                  self.state = State.isLoading
+              }
+          }
+  }
+  
+}
+
+```
+</TabItem>
+</Tabs>
+
+🎉 You now have a fully functioning `onlineWithAuthentication` app. Build and
+run it on a device.
+
+For the full code running code for React and iOS, see the demo apps.
