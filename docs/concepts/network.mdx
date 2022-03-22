@@ -5,9 +5,7 @@ title: 'Network Configuration'
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-There are instances where you may want to configure additional connections configurations for the current Ditto instance. This section will teach you how to configure your Ditto instance to listen for connections on a port explicitly and to connect to remote instances via a host (IP) and port.
-
- In this tutorial, we  _Before_ you call `tryStartSync()`, construct a `DittoTransportConfig` value and set `ditto.SetTransportConfig`.
+There are instances where you may want to configure additional connections configurations for the current Ditto instance. This section will teach you how to configure your Ditto instance to listen for connections on a port explicitly and to connect to remote instances via a host (IP) and port. To do this, _before_ you call `tryStartSync()`, construct a `DittoTransportConfig` value and set `ditto.SetTransportConfig`.
 
 :::info
 If you do not attempt to configure a `DittoTransportConfig` but call `ditto.TryStartSync()`, your Ditto instance will automatically attempt to connect to other ditto instances on the Local Area Network. However, if you supply a `DittoTransportConfig`, this will not automatically be enabled. You'll need to remember to enable local area network peer to peer connnections with `EnableAllPeerToPeer()`.
@@ -563,8 +561,12 @@ First, while configuring Ditto, assign a delegate or a callback to receive notif
 <TabItem value="javascript">
 
 ```js
+const identity = { type: 'onlinePlayground', appID: 'REPLACE_ME_WITH_YOUR_APP_ID' }
+const ditto = new Ditto(identity, '/persistence/file/path')
 ditto.tryStartSync()
 ```
+
+A delegate is not needed in Node.js or JavaScript.
 
 </TabItem>
 <TabItem value="swift">
@@ -656,10 +658,15 @@ Now you can observe real time changes to the transport conditions:
 
 ```js
 const transportConditionsObserver = ditto.observeTransportConditions((condition, source) => {
-    console.log(condition, source)
+  if (condition === "BLEDisabled") {
+    console.log("BLE disabled")
+  } else if (condition === "NoBLECentralPermission") {
+    console.log("Permission missing for BLE")
+  } else if (condition === "NoBLEPeripheralPermission") {
+    console.log("Permissions missing for BLE")
+  }
 })
 ```
-
 </TabItem>
 <TabItem value="swift">
 
