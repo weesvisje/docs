@@ -31,6 +31,7 @@ import { init, Ditto } from '@dittolive/ditto'
   await init() // you need to call this at least once before using any of the Ditto API
   const identity = { type: 'onlinePlayground', appID: 'com.example.ditto' }
   const ditto = new Ditto(identity, 'playground')
+  ditto.startSync()
 })()
 ```
 
