@@ -5,6 +5,7 @@ pagination_prev: intro
 pagination_next: concepts/overview
 ---
 
+import { Snippet } from '@site/src/components/SnippetGroup';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import { InstallCode } from "../../src/components/Changelog.tsx";
@@ -180,27 +181,13 @@ The values like `Uses WiFi to connect and sync with nearby devices` will be disp
 }>
 <TabItem value="swift">
 
-```swift
-import DittoSwift
+<Snippet name='online-playground' language='swift' />
 
-let ditto = Ditto(identity: .onlinePlayground(appID: "REPLACE_WITH_APP_ID"))
-try! ditto.tryStartSync()
-```
 
 </TabItem>
 <TabItem value="objc">
 
-```objc
-#import <DittoObjC/DittoObjC.h>
-
-DITIdentity *identity = [[DITIdentity alloc] initOnlinePlaygroundWithAppID:@"REPLACE_WITH_APP_ID"];
-DITDitto *ditto = [[DITDitto alloc] initWithIdentity:identity];
-NSError *error = nil;
-
-if (![ditto tryStartSync:&error]) {
-  NSLog(@"Error starting sync: %@", error);
-}
-```
+<Snippet name='online-playground' language='objc' />
 
 </TabItem>
 </Tabs>

@@ -1,4 +1,7 @@
-# HTTP API Reference
+---
+title: 'HTTP API Reference'
+sidebar_position: 12
+---
 
 <!-- This document is intended to serve as a public facing guide to the entire HTTP API at the time we deliver Particle phase 1. Items for future work or discussion will be called out in comments like this. -->
 
@@ -392,6 +395,18 @@ The resulting response will be:
 ```
 
 For more examples, see the corresponding sections in the Concepts section for [querying](/concepts/querying), [update](/concepts/update), and [remove](/concepts/remove).
+
+:::info
+
+**Can I do a query inside of an upsert as part of the HTTP API?**
+
+Unfortunately no. The HTTP API will look to see if a document with that _id
+exists, if so it will merge the two and then insert. To implement `update`
+behavior, you must issue two HTTP requests. First, send a [find
+request](/concepts/querying), and then based on that, you can `upsert` the
+document.
+
+::::
 
 ### TimeSeries 
 

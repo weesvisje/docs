@@ -5,6 +5,7 @@ pagination_prev: intro
 pagination_next: concepts/overview
 ---
 
+import { Snippet } from '@site/src/components/SnippetGroup';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { InstallCode } from "../../src/components/Changelog.tsx"
@@ -67,20 +68,12 @@ details.
 }>
 <TabItem value="kotlin">
 
-```kotlin
-val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
-val ditto = Ditto(androidDependencies, DittoIdentity.OnlinePlayground(androidDependencies, "REPLACE_WITH_APP_ID"))
-ditto.tryStartSync()
-```
+<Snippet name='online-playground' language='kotlin' />
 
 </TabItem>
 <TabItem value="java">
 
-```java
-DefaultAndroidDittoDependencies androidDependencies = new DefaultAndroidDittoDependencies(applicationContext);
-Ditto ditto = new Ditto(androidDependencies, new DittoIdentity.OnlinePlayground(androidDependenciesOne, "REPLACE_WITH_APP_ID"));
-ditto.tryStartSync();
-```
+<Snippet name='online-playground' language='java' />
 
 </TabItem>
 </Tabs>

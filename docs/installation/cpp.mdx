@@ -5,6 +5,7 @@ pagination_prev: intro
 pagination_next: concepts/overview
 ---
 
+import { Snippet } from '@site/src/components/SnippetGroup';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { InstallCode } from "../../src/components/Changelog.tsx"
@@ -65,12 +66,6 @@ g++ -std=c++17 ./src/main.cpp -I ./sdk -lditto -ldl -framework Security,CoreFoun
 
 3. Now, in your C++ code, you can import ditto with: `#include <Ditto.h>`
 
-```cpp
-int main() {
-    auto identity = ditto::Identity();
-    std::unique_ptr<ditto::Ditto> ditto(new ditto::Ditto(identity));
-    ditto->try_start_sync()
-    return 0;
-}
-```
+<Snippet name='online-playground' language='cpp' />
+
 
