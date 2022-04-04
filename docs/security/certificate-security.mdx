@@ -52,7 +52,7 @@ Every installation of an app that uses Ditto has its own identity. This identity
 An identity is a bundle of device and app-specific information:
 
 * Site ID - A number unique to this device.
-* App Name - A name identifying the application. This avoids different Ditto-enabled apps trying to sync with each other. Like iOS App IDs, this takes the form of a domain name. Example: app.ditto.live
+* App Name - A name identifying the application. This avoids different Ditto-enabled apps trying to sync with each other. These are unique identifiers, for example, `5322afcd-5a70-43a3-bc2d-85d98ccf5ac0`
 * Access Rules - Define which documents this device is allowed to read or write during sync.
 * Private Key - A secret for authenticating as this identity.
 * Identity Certificate - A certificate verifying the particulars of this device, signed by the CA.
@@ -72,9 +72,9 @@ An identity is a bundle of device and app-specific information:
   </tr>
 
   <tr>
-    <td>App Name</td>
+    <td>App ID</td>
     <td>Set by central authority</td>
-    <td>Defaults to "app.ditto.live"; can be customized</td>
+    <td>For example, "5322afcd-5a70-43a3-bc2d-85d98ccf5ac0"</td>
   </tr>
 
   <tr>
@@ -108,9 +108,14 @@ An identity is a bundle of device and app-specific information:
 
 
 ## Certificates
-Ditto identities and public keys are distributed in the standard X.509 certificate format. They do not directly contain potentially sensitive data such as access rules.
+Ditto identities and public keys are distributed in the standard X.509
+certificate format. They do not directly contain potentially sensitive data such
+as access rules.
 
-Ditto does not commit you to any workflow for managing identity data and certificates. When you are ready to start using production identities, contact the Ditto team through the Ditto Portal and we will help you set up the right CA tooling for your use case - or provide specifications so you can build your own.
+Ditto does not commit you to any workflow for managing identity data and
+certificates. When you are ready to start using production identities, contact
+the Ditto team through the Ditto Portal and we will help you set up the right CA
+tooling for your use case - or provide specifications so you can build your own.
 
 ## Shared Secret Security
 
