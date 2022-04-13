@@ -1,28 +1,26 @@
 ---
 title: 'Designing Permissions'
+sidebar_position: 3
 ---
 
-When Ditto sends an HTTP POST request to your server-side authentication
-webhook, your code should respond with the permissions granted to that user.
-
-This response is a special format that can be parsed by Ditto peers and accept
-or reject reads and writes from individual clients. 
-
-:::info
-This page is a reference for writing Ditto permissions for the
-`onlineWithAuthentication` identity. 
-:::
+Ditto identities use the following JSON to describe permissions attributed to a
+particular `userID`, and accept or reject reads and writes from individual
+clients. This information can be encoded within the certificate
+[manually](/how-it-works/certificate-security) or with the [Online with Authentication
+identity](/security/online-with-authentication/overview). When using
+`onlineWithAuthentication`, Ditto sends an HTTP POST request to your server-side
+authentication webhook. Your server should respond with the permissions granted
+to that user.
 
 ## Rejecting a user
 
-To reject a user respond with a JSON payload below. You do not need to manipulate the HTTP response status.
+To reject a user, specify the JSON payload below. When using a webhook with `onlineWithAuthentication`, you do not need to manipulate the HTTP response status.
 
 ```jsonc
 {
   "authenticate": false
 }
 ```
-
 
 ## Accepting a user
 

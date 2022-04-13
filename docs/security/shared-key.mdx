@@ -1,0 +1,27 @@
+---
+title: 'Shared Key'
+sidebar_position: 5 
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SnippetGroup from '@site/src/components/SnippetGroup';
+
+Ditto offers an intermediate-level of security for applications where all users
+and devices are trusted. For example, this could be appropriate for an
+enterprise application run on centrally managed devices. In this mode, every
+device knows the same secret key, and uses this to validate incoming
+connections. The benefit of this approach is that distinct certificates do not
+have to be distributed to every device, simplifying the deployment
+considerations.
+
+To generate a secure randomly generated shared key, use this command with OpenSSL:
+
+*At time of writing, this command works on Linux machines with an up-to-date OpenSSL but not with the LibreSSL distributed on Macs.*
+```console
+openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -outform pem | openssl pkcs8 -topk8 -nocrypt -outform der | base64 -w 0
+```
+
+
+<SnippetGroup name='shared-key' />
+
