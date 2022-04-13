@@ -40,11 +40,11 @@ The full flow is detailed in the diagram below:
 sequenceDiagram
     Client App->>Your Authentication Mechanism: Send Credentials
     Your Authentication Mechanism->>Client App: Return JWT
-    Client App->>Ditto Cloud: JWT
-    Ditto Cloud->>Auth Webhook: JWT 
-    Auth Webhook->>Ditto Cloud: Formatted Ditto Auth Response
-    Ditto Cloud->>Client App: Ditto Credentials
+    Client App->>Ditto Big Peer: JWT
+    Ditto Big Peer->>Auth Webhook: JWT 
+    Auth Webhook->>Ditto Big Peer: Formatted Ditto Auth Response
+    Ditto Big Peer->>Client App: Ditto Credentials
     rect rgba(0, 0, 255, .1)
-      Client App->Ditto Cloud: Ditto Sync
+      Client App->Ditto Big Peer: Ditto Sync
     end
 ```

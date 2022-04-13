@@ -15,7 +15,7 @@ The mesh is an underlay for data sync. It operates independently of your queries
 
 Ditto contains a number of algorithms to maintain an optimal mesh automatically, whether you have two devices or two thousand.
 
-Many applications need to sync data with the cloud or an on-premises server. The Ditto SDK uses peer-to-peer and cloud connections simultaneously, turning your mesh global. This is as easy as setting your server’s URL.
+Many applications need to sync data with the Big Peer or an on-premises server. The Ditto SDK uses peer-to-peer and Big Peer connections simultaneously, turning your mesh global. This is as easy as setting your server’s URL.
 
 ## Types of Transports
 
@@ -25,7 +25,7 @@ Where possible Ditto will create a mesh using a mixture of transports. They offe
 
 Which transports are supported depends on what kind of device or SDK you are using. Some examples:
 
-* A mobile phone can use **Bluetooth LE**, **LAN**, **P2P WiFi**, or a **WebSocket** connection to a cloud server.
+* A mobile phone can use **Bluetooth LE**, **LAN**, **P2P WiFi**, or a **WebSocket** connection to a Big Peer server.
 * A web application running in a browser can use **WebSocket**.
 * A Raspberry Pi can use **Bluetooth LE**, **LAN**, or **WebSocket**.
 
@@ -89,7 +89,7 @@ The seamless switching between transports relies on a Ditto component called the
 
 As of Ditto v1.0 the Multiplexer uses one transport at a time with failover. In future versions this feature will enable more complex scenarios such as load-balancing across multiple routes and lossy transports.
 
-## Servers and the Cloud
+## Servers and the Big Peer
 
 In addition to peer-to-peer transports like Bluetooth, a cloud or on-prem server can be configured by specifying its URL. At Ditto we call a server like this a _Big Peer_, while regular SDKs are _Small Peers_.
 

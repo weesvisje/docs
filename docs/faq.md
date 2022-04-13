@@ -191,7 +191,7 @@ Ditto also has a development security mode which does not require you to provide
 
 ### How does the certificate work?
 
-Ditto certificates are standard X.509 certificates. Each device has a keypair and the certificate grants that device a unique ID and rules for which collections and documents it is permitted to read and write. Organizations with strict on-premises requirements may operate their own certificate authority (CA). Certificates can also be generated and distributed automatically from the Ditto cloud service. For more information about certificate deployments please speak to us.
+Ditto certificates are standard X.509 certificates. Each device has a keypair and the certificate grants that device a unique ID and rules for which collections and documents it is permitted to read and write. Organizations with strict on-premises requirements may operate their own certificate authority (CA). Certificates can also be generated and distributed automatically from the Ditto Big Peer service. For more information about certificate deployments please speak to us.
 
 ## __Wi-Fi__
 

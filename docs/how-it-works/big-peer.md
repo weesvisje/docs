@@ -11,14 +11,13 @@ Ditto's distributed database architecture is a composition of Small Peers and Bi
 Conversely, Big Peers are database peers which live in the cloud and are capable of sharding or partitioning. When they sync with small peers, they look like any other peer. However, a Big Peer can be split across multiple virtual or physical nodes allowing for both horiztonal and vertical scaling of resources as your application demands grow.
 
 The Big Peer fits into Ditto's vision of syncing data, anywhere. Big Peer is cloud-ready, multi-tenant, highly available, fault
-tolerant, offers causally consistent transactions, and works seamlessly with Small Peer devices. Ditto's cloud platform is essentially the Big Peer with some additional services. However, this article will focus primarily on the database portion.
+tolerant, offers causally consistent transactions, and works seamlessly with Small Peer devices.
 
 For reference:
 
 - Web, iOS, Android, Raspberry Pi, Desktop, and some server side apps 👉 **Small Peer**
 - Ditto Cloud 👉 **Big Peer**
 
-Previously, we referred to the Big Peer with the code name "HyDRA". This stood for Hyper Data Replication Architecture. We've since retired this name in favor of a more unifying terminology by embracing the word "Peer".
 
 ## Why Did You Make It?
 

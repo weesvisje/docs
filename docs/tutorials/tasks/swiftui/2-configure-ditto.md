@@ -4,7 +4,7 @@ title: '2 - Configure Ditto'
 
 ## 2-1 Create Your Ditto App
 
-Before we start coding, we first need to create a new app in the [portal](https://portal.ditto.live). Apps created on the portal will automatically sync data between them and also to the Ditto cloud.
+Before we start coding, we first need to create a new app in the [portal](https://portal.ditto.live). Apps created on the portal will automatically sync data between them and also to the Ditto Big Peer.
 
 Each app created on the portal has a unique `appID` which can be seen on your app's settings page once the app has been created. This ID is used in subsequent sections to configure your Ditto instance.
 
@@ -41,7 +41,7 @@ When Xcode generated your project, there should be a file called __TasksApp.swif
 1. First import Ditto with `import DittoSwift`
 2. Construct an instance of Ditto with an online playground identity using the APP ID of the app that you just created on the portal. We are using an `.onlinePlayground` setup, which should suffice for this tutorial. However, you should never deploy this to a production environment like the Apple App Store.
 3. We will call `tryStartSync` as soon as the app's `ContentView` appears. This method can throw an error in the event that the license token is invalid or expired. Add two `@State` variables to capture if `ditto.tryStartSync` throws an error. One variable will be `@State var isPresentingAlert = false` and the other is a `@State var errorMessage = ""`.
-4. Add an `.onAppear` function and give it a license token. Look for `"<REPLACE_ME>"` and insert your valid license token. You can get a license token from our [cloud portal](https://portal.ditto.live). If the `tryStartSync()` fails, we will set `isPresentingAlert = true` and set the `errorMessage` to the error's `.localizedDescription`.
+4. Add an `.onAppear` function and give it a license token. Look for `"<REPLACE_ME>"` and insert your valid license token. You can get a license token from our [Big Peer portal](https://portal.ditto.live). If the `tryStartSync()` fails, we will set `isPresentingAlert = true` and set the `errorMessage` to the error's `.localizedDescription`.
 5. We will then present a `.alert` if `isPresentingAlert` is true. Notice that we will pass a `@State` variable as a binding type, which is why we denoted `$isPresentingAlert` prefixed with a `$`. To learn more about SwiftUI's `Binding` types like `@State` [click here.](https://developer.apple.com/documentation/swiftui/state-and-data-flow)
 
 ```swift title=TasksApp.swift

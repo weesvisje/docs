@@ -7,7 +7,7 @@ Almost done! We have our UI in place and Ditto installed, so let's add the logic
 
 ## 3-1 Create Your Ditto App on the Portal
 
-Before we start coding, we first need to create a new app in the [portal](https://portal.ditto.live). Apps created on the portal will automatically sync data between them and also to the Ditto cloud.
+Before we start coding, we first need to create a new app in the [portal](https://portal.ditto.live). Apps created on the portal will automatically sync data between them and also to the Ditto Big Peer.
 
 Each app created on the portal has a unique `appID` which can be seen on your app's settings page once the app has been created. This ID is used in subsequent sections to configure your Ditto instance.
 

@@ -4,7 +4,7 @@ title: "4 - Integrate Ditto"
 
 ## 4-1 Create Your Ditto App on the Portal
 
-In order to integrate Ditto into our app we first need to create a new app on the [portal](https://portal.ditto.live). Apps created on the portal will automatically sync data between them and also to the Ditto cloud.
+In order to integrate Ditto into our app we first need to create a new app on the [portal](https://portal.ditto.live). Apps created on the portal will automatically sync data between them and also to the Ditto Big Peer.
 
 Each app created on the portal has a unique `appID` which can be seen on your app's settings page once the app has been created. This ID is used in subsequent sections to configure your Ditto instance.
 
