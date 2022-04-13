@@ -5,6 +5,7 @@ pagination_prev: intro
 pagination_next: concepts/overview
 ---
 
+import { Snippet } from '@site/src/components/SnippetGroup';
 import { InstallCode } from "../../src/components/Changelog.tsx"
 
 Ditto's JavaScript SDK can run either in the browser, NodeJS, or Electron
@@ -24,15 +25,7 @@ yarn add @dittolive/ditto
 
 2. Import it like any other NPM package in your source and start using it:
 
-```js
-import { init, Ditto } from '@dittolive/ditto'
-
-(async () => {
-  await init() // you need to call this at least once before using any of the Ditto API
-  const identity = { type: 'onlinePlayground', appID: 'com.example.ditto' }
-  const ditto = new Ditto(identity, 'playground')
-})()
-```
+<Snippet name='online-playground' language='javascript' />
 
 :::info
 Need to run NodeJS on a Linux or Raspberry Pi? [Make sure to read this.](/installation/linux)

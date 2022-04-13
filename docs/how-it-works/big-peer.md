@@ -138,43 +138,39 @@ on terms and concepts follows.
 
 #### Replicas
 
-Replicas are independent copies of the same data. This is an aid to fault tolerance
-and performance. If you have 3 replicas and a disk fails, you still have two
-copies. Or if one or two replicas are unreachable due to network conditions, you
-can still read from a reachable one. Replicas are also useful to provide more
+Replicas are independent copies of the same data, which provide fault tolerance
+and better performance. For example, if there exist 3 replicas and a disk fails, two
+copies remain. If one or two replicas are unreachable due to network conditions, you
+can still read from a reachable one. Replicas improve performance by providing more
 capacity to serve reads. If you have three replicas you can balance reads across
-all three, each doing a third of the work. How data is replicated has an effect
-on when you can read what.
+all three, each doing a third of the work. Data replication strategies (i.e.,
+how data is replicated) have an effect on when you can read what.
 
-As an initial look at the UST, imagine a database on a single machine, with a
+As an initial look at the UST, imagine a database on a single machine with a
 transaction log. Each transaction to be written goes onto the log and is given a
-sequence number. When the transaction is committed the sequence number can be
-thought of as the current version of the database. When transaction with
-sequence number 1 is committed, the database is at version 1. When you read the
-database after transaction 1 is committed you are reading version 1. When the
-2nd transaction commits, the database is at version 2, and so on.
+sequence number. When the transaction is committed, the sequence number can
+represent the current version of the database. For example, when transaction
+with sequence number 1 is committed, the database is at version 1. When
+the 2nd transaction commits, the database is at version 2, and so on.
 
-If we now wish to have two replicas of our data, how we replicate matters. If
-one replica is the primary, and another is the secondary\*, maybe the primary
-commits transaction 1, and then sends it to the secondary, who also commits it.
-Now the database is at version 1, and whichever replica you read from you get
-the same answer. But what if transaction two doesn't make it to the secondary?
-There is a brief network outage, or for some reason the message is delayed. The
-primary has committed transactions 1 and 2, but the secondary has only committed
-
-1.
+Let's walk through a replication example to understand how reads work. Say we hvae two replicas of our data, A and B. Replica 
+A commits transaction 1, and then sends it to replica B, who also commits it.
+Now the database is at version 1, and both replicas will return the same answer.
+But what if transaction two doesn't make it to replica B? This can happen if
+there is a brief network outage, or for some reason the message is delayed. So
+while message B is delayed, A has committed transactions 1 and 2, but the B only
+has committed transaction 1. Since Ditto is eventually consistent, it never
+blocks reads or writes. This means that a client can read even while replicas 
+are in an inconsistent state.
 
 If the system wishes to spread the read load equally, and a client reads from
-the primary, and after that the secondary, they will see a weird view of the
+A, and after that reads from B, the client will see a non-consistent view of the
 world, where time goes backwards between the first read, and the second.
-However, we could decide that since only version 1 is committed on both nodes,
+However, we could decide that since only version 1 is committed on both replicas,
 then the version of the database could be thought of as version 1. This is the
 highest transaction that is committed on both replicas: the universally stable
-timestamp. A client reading from either replica will get a consistent view of
-the data.
-
-(\*We don't have Primaries and Secondaries in Big Peer, I used them to motivate the
-example. In Big Peer all the database nodes are equal ✊.)
+timestamp (UST). By enforcing reads to conform to the UST, clients reading from
+either replica will get a consistent view of the data.
 
 #### Versions
 

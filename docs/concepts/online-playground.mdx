@@ -5,6 +5,7 @@ sidebar_position: 10
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import SnippetGroup from '@site/src/components/SnippetGroup';
 
 Ditto synchronizes data *with* or *without* the Internet. Experimental or demo apps
 can start synchronizing over the Internet using an `onlinePlayground` application.
@@ -31,138 +32,6 @@ having to implement any true security.
 
 Now in your client app, construct your Ditto instance with an online playground identity:
 
-<Tabs
-  groupId="programming-language"
-  defaultValue="javascript"
-  values={[
-    {label: 'JavaScript', value: 'javascript'},
-    {label: 'Swift', value: 'swift'},
-    {label: 'Objective-C', value: 'objc'},
-    {label: 'Kotlin', value: 'kotlin'},
-    {label: 'Java', value: 'java'},
-    {label: 'C#', value: 'csharp'},
-    {label: 'C++', value: 'cpp'},
-    {label: 'Rust', value: 'rust'},
-  ]
-}>
-<TabItem value="javascript">
-
-```js
-import { init, Ditto } from "@dittolive/ditto"
-(async () => {
-  await init() // you need to call this at least once before using any of the Ditto API
-  const identity = { type: 'onlinePlayground', appID: 'REPLACE_ME_WITH_YOUR_APP_ID' }
-  const ditto = new Ditto(identity, '/persistence/file/path')
-  ditto.tryStartSync()
-})()
-```
-
-</TabItem>
-<TabItem value="swift">
-
-```swift
-let ditto = Ditto(identity: DittoIdentity.onlinePlayground(appID: "REPLACE_ME_WITH_YOUR_APP_ID"))
-try! ditto.tryStartSync()
-```
-
-</TabItem>
-<TabItem value="objc">
-
-```objc
-DITIdentity *identity = [[DITIdentity alloc] initOnlinePlaygroundWithAppID:@"REPLACE_ME_WITH_YOUR_APP_ID"];
-DITDitto *ditto = [[DITDitto alloc] initWithIdentity:identity];
-NSError *error = nil;
-[ditto tryStartSync:&error];
-```
-
-</TabItem>
-<TabItem value="kotlin">
-
-```kotlin
-try {
-  val androidDependencies = AndroidDittoDependencies(context)
-  val identity = DittoIdentity.OnlinePlayground(androidDependencies, appID = "REPLACE_ME_WITH_YOUR_APP_ID")
-  val ditto = Ditto(androidDependencies, identity)
-  ditto.tryStartSync()
-} catch(e: DittoError) {
-  Log.e("Ditto error", e.message!!)
-}
-```
-
-</TabItem>
-<TabItem value="java">
-
-```java
-DittoDependencies androidDependencies = new DefaultAndroidDittoDependencies(this.context);
-DittoIdentity identity = new DittoIdentity.OnlinePlayground(androidDependencies, "REPLACE_ME_WITH_YOUR_APP_ID");
-Ditto ditto = new Ditto(androidDependencies, identity);
-
-try {
-  ditto.tryStartSync();
-} catch(DittoError e) {
-  Log.e("Ditto Error", e.getMessage())
-}
-```
-
-</TabItem>
-<TabItem value="csharp">
-
-```csharp
-try
-{
-    var ditto = new Ditto(DittoIdentity.OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID"));
-    ditto.TryStartSync();
-}
-catch (DittoException ex)
-{
-    System.Console.WriteLine($"Ditto Error {ex.Message}");
-}
-```
-
-</TabItem>
-<TabItem value="cpp">
-
-```cpp
-auto identity = Identity::OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID");
-try {
-  Ditto ditto = Ditto(identity, "/your-persistence-path");
-  ditto.try_start_sync();
-} catch (const DittoError &err) {
-  std::cout << err.what() << std::endl;
-}
-```
-
-</TabItem>
-
-<TabItem value="rust">
-
-```rust
-use dittolive_ditto::prelude::*;
-use std::sync::Arc;
-use std::time::Duration;
-
-let ditto = Ditto::builder()
-    // creates a `ditto_data` folder in the directory containing the executing process
-    .with_root(Arc::new(PersistentRoot::from_current_exe()?))
-    .with_identity(|ditto_root| {
-      // Provided as an env var, may also be provided as hardcoded string
-      let app_id = AppId::from_env("DITTO_APP_ID")?;
-      let enable_cloud_sync = true;
-      let custom_auth_url = None;
-      // return the Result<Identity, _> at the end of this closure
-      OnlinePlayground::new(ditto_root, app_id, enable_cloud_sync, custom_auth_url)
-    })?
-    .with_transport_config(|_identity| {
-        let mut config = TransportConfig::new();
-        config.enable_all_peer_to_peer();
-        config
-    })?
-    .build()?;
-
-ditto.try_start_sync()?;
-```
-
-</TabItem>
-</Tabs>
+<SnippetGroup name="online-playground" />
 
 Now your application will automatically sync with any near by peers and cloud apps with the same `appID`.

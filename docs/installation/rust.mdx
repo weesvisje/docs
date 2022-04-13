@@ -4,7 +4,7 @@ sidebar_position: 8
 pagination_prev: intro
 pagination_next: concepts/overview
 ---
-
+import { Snippet } from '@site/src/components/SnippetGroup';
 import { InstallCode } from "../../src/components/Changelog.tsx";
 
 Create a new project with `cargo init --bin` and add the following to your `Cargo.toml` file.
@@ -14,6 +14,14 @@ Create a new project with `cargo init --bin` and add the following to your `Carg
 ```console
 cargo build
 ```
+
+## Usage
+
+```rust
+use dittolive_ditto::{identity, prelude::*};
+```
+
+<Snippet name='online-playground' language='rust' />
 
 ## Suggested App Filesystem Structure
 
@@ -26,7 +34,7 @@ Rust doesn't prescribe any particular structure for your project's layout on the
 
 ## Cross Compiling with the Ditto Rust SDK
 
-The rust compiler is natively capable of cross-compiling for a wide range of targets. You will need to configure a local `.cargo/config.toml` file in the root of your project directory to provide the necessary `rustc`, linker, and potentially C compiler arguements. For most targets you will need to provide an alternative sysroot for your target (not host) platform, often exposing a POSIX C library, header files, binutils, and a linker.
+The rust compiler is natively capable of cross-compiling for a wide range of targets. You will need to configure a local `.cargo/config.toml` file in the root of your project directory to provide the necessary `rustc`, linker, and potentially C compiler arguments. For most targets you will need to provide an alternative sysroot for your target (not host) platform, often exposing a POSIX C library, header files, binutils, and a linker.
 
 ## Common Issues
 

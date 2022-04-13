@@ -5,6 +5,7 @@ pagination_prev: intro
 pagination_next: concepts/overview
 ---
 
+import { Snippet } from '@site/src/components/SnippetGroup';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { InstallCode } from "../../src/components/Changelog.tsx"
@@ -67,20 +68,12 @@ details.
 }>
 <TabItem value="kotlin">
 
-```kotlin
-val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
-val ditto = Ditto(androidDependencies, DittoIdentity.OnlinePlayground(androidDependencies, "REPLACE_WITH_APP_ID"))
-ditto.tryStartSync()
-```
+<Snippet name='online-playground' language='kotlin' />
 
 </TabItem>
 <TabItem value="java">
 
-```java
-DefaultAndroidDittoDependencies androidDependencies = new DefaultAndroidDittoDependencies(applicationContext);
-Ditto ditto = new Ditto(androidDependencies, new DittoIdentity.OnlinePlayground(androidDependenciesOne, "REPLACE_WITH_APP_ID"));
-ditto.tryStartSync();
-```
+<Snippet name='online-playground' language='java' />
 
 </TabItem>
 </Tabs>
@@ -143,22 +136,68 @@ In these older Android versions, `ACCESS_FINE_LOCATION` is mandatory and Ditto w
 
 Your apps must ensure all required permissions for sync have been requested from the user. The Android Ditto SDK provides a `DittoSyncPermissions` helper which makes this easy. For example, a fragment can use a method like this:
 
+
+<Tabs
+  groupId="android-permissions"
+  defaultValue="kotlin"
+  values={[
+    {label: "Kotlin", value: 'kotlin'},
+    {label: "Java", value: 'java'},
+  ]
+}>
+<TabItem value="kotlin">
+
+In Kotlin, `DittoSyncPermissions` requires a Context. You can get the context by
+invoking getApplicationContext(), getContext(), getBaseContext() or `this` when
+in a class that extends from Context, such as the Application, Activity, Service
+and IntentService classes.
+
 ```kotlin
 fun checkPermissions() {
-    val missing = DittoSyncPermissions(requireActivity()).missingPermissions()
+    val missing = DittoSyncPermissions(this).missingPermissions()
     if (missing.isNotEmpty()) {
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            missing,
-            0
-        )
+        this.requestPermissions(missing, 0)
+    }
+}
+
+Alternatively, `requireActivity()` is a way to force the code to only work on a Fragment that has a Context.
+
+```kotlin
+fun checkPermissions() {
+    val activity = requireActivity()
+    val missing = DittoSyncPermissions(activity).missingPermissions()
+    if (missing.isNotEmpty()) {
+        activity.requestPermissions(missing, 0)
     }
 }
 ```
 
+</TabItem>
+<TabItem value="java">
+
+On Android, parts of Bluetooth LE and WiFi Direct require location permission.
+Ditto will operate without it but syncronization may be impossible in certain
+scenarios.
+
+```java
+if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    // We ignore the result - Ditto will automatically notice when the permission is granted
+    String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+    ActivityCompat.requestPermissions(this, permissions, 0);
+}
+```
+
+</TabItem>
+</Tabs>
+
 For more information about requesting permissions in a user-friendly way refer to Android's documentation: [Request App Permissions](https://developer.android.com/training/permissions/requesting).
 
-On Android there may be a noticeable delay between when the user grants location access and when Ditto notices the new permission. For this reason it is recommended to call `refreshPermissions()` whenever a relevant permission might have changed. This will force an immediate check. If a permission has become available your app can begin syncing as quickly as possible.
+On Android there may be a noticeable delay between when the user grants location
+access and when Ditto notices the new permission. For this reason it is
+recommended to call `refreshPermissions()` whenever a relevant permission might
+have changed. This will force an immediate check. If a permission has become
+available your app can begin syncing as quickly as possible.
+
 
 ```kotlin
 override fun onRequestPermissionsResult(

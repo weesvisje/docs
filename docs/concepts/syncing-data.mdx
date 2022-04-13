@@ -1,0 +1,53 @@
+---
+title: 'Syncing Data'
+sidebar_position: 6
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SnippetGroup from '@site/src/components/SnippetGroup';
+
+## Live Queries
+:::info
+Ditto Small Peers _only_ syncs data when you have enabled sync and have any active live queries.
+:::
+
+### 1. Enabling Sync
+
+To enable Ditto to sync data, you'll need to call `ditto.tryStartSync()`. Preferably, you should call `tryStartSync()` early on in your application's life cycle like in your `AppDelegate.application(_:didFinishLaunchingWithOptions:)` or `Application.onCreate` methods. Your application only needs to call this function once.
+
+<SnippetGroup
+  name='sync-basic' 
+/>
+
+### 2. Creating a Live Query
+
+* Create a query with a cursor and call `.observe` to subscribe to realtime changes both locally and remotely that fit the query. [Learn more about how to create queries](./querying)
+* The callback will immediately run for documents that fit the query 
+* The callback will rerun for each sync or write transaction.
+* The return value is a `liveQuery` object. If the `liveQuery` object is deallocated the live query will stop.
+* To manually stop the `liveQuery`, set it either to `null` or call `liveQuery.stop()`
+* You can create as many `LiveQuery` objects as you want.
+* Calling `.observe` on a query before calling `ditto.tryStartSync()`, will only fire changes for local updates.
+
+<SnippetGroup name="sync-observe" />
+
+### 3. More Details
+
+Ditto's sync system is query-based, which means, that by default the SDK will not sync data with other devices. Instead, the app creates query-based subscriptions that define which data it wants to sync. When the device is subscribed to a query, then other devices will share data matching that query with it:
+
+![Query-based Subscriptions](subscriptions.png)
+
+Given that Ditto works peer-to-peer, devices can form into arbitrary groups based on the proximity to one another, or rather they create an ad-hoc mesh network. Ditto's sync system allows for devices to share data through another device, called "multi-hop" sync. The only requirement for this to occur is that all devices in the chain must be subscribed to the same data, as shown below:
+
+![Multi-hop Subscriptions](multi-hop-subscriptions.png)
+
+## Live Queries without Syncing Data
+
+There are many situations where your app needs to observe live queries _without_ initiating syncing with other devices. For example, this is useful if your app intends to treat certain documents and collections as local-only data. In addition, for complex apps, it can be helpful to seperate the observer from the underlying query [`Subscription`](#subscriptions).
+
+Instead of `.observe`, call `.observeLocal` like so:
+
+<SnippetGroup name="sync-observe-local" />
+
+Note: if your Ditto instance has not called `tryStartSync`, there will be no difference between `.observe` and `.observeLocal`.

@@ -5,6 +5,7 @@ pagination_prev: intro
 pagination_next: concepts/overview
 ---
 
+import { Snippet } from '@site/src/components/SnippetGroup';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { InstallCode } from "../../src/components/Changelog.tsx"
@@ -45,17 +46,7 @@ The C# SDK is available as part of [NuGet](https://nuget.org). The common ways t
 
 Now in your code you can call:
 
-```csharp
-using DittoSDK;
-using System.Collections.Generic;
+<Snippet name='online-playground' language='csharp' />
 
-var ditto = new Ditto(identity: DittoIdentity.OnlinePlayground(appId: "live.ditto.tasks"));
 
-ditto.SetLicenseToken("my token");
-ditto.TryStartSync();
-
-var insertedId = ditto.Store.Collection("cars").Insert(new Dictionary<string, object> {
-    { "make", "honda" },
-    { "color", "red" },
-});
-```
+<Snippet name='upsert' language='csharp' />

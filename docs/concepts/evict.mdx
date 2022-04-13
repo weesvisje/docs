@@ -5,6 +5,7 @@ sidebar_position: 6
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import SnippetGroup from '@site/src/components/SnippetGroup';
 
 ## Evicting Data
 
@@ -14,82 +15,6 @@ For example, you might use this operation when a device has completed an activit
 
 The API is extremely similar to the `remove()` API, however it uses `evict()` instead.
 
-
-<Tabs
-  groupId="programming-language"
-  defaultValue="javascript"
-  values={[
-    {label: 'JavaScript', value: 'javascript'},
-    {label: 'Swift', value: 'swift'},
-    {label: 'Objective-C', value: 'objc'},
-    {label: 'Kotlin', value: 'kotlin'},
-    {label: 'Java', value: 'java'},
-    {label: 'C#', value: 'csharp'},
-    {label: 'C++', value: 'cpp'},
-    {label: 'Rust', value: 'rust'},
-    {label: 'HTTP', value: 'http'},
-  ]
-}>
-<TabItem value="javascript">
-
-```js
-await ditto.store.collection('people').find('age <= 32').evict()
-```
-
-</TabItem>
-<TabItem value="swift">
-
-```swift
-ditto.store["people"].find("age <= 32").evict()
-```
-
-</TabItem>
-<TabItem value="objc">
-
-```objc
-DITCollection *collection = [ditto.store collection:@"people"];
-[[collection find:@"age <= 32"] evict];
-```
-
-</TabItem>
-<TabItem value="kotlin">
-
-```kotlin
-ditto.store["people"].find("age <= 32").evict()
-```
-
-</TabItem>
-<TabItem value="java">
-
-```java
-ditto.store.collection("people").find("age <= 32").evict();
-```
-
-</TabItem>
-<TabItem value="csharp">
-
-```csharp
-ditto.Store.Collection("people").Find("age <= 32").evict();
-```
-
-</TabItem>
-<TabItem value="cpp">
-
-```cpp
-ditto.store.collection("people").find("age <= 32").evict();
-```
-
-</TabItem>
-<TabItem value="rust">
-
-  ```rust
-  ditto.store().collection("people")?.find("age <= 32").evict()?;
-  ```
-
-</TabItem>
-<TabItem value="http">
-  Evict is not supported by the HTTP API.
-
-</TabItem>
-</Tabs>
-
+<SnippetGroup
+  name='evict' 
+/>
