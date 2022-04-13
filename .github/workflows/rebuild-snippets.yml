@@ -1,10 +1,6 @@
 name: rebuild-snippets
 
 on:
-  pull_request:
-    branches: [master]
-  push:
-    branches: [master]
   # Whenever there is a new `ditto` release and, with it, an update of the `releases.json` file.
   repository_dispatch:
     types: ['new-ditto-release']
@@ -25,12 +21,10 @@ jobs:
           repository: getditto/ditto
           token: ${{ secrets.GH_PAT }} 
           path: ditto
-      - name: Generate snippets
-        run:
-          npm i
-          node ./bin/generate-snippets ./ditto snippets.json
-          git add snippets.json
-          git commit -m "Update snippets from latest ditto release" 
+      - run: npm i
+      - run: node ./bin/generate-snippets ./ditto snippets.json
+      - run: git add snippets.json
+      - run: git commit -m "Update snippets from latest ditto release" 
       - uses: repo-sync/pull-request@v2
         name: pull-request
         with:
