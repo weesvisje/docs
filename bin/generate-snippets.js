@@ -114,7 +114,9 @@ async function generateSnippet(filename) {
                 snippet.name = start[1]
                 // If there is an existing snippet, append to the end of it
                 let existing = snippets[language][snippet.name]
-                if (existing) snippet.data = existing
+                if (existing && snippet.data.length > 0) {
+                    snippet.data = existing
+                }
             }
             continue
         }
