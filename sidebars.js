@@ -69,6 +69,10 @@ module.exports = {
           label: "Rust",
           href: downloadedChangelog.rustsdk.Ditto.latest.api_reference_docs_url,
         },
+        {
+          type: "ref",
+          id: "concepts/http"
+        },
       ],
     },
     {
