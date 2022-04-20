@@ -14,6 +14,12 @@ yarn start
 
 This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
 
+## Generate snippets
+
+```bash
+node bin/generate-snippets ../path/to/ditto snippets.json
+```
+
 ## Build
 
 ```console
