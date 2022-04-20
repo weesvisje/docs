@@ -64,6 +64,12 @@ In addition to these examples, we also have JSON schema documents that help desc
                 "description": "The name of the collection to query",
                 "type": "string"
               },
+              "describe": {
+                "title": "Describe",
+                "description": "Turns the query into a Describe query",
+                "default": false,
+                "type": "boolean"
+              },
               "limit": {
                 "title": "Limit",
                 "description": "The maximum number of values to return",
@@ -147,7 +153,7 @@ In addition to these examples, we also have JSON schema documents that help desc
             "properties": {
               "commands": {
                 "title": "Commands",
-                "description": "The list of all write commands to be run",
+                "description": "The list of all write commands to be run.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/WriteCommand"
@@ -160,8 +166,91 @@ In addition to these examples, we also have JSON schema documents that help desc
     ],
     "definitions": {
       "AnyValue": true,
+      "UpdateCommand": {
+        "type": "object",
+        "required": [
+          "method",
+          "path"
+        ],
+        "properties": {
+          "method": {
+            "title": "Method",
+            "description": "The operation to perform on the property.",
+            "allOf": [
+              {
+                "$ref": "#/definitions/UpdateCommandMethod"
+              }
+            ]
+          },
+          "path": {
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "description": "The value to use in the operation.",
+            "default": null,
+            "allOf": [
+              {
+                "$ref": "#/definitions/AnyValue"
+              }
+            ]
+          }
+        }
+      },
+      "UpdateCommandMethod": {
+        "type": "string",
+        "enum": [
+          "set",
+          "increment",
+          "replaceWithCounter"
+        ]
+      },
       "WriteCommand": {
         "oneOf": [
+          {
+            "title": "Update Command",
+            "description": "If a value matching this query exists, update it with each given command.",
+            "type": "object",
+            "required": [
+              "args",
+              "collection",
+              "commands",
+              "method",
+              "query"
+            ],
+            "properties": {
+              "args": {
+                "title": "Query Arguments",
+                "description": "If any variables are used in the query then the values should be passed in here.",
+                "type": [
+                  "object",
+                  "null"
+                ]
+              },
+              "collection": {
+                "type": "string"
+              },
+              "commands": {
+                "title": "Commands",
+                "description": "This is a series of commands to be applied to the matched documents.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/UpdateCommand"
+                }
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "update"
+                ]
+              },
+              "query": {
+                "title": "Query",
+                "description": "The query to run",
+                "type": "string"
+              }
+            }
+          },
           {
             "title": "Upsert Command",
             "description": "If a value matching this ID exists, update it with the contents of value.  If it doesn't exist, insert it.",
@@ -185,6 +274,41 @@ In addition to these examples, we also have JSON schema documents that help desc
                 "title": "Value to Upsert",
                 "description": "The new document to insert.  This must document be an object with an _id parameter",
                 "type": "object"
+              }
+            }
+          },
+          {
+            "title": "Remove Command",
+            "description": "Run a query and delete all documents that match.",
+            "type": "object",
+            "required": [
+              "args",
+              "collection",
+              "method",
+              "query"
+            ],
+            "properties": {
+              "args": {
+                "title": "Query Arguments",
+                "description": "If any variables are used in the query then the values should be passed in here.",
+                "type": [
+                  "object",
+                  "null"
+                ]
+              },
+              "collection": {
+                "type": "string"
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "remove"
+                ]
+              },
+              "query": {
+                "title": "Query",
+                "description": "The query to run",
+                "type": "string"
               }
             }
           }
