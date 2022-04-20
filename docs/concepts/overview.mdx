@@ -1,25 +1,192 @@
 ---
-title: 'Overview'
-sidebar_position: 0
+title: 'Data Model'
+sidebar_position: 3
 ---
 
-import Lottie from "../../src/components/Lottie"
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SnippetGroup from '@site/src/components/SnippetGroup';
 
-The Ditto platform is a fully distributed database that runs in the cloud and on local devices. Each Ditto instance is a called a __peer__. There are two types of peers in the Ditto distributed database system: __Big Peer__ and __Small Peer__. When you install Ditto in a client device like a web, desktop, mobile, or IoT application, you are installing a __Small Peer__. Running on the cloud is a __Big Peer__.
+Ditto is a NoSQL database, that can store JSON-like Documents organized by Collections. However, unlike JSON, Ditto allows you to apply updates to the document which will be synchronized with any other copy on other devices. In addition, it supports additional data types.
 
-__Big Peers__ and __Small Peers__ can sync with eachother with a common __appID__. To get an __appID__, [create an app on our portal.](https://portal.ditto.live)
+## Collections
 
-<Lottie path="/animations/overview/data.json" />
+You can think of collections as a table in a traditional database. However, unlike traditional SQL databases, Ditto's collections are far simpler and more flexible. A collection merely referenced by its string value, there is no need to "create" a collection. While it is typically common for all documents in a collection to have the same structure, it is not a technical requirement. For example, all documents referencing cars can go in the "cars" collection and boat documents in the "boats" collection. You can create any number of collections that best represent your data model.
 
-__Big Peer__
+To get a reference to a collection:
 
-* Big Peers will try to sync everything from the Small Peers. If a small peer adds, removes, or updates data, the big peer will be notified of these changes. We call this an __altruistic replication strategy__.
-* The Big Peer is capable of storing a tremendous amount of data and is capable of of sharding and partitioning. While it still looks like any peer, underneath the hood, it is capable of scaling to meet the demands of large amount of data. [Read more about its internal architecture here.](/how-it-works/big-peer)
-* To get data in or out of the Big Peer, you can use a Small Peer or the [HTTP API](/concepts/http), or using our Server Side Webhooks.
+<SnippetGroup
+  name='datamodel' 
+/>
 
-__Small Peer__
+## Documents
+A Ditto document is a schema flexible unit of data in Ditto. If collections are similar to tables, then a document is similar to a row. A document, at its highest level, is a map that can contain arbitrarily nested keys and values. Each document has a primary key, often referred to as an id.
 
-* Generally, a Small Peer is embedded in a web, mobile, desktop, or IoT application. We distribute the Small Peer as an SDK with several language bindings.
-* Small peers will __only sync data down from nearby Small Peers or Big Peers__ when it has a [live query](/concepts/syncing-data). We call this a __selfish replication strategy__. Small peers can stop syncing by disposing or stopping a live query.
-* Small peers are not __not capable of sharding or partitioning__. It will use whatever storage size the device allows but not any more. When you buy a mobile phone with 256 GB of storage, you're stuck until you buy a new one. 
-* __Small peers are capable of using device peer to peer communication tactics__ like Bluetooth Low Energy, Wi-Fi Direct, AWDL, Wi-Fi Aware, Local Area Network, and more to transmit data.
+## Document `_id`, the Primary Key
+In order for documents to sync, each document must have a unique identifier
+which we refer to as the id. This is the primary key of the document and is not
+optional.
+
+As an example, let's say we have a document in the `people` collection that looks like this:
+
+```jsonc
+{
+  "_id": "123abc",
+  "name": "Sam",
+  "age": 45,
+  "isOnline": false
+}
+```
+
+You can also supply your own unique identifier when creating a document:
+
+<SnippetGroup
+  name='upsert-id' 
+/>
+
+The id parameter is optional during insertion. If you do not supply a document `_id`, Ditto will automatically generate a random, unique string and use that as the document's `_id` instead.
+
+<SnippetGroup
+  name='upsert' 
+/>
+
+### Composite Primary Keys
+
+You may have a data model where documents are considered unique due to two or more values. Ditto's `_id` field allows for a map of values. For example, we may have a person document with a unique identifier as a combination of a string `userId` and an int `workId`. We can insert each document as a composite key as a nested map structure under the `_id` field:
+
+<SnippetGroup
+  name='upsert-composite-primary-key' 
+/>
+
+
+Note: `_id`s with the same key and values will be equal regardless of their defined order. Thus,  `{a: "foo", b: 1} == { b: 1, a: "foo" }`. This is because Ditto maps check for equality of key and value combinations and do not consider for literal order.
+
+
+## Allowed Document Data Types
+
+Like JSON, Ditto only supports strings as keys in documents. That means attempting to insert a document like the following will throw an error:
+
+```jsonc
+{
+    1: "numeric_keys_are_invalid",
+    "this_part": "is_valid_though"
+}
+```
+
+Document values support all JSON compatible values like `string`, `boolean`, `number`, `null` and arrays or nested maps. In addition, document values can also support special types like binary or counter types. These special types will be discussed below.
+
+<table class="table-auto">
+  <tbody>
+    <tr>
+      <th>Data Type</th>
+      <th>Allowed Values</th>
+    </tr>
+    <tr>
+      <td>Boolean</td>
+      <td>
+        <p><code>false</code> or <code>true</code></p>
+      </td>
+    </tr>
+    <tr>
+      <td>String</td>
+      <td>A utf-8 encodable string value</td>
+    </tr>
+    <tr>
+      <td>Number</td>
+      <td>A 64-bit floating point value.</td>
+    </tr>
+    <tr>
+      <td>Array</td>
+      <td>
+        Arrays are an ordered list of values. Arrays can contain all primitive
+        values as well as nested collection types like other Arrays or Maps
+      </td>
+    </tr>
+    <tr>
+      <td>Maps (sometimes referred to as dictionary)</td>
+      <td>
+        This represents a nested object within the overall document. Comparing
+        values at the map level for equality first checks that each key and each
+        value match.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>null</code>
+      </td>
+      <td>
+        This represents an absence of value
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p>Binary</p>
+      </td>
+      <td>
+        <p>
+          A byte string of binary data. Can be used to store images, files
+          etc... We highly recommend keeping the size of the binary to be as
+          small as possible so that syncing stays fast. We highly recommend that
+          you use the <code>Attachment</code> type for most use cases.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p>Attachment</p>
+      </td>
+      <td>
+        <p>
+          A file to sync. This is different from the <code>Binary</code> type
+          where it is meant to hold larger payloads of data. This is best use
+          for multimedia data like images, sounds, pdfs etc...
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p>Counter</p>
+      </td>
+      <td>
+        <p>
+          A special 64 bit floating point value that has the ability to be
+          incremented and decremented. This is highly valuable for building
+          applications like an inventory application where multiple devices need
+          to concurrently increment or decrement values.
+        </p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+The following snippets show a various set of data types
+
+
+<SnippetGroup
+  name='upsert-datatypes' 
+/>
+
+
+## Binary Data - Attachments
+
+If you have a large amount of binary data, or perhaps just a large file, that you want to sync between devices then instead of inserting this into a document as bytes you should make use of the attachments feature.
+
+Attachments do not get synced between devices by default, even if they are part of a document that is being synced between devices. This is because they could be very large files that a given device doesn't need. Instead an attachment must be explicitly fetched using an attachment token that will be present in the document that the attachment is linked to.
+
+<SnippetGroup
+  name='attachment' 
+/>
+
+## Counter Types
+
+Counter is a very special type that is specific to Ditto. While they look like the number type, they are geared towards building applications where various different devices need to increment or decrement at the same time while preserving consistency. The most common use is to build a voting system or an inventory application. Building applications that needs a consistent count with only using the default number type will not be appropriate. This is where the counter comes in.
+
+Counters can be edited through a special method called increment which takes a number to increment the counter by. If you wish to decrement the counter then you can supply a negative number.
+
+To create a counter, first insert a document with number value. You must then call an update function to convert the number into a counter with the replaceWithCounter method. This will convert the number into a counter.
+
+Once the value in the document is a counter, you can proceed to increment or decrement the value. This will preserve an accurate value once devices sync.
+
+<SnippetGroup
+  name='counter' 
+/>
