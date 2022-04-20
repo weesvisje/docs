@@ -22,9 +22,12 @@ export interface SDKInfo {
   languageOrPlatform?: string;
 }
 
+let changelog = require("../../ditto-changelog.json") || {}
+let bigpeer = require('../../big-peer-changelog.json')
 const downloadedFrameworks: { [key: string]: SDKInfo[] } = parseFrameworks(
-  require("../../ditto-changelog.json") || {}
+  changelog
 );
+
 
 export function parseFrameworks(dittoChangeLog: { [key: string]: any }): {
   [framework: string]: SDKInfo[];
@@ -221,6 +224,7 @@ export default function Changelog() {
             { label: "C#", value: "csharp" },
             { label: "C++", value: "cpp" },
             { label: "Rust", value: "rust" },
+            { label: "Big Peer", value: "bigpeer" },
           ]}
         >
           <TabItem value="javascript">
@@ -252,6 +256,9 @@ export default function Changelog() {
           </TabItem>
           <TabItem value="rust">
             <TabContents title="Rust" sdkInfos={frameworks["rustsdk"]} />
+          </TabItem>
+          <TabItem value="bigpeer">
+            <div dangerouslySetInnerHTML={{ __html: markdownIt().render(bigpeer['description']) }}></div>
           </TabItem>
         </Tabs>
       </div>
