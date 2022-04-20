@@ -344,8 +344,18 @@ In addition to these examples, we also have JSON schema documents that help desc
               }
             ]
           },
+          "txnId": {
+            "title": "Transaction ID",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint64",
+            "minimum": 0.0
+          },
           "version": {
             "title": "Version",
+            "deprecated": true,
             "type": [
               "integer",
               "null"
@@ -370,8 +380,18 @@ In addition to these examples, we also have JSON schema documents that help desc
               "$ref": "#/definitions/AnyValue"
             }
           },
+          "txnId": {
+            "title": "Transaction ID",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint64",
+            "minimum": 0.0
+          },
           "version": {
             "title": "Version",
+            "deprecated": true,
             "type": [
               "integer",
               "null"
@@ -404,6 +424,61 @@ In addition to these examples, we also have JSON schema documents that help desc
       "WriteCommandResult": {
         "oneOf": [
           {
+            "title": "Update Command Result",
+            "type": "object",
+            "required": [
+              "error",
+              "internalError",
+              "method",
+              "permissionDenied",
+              "transactionId",
+              "updated"
+            ],
+            "properties": {
+              "error": {
+                "title": "Error",
+                "description": "The number of records that matched the query but were not updated due to an problem applying the command.",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "internalError": {
+                "title": "Internal Error",
+                "description": "The number of records that matched the query but were not updated due to some type of internal error",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "update"
+                ]
+              },
+              "permissionDenied": {
+                "title": "Permission Denied",
+                "description": "The number of records that matched the query but the client doesn't have sufficient permission to update",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "transactionId": {
+                "title": "Transaction ID",
+                "description": "The ID of the transaction for the update.  Use this to ensure read-follows-writes consistency.",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "updated": {
+                "title": "Updated",
+                "description": "The number of documents successfully updated",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          {
             "title": "Upsert Command Result",
             "type": "object",
             "required": [
@@ -420,6 +495,52 @@ In addition to these examples, we also have JSON schema documents that help desc
               "transactionId": {
                 "title": "Transaction ID",
                 "description": "The ID of the transaction for the insert or update.  Use this to ensure read-follows-writes consistency.",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "deleted",
+              "internalError",
+              "method",
+              "permissionDenied",
+              "transactionId"
+            ],
+            "properties": {
+              "deleted": {
+                "title": "Deleted",
+                "description": "The number of records that matched the query and were successfully deleted.",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "internalError": {
+                "title": "Internal Error",
+                "description": "The number of records that matched the query but were not deleted due to some type of internal error",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "remove"
+                ]
+              },
+              "permissionDenied": {
+                "title": "Permission Denied",
+                "description": "The number of records that matched the query but the client doesn't have sufficient permission to delete.",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "transactionId": {
+                "title": "Transaction ID",
+                "description": "The ID of the transaction for the remove.  Use this to ensure read-follows-writes consistency.",
                 "type": "integer",
                 "format": "uint64",
                 "minimum": 0.0
