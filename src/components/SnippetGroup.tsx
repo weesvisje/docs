@@ -17,7 +17,7 @@ export function Snippet({name, language, label}) {
   }
   return (
     <CodeBlock className={language}>
-        {printableText.trim()}
+        {printableText.trim().replace('00000000-0000-4000-0000-000000000000', 'REPLACE_ME_WITH_YOUR_APP_ID')}
     </CodeBlock>
   );
 }
