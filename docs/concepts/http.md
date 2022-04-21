@@ -64,6 +64,12 @@ In addition to these examples, we also have JSON schema documents that help desc
                 "description": "The name of the collection to query",
                 "type": "string"
               },
+              "describe": {
+                "title": "Describe",
+                "description": "Turns the query into a Describe query",
+                "default": false,
+                "type": "boolean"
+              },
               "limit": {
                 "title": "Limit",
                 "description": "The maximum number of values to return",
@@ -147,7 +153,7 @@ In addition to these examples, we also have JSON schema documents that help desc
             "properties": {
               "commands": {
                 "title": "Commands",
-                "description": "The list of all write commands to be run",
+                "description": "The list of all write commands to be run.",
                 "type": "array",
                 "items": {
                   "$ref": "#/definitions/WriteCommand"
@@ -160,8 +166,91 @@ In addition to these examples, we also have JSON schema documents that help desc
     ],
     "definitions": {
       "AnyValue": true,
+      "UpdateCommand": {
+        "type": "object",
+        "required": [
+          "method",
+          "path"
+        ],
+        "properties": {
+          "method": {
+            "title": "Method",
+            "description": "The operation to perform on the property.",
+            "allOf": [
+              {
+                "$ref": "#/definitions/UpdateCommandMethod"
+              }
+            ]
+          },
+          "path": {
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "description": "The value to use in the operation.",
+            "default": null,
+            "allOf": [
+              {
+                "$ref": "#/definitions/AnyValue"
+              }
+            ]
+          }
+        }
+      },
+      "UpdateCommandMethod": {
+        "type": "string",
+        "enum": [
+          "set",
+          "increment",
+          "replaceWithCounter"
+        ]
+      },
       "WriteCommand": {
         "oneOf": [
+          {
+            "title": "Update Command",
+            "description": "If a value matching this query exists, update it with each given command.",
+            "type": "object",
+            "required": [
+              "args",
+              "collection",
+              "commands",
+              "method",
+              "query"
+            ],
+            "properties": {
+              "args": {
+                "title": "Query Arguments",
+                "description": "If any variables are used in the query then the values should be passed in here.",
+                "type": [
+                  "object",
+                  "null"
+                ]
+              },
+              "collection": {
+                "type": "string"
+              },
+              "commands": {
+                "title": "Commands",
+                "description": "This is a series of commands to be applied to the matched documents.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/UpdateCommand"
+                }
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "update"
+                ]
+              },
+              "query": {
+                "title": "Query",
+                "description": "The query to run",
+                "type": "string"
+              }
+            }
+          },
           {
             "title": "Upsert Command",
             "description": "If a value matching this ID exists, update it with the contents of value.  If it doesn't exist, insert it.",
@@ -185,6 +274,41 @@ In addition to these examples, we also have JSON schema documents that help desc
                 "title": "Value to Upsert",
                 "description": "The new document to insert.  This must document be an object with an _id parameter",
                 "type": "object"
+              }
+            }
+          },
+          {
+            "title": "Remove Command",
+            "description": "Run a query and delete all documents that match.",
+            "type": "object",
+            "required": [
+              "args",
+              "collection",
+              "method",
+              "query"
+            ],
+            "properties": {
+              "args": {
+                "title": "Query Arguments",
+                "description": "If any variables are used in the query then the values should be passed in here.",
+                "type": [
+                  "object",
+                  "null"
+                ]
+              },
+              "collection": {
+                "type": "string"
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "remove"
+                ]
+              },
+              "query": {
+                "title": "Query",
+                "description": "The query to run",
+                "type": "string"
               }
             }
           }
@@ -220,8 +344,18 @@ In addition to these examples, we also have JSON schema documents that help desc
               }
             ]
           },
+          "txnId": {
+            "title": "Transaction ID",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint64",
+            "minimum": 0.0
+          },
           "version": {
             "title": "Version",
+            "deprecated": true,
             "type": [
               "integer",
               "null"
@@ -246,8 +380,18 @@ In addition to these examples, we also have JSON schema documents that help desc
               "$ref": "#/definitions/AnyValue"
             }
           },
+          "txnId": {
+            "title": "Transaction ID",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint64",
+            "minimum": 0.0
+          },
           "version": {
             "title": "Version",
+            "deprecated": true,
             "type": [
               "integer",
               "null"
@@ -280,6 +424,61 @@ In addition to these examples, we also have JSON schema documents that help desc
       "WriteCommandResult": {
         "oneOf": [
           {
+            "title": "Update Command Result",
+            "type": "object",
+            "required": [
+              "error",
+              "internalError",
+              "method",
+              "permissionDenied",
+              "transactionId",
+              "updated"
+            ],
+            "properties": {
+              "error": {
+                "title": "Error",
+                "description": "The number of records that matched the query but were not updated due to an problem applying the command.",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "internalError": {
+                "title": "Internal Error",
+                "description": "The number of records that matched the query but were not updated due to some type of internal error",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "update"
+                ]
+              },
+              "permissionDenied": {
+                "title": "Permission Denied",
+                "description": "The number of records that matched the query but the client doesn't have sufficient permission to update",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "transactionId": {
+                "title": "Transaction ID",
+                "description": "The ID of the transaction for the update.  Use this to ensure read-follows-writes consistency.",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "updated": {
+                "title": "Updated",
+                "description": "The number of documents successfully updated",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          {
             "title": "Upsert Command Result",
             "type": "object",
             "required": [
@@ -296,6 +495,52 @@ In addition to these examples, we also have JSON schema documents that help desc
               "transactionId": {
                 "title": "Transaction ID",
                 "description": "The ID of the transaction for the insert or update.  Use this to ensure read-follows-writes consistency.",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "deleted",
+              "internalError",
+              "method",
+              "permissionDenied",
+              "transactionId"
+            ],
+            "properties": {
+              "deleted": {
+                "title": "Deleted",
+                "description": "The number of records that matched the query and were successfully deleted.",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "internalError": {
+                "title": "Internal Error",
+                "description": "The number of records that matched the query but were not deleted due to some type of internal error",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "remove"
+                ]
+              },
+              "permissionDenied": {
+                "title": "Permission Denied",
+                "description": "The number of records that matched the query but the client doesn't have sufficient permission to delete.",
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "transactionId": {
+                "title": "Transaction ID",
+                "description": "The ID of the transaction for the remove.  Use this to ensure read-follows-writes consistency.",
                 "type": "integer",
                 "format": "uint64",
                 "minimum": 0.0
