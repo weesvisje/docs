@@ -567,13 +567,13 @@ The JWT encodes the identity of the client, the target application, and the perm
 
 Ditto uses transactions to group related operations together. Typically, each HTTP API Request represents a distinct transaction which may insert, update, or remove one or more documents. Because Ditto is also a distributed system, `Transaction ID`s are used to represent the order in which transactions should be applied. Thus queries also specify Transaction IDs, which represent the "version" of the data you wish to query. For example, if you insert some Events into a TimeSeries in Transaction 17 and then want to query that same TimeSeries. The newly inserted events may still be replicating through the Ditto mesh. Should these new events be returned in the query response? In other words, do the results of a query depend on whether or not the insertion is first applied? Transaction IDs help solve this problem.
 
-In each API Request a `Transaction ID` may optionally be provided in an HTTP HEADER called `X-HYDRA-VERSION` with an integer value, which represents this request should be applied to the "version" of the data _at least_ as recent as this value. Using the example above, if we inserted some events in Transaction 17, and we wanted to ensure they were included in our subsequent query, we would include the header `X-HYDRA-VERSION: 17` in our request. If we don't supply this header, the default behavior is to use the most recent version common to all Ditto nodes. Note also that if the Ditto node servicing the Request can't supply the version of the data requested, an error will be returned.
+In each API Request a `Transaction ID` may optionally be provided in an HTTP HEADER called `X-DITTO-TXN-ID` with an integer value, which represents this request should be applied to the "version" of the data _at least_ as recent as this value. Using the example above, if we inserted some events in Transaction 17, and we wanted to ensure they were included in our subsequent query, we would include the header `X-DITTO-TXN-ID: 17` in our request. If we don't supply this header, the default behavior is to use the most recent version common to all Ditto nodes. Note also that if the Ditto node servicing the Request can't supply the version of the data requested, an error will be returned.
 
 <!-- Current implementation requires an Actor ID however in the future only the Site ID will be needed. -->
 
-In the example above, we mentioned that the insertion occurred in Transaction 17, but how does the client know this? When POSTing data to Ditto, the client should include an HTTP HEADER `X-HYDRA-CLIENT-ID: base64Encode(<u128 Actor ID>)`, that is a `Actor ID` which can be parsed as an u128 and which has been base64 encoded. The Actor ID represents which peer in the Ditto mesh is writing to Ditto. You can [generate an Actor ID](#generating-an-actor-id) by concatenating the Big Endian bytes for a Site ID and the current Epoch. You should typically use the same Site ID scheme as your other SDK-based Ditto Apps and only change your Site ID when you want to indicate a new client is inserting or deleting data. If successful, the response to POST or DELETE requests will include a Transaction ID, which can be used on subsequent GET requests. This type of insertion is non-blocking and so is very performant.
+In the example above, we mentioned that the insertion occurred in Transaction 17, but how does the client know this? When POSTing data to Ditto, the client should include an HTTP HEADER `X-DITTO-CLIENT-ID: base64Encode(<u128 Actor ID>)`, that is a `Actor ID` which can be parsed as an u128 and which has been base64 encoded. The Actor ID represents which peer in the Ditto mesh is writing to Ditto. You can [generate an Actor ID](#generating-an-actor-id) by concatenating the Big Endian bytes for a Site ID and the current Epoch. You should typically use the same Site ID scheme as your other SDK-based Ditto Apps and only change your Site ID when you want to indicate a new client is inserting or deleting data. If successful, the response to POST or DELETE requests will include a Transaction ID, which can be used on subsequent GET requests. This type of insertion is non-blocking and so is very performant.
 
-Ditto uses "delete-wins" semantics, so in some situations the client may want to force Ditto to first read its current data and ensure another peer hasn't issued a concurrent DELETE request before attempting an insertion with a POST request. To do this, the client provides the HTTP HEADER `X-HYDRA-ENSURE-INSERT: true`.
+Ditto uses "delete-wins" semantics, so in some situations the client may want to force Ditto to first read its current data and ensure another peer hasn't issued a concurrent DELETE request before attempting an insertion with a POST request. To do this, the client provides the HTTP HEADER `X-DITTO-ENSURE-INSERT: true`.
 
 
 ## Errors
@@ -584,9 +584,9 @@ Ditto HTTP API errors are indicated with an HTTP Status Code and with a JSON res
 - error.message - A short description of the error
 - error.data - An optional object which contains further elaboration about the error
 
-## Generating an X-HYDRA-CLIENT-ID
+## Generating an X-DITTO-CLIENT-ID
 
-An `X-HYDRA-CLIENT-ID` is required whenever issuing POST requests to the HTTP API. You should generate one for each client, as this ID represents a client in the Ditto mesh. Generating a new ID for each request, rather than one for the HTTP client, could cause performance issues. When possible generate this ID and cache it for the duration of the client.
+An `X-DITTO-CLIENT-ID` is required whenever issuing POST requests to the HTTP API. You should generate one for each client, as this ID represents a client in the Ditto mesh. Generating a new ID for each request, rather than one for the HTTP client, could cause performance issues. When possible generate this ID and cache it for the duration of the client.
 
 ```python
 >>> import base64
@@ -674,14 +674,14 @@ _Reserved for future use_
   POST /api/v1/timeseries/my-time-series/events HTTP/1.1
   Content-Type: application/json-l
   Authorization: Bearer ${DITTO_JWT}
-  X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==
+  X-DITTO-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==
 
   { "_time": "2021-04-20T12:34:56.123456789Z", "temp": { "value": 30, "units": "celsius" }, "humidity": { "relative": 30, "absolute": 15, "units": "g/m3" } }
   ```
 
   Response
 
-  Since the posted data is not returned, we use a Status 200 to indicate the new events have been accepted and are being replicated throughout Ditto. The `X-HYDRA-VERSION` header is provided to indicate the Transaction ID associated with the insert.
+  Since the posted data is not returned, we use a Status 200 to indicate the new events have been accepted and are being replicated throughout Ditto. The `X-DITTO-TXN-ID` header is provided to indicate the Transaction ID associated with the insert.
 
   ```
   HTTP/1.1 200 OK
@@ -691,7 +691,7 @@ _Reserved for future use_
   ```
 
 - GET - Query a range of events in a TimeSeries using a half-open interval `[start, end)`. Returns a stream of events in chronological order.
-  Note also the X-HYDRA-VERSION value is echoed back in the Response Header
+  Note also the X-DITTO-TXN-ID value is echoed back in the Response Header
 
   Parameters
 
@@ -717,7 +717,7 @@ curl -X GET "localhost:8000/00000000-0000-4000-8000-000000000000/api/v1/timeseri
   GET /api/v1/timeseries/my-time-series/events?start=2021-04-20T00%3A00%3A00.0Z&end=&limit=50&filter= HTTP/1.1
   Accept: application/json-l
   Content-Type: application/json
-  X-HYDRA-VERSION: 7
+  X-DITTO-TXN-ID: 7
   ```
 
   Or you can provide the query in the body of the request as a JSON object. If you want to sort your results using order-by then you must provide the query in the request body. JSON Query Object parameters are as above with the addition of a new parameter `order_by` which is an array of pairs `[path, direction]` where the pair has to be encoded as an array in JSON (which has no tuple variant.) `Path` is ditto_ql expression. Direction must be an integer where a negative integer indicates sort Descending, and a positive value means sort Ascending.
@@ -740,7 +740,7 @@ Example JSON
   ```
   HTTP/1.1 200 OK
   Content-Type: application/json-l
-  X-HYDRA-VERSION: 7
+  X-DITTO-TXN-ID: 7
 
   {"item": {"_time": "2021-04-20T12:34:56.123456789Z", "value": {"temp": {"value": 30, "units": "celsius"}, "humidity": {"relative": 30, "absolute": 15, "units": "g/m3"}}}}
 
@@ -763,7 +763,7 @@ Example JSON
   ```
   DELETE /api/v1/timeseries/my-time-series/events?start=2020-01-01T00%3A00%3A00.0Z&end=2021-01-01T00%3A00%3A00.0Z HTTP/1.1
   Content-Type: application/json
-  X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==
+  X-DITTO-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==
   ```
 
   Response
@@ -814,7 +814,7 @@ Example JSON
   ```
   HTTP/1.1 200 OK
   Content-Type: application/json
-  X-HYDRA-VERSION: 7
+  X-DITTO-TXN-ID: 7
   {
     "item": {
       "minutes": [1, 2, 3],
@@ -826,7 +826,7 @@ Example JSON
   }
 
   ```
-  Note also the X-HYDRA-VERSION value is included the Response Header
+  Note also the X-DITTO-TXN-ID value is included the Response Header
 
   If there is an error once the stream has begun, it is communicated with a final json lines value, for example:
 
