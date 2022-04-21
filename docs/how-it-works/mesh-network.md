@@ -85,7 +85,7 @@ In smaller meshes Ditto will often create multiple connections to the same peer 
 3. Unneeded slower connections like Bluetooth are left idle, which means the limited radio bandwidth is reserved for those peers that really need it.
 4. If the fastest connection is lost, the next-best option is ready to go, reducing or eliminating the gap when no sync is possible.
 
-The seamless switching between transports relies on a Ditto component called the Multiplexer, which is described in detail in a <a href="https://www.ditto.live/blog/posts/the-new-network-multiplexer">blog post</a>.
+The seamless switching between transports relies on a Ditto component called the Multiplexer, which is described in detail in a <a href="https://www.ditto.live/blog/the-new-network-multiplexer">blog post</a>.
 
 As of Ditto v1.0 the Multiplexer uses one transport at a time with failover. In future versions this feature will enable more complex scenarios such as load-balancing across multiple routes and lossy transports.
 
