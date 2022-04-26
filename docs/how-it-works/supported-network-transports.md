@@ -143,7 +143,9 @@ In general most Google Pixel, Samsung, and LG phones built after 2018 can suppor
 
 If devices are connected over the same Wi-Fi access point or via some other means like an ethernet cable, they can take advantage of communicating over the LAN or Local Area Network.
 
-Many enterprise or educational networks may have Client Isolation Mode turned **ON**. If the network has this setting **ON** then devices are unable to discover each other and form a connection. Almost all "home" settings have this setting turned **OFF**.
+Many enterprise or educational networks may have Client Isolation Mode turned **ON**. If the network has this setting **ON** then devices are unable to discover each other and form a connection. Almost all "home" settings have this setting turned **OFF**. Different router manufacturers refer to this feature in a wide variety of different ways, but it generally has "isolation" in its name.
+
+Ditto's discovery protocol also uses **UDP multicasting**, which needs to be enabled if you want devices to automatically discover each other. If you don't enable multicasting, you will need to [manually configure the connections](https://docs.ditto.live/concepts/network#connecting-to-a-remote-ditto-instance) between peers.
 
 There are some limitations affecting LAN sync on **iOS devices**.
 

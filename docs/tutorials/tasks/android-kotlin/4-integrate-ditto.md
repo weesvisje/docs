@@ -33,7 +33,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
     // Create an instance of Ditto
     val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
-    val ditto = Ditto(androidDependencies, DittoIdentity.OnlinePlayground(androidDependencies, "REPLACE_WITH_YOUR_APP_ID"))
+    val ditto = Ditto(androidDependencies, DittoIdentity.OnlinePlaygroundV2(androidDependencies, "REPLACE_WITH_YOUR_APP_ID", "REPLACE_WITH_TOKEN"))
     this.ditto = ditto
 
     // This starts Ditto's background synchronization
@@ -70,9 +70,9 @@ override fun onCreate(savedInstanceState: Bundle?) {
     // our RecyclerView
     setupTaskList()
 
-    // This will check if the app has location permissions
+    // This will check if the app has permissions
     // to fully enable Bluetooth
-    checkLocationPermission()
+    checkPermissions()
 }
 
 ```
@@ -120,17 +120,12 @@ This is a best-practice when using Ditto, since it allows your UI to simply reac
 Android requires you to request location permissions to fully enable Bluetooth Low Energy (since Bluetooth can be involved with location tracking). Insert this function in `MainActivity`:
 
 ```kotlin title=MainActivity
-fun checkLocationPermission() {
-    // On Android, parts of Bluetooth LE and WiFi Direct require location permission
-    // Ditto will operate without it but data sync may be impossible in certain scenarios
-    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
-        // For this app we will prompt the user for this permission every time if it is missing
-        // We ignore the result - Ditto will automatically notice when the permission is granted
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 0);
+fun checkPermissions() {
+    val missing = DittoSyncPermissions(this).missingPermissions()
+    if (missing.isNotEmpty()) {
+        this.requestPermissions(missing, 0)
     }
 }
-
 ```
 
 ## 4-5 Ensure Imports
