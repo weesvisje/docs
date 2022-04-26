@@ -7,7 +7,7 @@ module.exports = {
   title: "Ditto",
   tagline: "Sync even without the internet",
   url: "https://docs.ditto.live",
-  baseUrl: "/",
+  baseUrl: process.env.BASE_URL || '/',
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico/favicon.ico",
