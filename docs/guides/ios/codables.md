@@ -149,6 +149,10 @@ ditto.store["orderLineItems"].findByID(_id).evict()
 
 ## Dealing with mismatched, missing, or defaulting to certain values.
 
+:::info
+See the [guide for data modeling schemas](/datamodel/schemas) for more ideas on how to approach this problem.
+:::
+
 Since Ditto is an eventually consistent database, keys may or may not exist since multiple peers can edit the data over the lifetime of a Document's existence. This can cause throw errors with decoding values in Swift. `DittoSwift` uses the default `Foundation` API's Decoding behavior which will fail if any keys are mismatched on type or existence.
 
 For example it's very possible that __peer A creates a document like so:__
