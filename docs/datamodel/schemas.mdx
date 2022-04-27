@@ -1,0 +1,138 @@
+---
+title: 'Schemas'
+sidebar_position: 6
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SnippetGroup from '@site/src/components/SnippetGroup';
+
+Ditto's replication protocol is backwards-compatible and reliable. This means
+that eventually you will have the *"couch device problem"* (i.e., a device that
+fell behind a couch). In other words, a device in your mesh may be offline for a
+significant amount of time before connecting back with other devices. 
+
+If the shape of your documents are significantly different on that device, there
+could be documents that do not conform with your new application code.
+Syncronizing with this "couch device" could cause other devices to crash
+unexpectedly in production.
+
+Changing your schema is inevitable. To ensure reliability over time, you
+should create your own schema versioning pattern for each Ditto document. Many
+developers use typed structs, Codable (Swift) or TypeScript (JavaScript) to
+ensure that all documents are added and retrieved from their database in a
+predictable fashion. 
+
+## When do I version my documents?
+
+You should version all documents fom day zero of production deployment. This
+will help your application code properly render them. Now, you must decide your
+version support strategy. Will you support all application versions, some, the
+latest, or only applications that are running the same version?
+
+### Supporting the latest version
+
+When a new application version is detected, do not call `ditto.tryStartSync()`.
+To do this offline, you can detect that a new application version is available by querying for a
+`_schemaVersion` that is greater than the current version. If a new version is
+detected, stop sync and tell the user they need to upgrade their app to the
+latest version. 
+
+```js
+const query = '_schemaVersion > 1'
+collection.find(query).observe(() => {
+  // Notify user to update to latest application version.
+  ditto.stopSync()
+})
+```
+
+This is a common pattern that many applications use. For example, Apple Notes
+warns users that they are on an older version and will experience degraded
+features until they upgrade.
+
+### Supporting the same version
+
+You could also all documents that come from application versions
+that are older or newer than the current version.  This means that applications
+with the same schema will be able to sync with each other.
+
+```js
+const query = 'name == $args.name && age <= $args.age && _schemaVersion == 1'
+collection.find(query, () => {
+  age: 32,
+  name: 'Max',
+})
+```
+
+### Backwards-compatibility
+
+Older data could be very important, or it could not be. It's your choice to
+decide what to do with these old documents: you could accept (as-is), reject
+(ignore), or migrate them to the new schema.
+
+For example, here's a breaking version change where we add a new field and
+change the type of an old field:
+
+**App version 2**
+
+```swift
+private struct V1Car {
+    let _id: String
+    let make: String
+    let model: String
+    let year: String
+    var version: Int
+}
+
+private struct V2Car {
+    let _id: String
+    let make: String
+    let model: String
+    let year: Int
+    let hometown: String
+    var version: Int
+}
+
+func decode(car: DittoDocument) -> V2Car {
+  switch(car.version) {
+    case 1 {
+      let oldCar = try person.typed(as: V1Car.self).value
+      let migratedCar = V2Car()
+      migratedCar.make = oldCar.make
+      migratedCar.model = oldCar.model
+      migratedCar.year = Int(oldCar.year)
+      migratedCar.version = 2
+      migratedCar.hometown = "N/A"
+      return migratedCar
+    }
+    case 2 {
+      return try person.typed(as: V2Car.self).value
+    }
+  }
+}
+```
+
+**App version 1**
+
+You also may want to ignore documents that come from incompatible applications.
+
+```swift
+private struct V1Car {
+    let _id: String
+    let make: String
+    let model: String
+    let year: String
+    var version: Int
+}
+
+func decode(car: DittoDocument) -> V1Car {
+  switch(car.version) {
+    case 1 :
+      let oldCar = try person.typed(as: V1Car.self).value
+      return oldCar
+    default:
+      // create default car item, or ignore document altogether
+      return
+  }
+}
+```

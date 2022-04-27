@@ -1,0 +1,177 @@
+---
+title: 'Counter'
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SnippetGroup from '@site/src/components/SnippetGroup';
+
+Counter is a very special type that is specific to CRDTs. While they look like
+the number type, they are geared towards building applications where various
+different devices need to increment or decrement at the same time while
+preserving consistency. The most common use cases are inventory or voting applications. 
+
+Counters can be changed through a special method called increment which takes a
+number to increment the counter by. If you wish to decrement the counter then
+you can supply a negative number.
+
+To create a counter, first insert a document with number value. You must then
+call an update function to convert the number into a counter with the
+replaceWithCounter method. This will convert the number into a counter.
+
+Once the value in the document is a counter, you can proceed to increment or
+decrement the value. This will preserve an accurate value once devices sync.
+
+
+<SnippetGroup
+  name='counter' 
+/>
+
+## When do I use a counter?
+
+Let's look through a typical example for a counter: four flight attendants walk
+through an airlane and record passenger meal orders. For each seat, they count the
+number of cans ordered.  
+
+First, the flight attendant selects the flight they are on. They then see an
+interface with each seat in a list view. This might be retrieved by an external
+API, or it could be internal to the app based on some known information about
+each plane type.  
+
+In a production application, each seat would have a few values that the
+attendant can modify, but we will just focus on `name` and `orderedCount` in
+this example. As each flight attendant is walking through the airplane,
+their devices synchronize together to make sure that each customer only
+received one meal. 
+
+If we used a [register](/datamodel/register) here the value would alternate between the
+latest updated value. Instead, a counter merges by taking the sum of each
+attendant's value. If attendant A has sold 100, attendent B has sold 33, and
+attendant C has sold 98, the value of the counter is 100 + 33 + 98 = 231.
+
+Counters can be decremented too. A word of warning, there is nothing to stop a
+counter from going negative. If the count is 1 and two attendants decrement the count by 1
+concurrently, the result is -1.
+
+### Code example
+
+In this example, we will:
+
+* Use `upsert` to ensure the document exists before interacting with it.
+* Replace a document's number value with a counter.
+* Use `update` to increment the counter.
+
+First, when the app loads we call `populateSeats()`, and then we
+`renderSeatList()`. 
+
+We want the flight attendants to be able to count orders, even if the app is
+opened while offline. To ensure this, we locally populate all the known flights
+with default data. This means the flight attendant can start collecting
+information from scratch even while offline and if they have no connections to
+other devices.
+
+`MainViewController.swift` 
+```swift
+flightIds.forEach {
+  try! collection.upsert([
+      "_id": $0,
+      "name": "Flight ABC123",
+      "orderedCount": 0,
+      "totalAvailable": 300
+  ], writeStrategy: .insertDefaultIfAbsent)
+
+  collection.findByID($0).update { newSeats in
+      newSeats?["orderedCount"].replaceWithCounter()
+  }
+}
+```
+
+When we call `replaceWithCounter()`, the counter `orderCount` is initialized to 0.
+`totalAvailable` is a [Register](/datamodel/register) value that doesn't change unless we update it
+later. 
+
+Then, we render the seat list. We increment the counter when a user clicks
+the Plus button and decrement the counter when the user clicks the Minus button:
+
+`SeatFormViewController.swift`
+
+```swift
+}.onPlusDidClick {
+    seatDocument.update { doc in
+        doc?["orderedCount"].increment(amount: 1)
+    }
+}
+```
+
+We can also show when we've run out of the tiem when `orderedCount` is greater than
+or equal to `totalAvailable`.
+
+
+**Do not use `upsert` to increment a counter**
+
+If we need to `upsert` the document at a later date, we do not include the counter field.
+This follows our rule that the counter field should only be modified within an
+`update` clause.
+
+```swift
+collection.upsert([
+    "_id": docID,
+    "name": "Flight ABC123",
+    "totalAvailable": 400
+])
+```
+ 
+### Resetting counter values
+
+After using a counter, you may want to reset that counter back to 0. But this is
+difficult because counters have no knowledge of time. A counter "remembers" all
+previous increment and decrement calls. This is true even if you change the type
+of a counter to another field, such as number, and then back into a counter
+again again.
+
+We recommend that you try to avoid resetting counters. Instead, try to make new
+documents or collections that have meaning and encapsulate a period of time.
+
+If you still think that you need to reset a counter field to 0, you can attempt this by
+removing the counter from the document first. If another device increments the
+counter at the same time that another device removes the counter, you may
+encounter unexpected behavior. Proceed with caution.
+
+
+```swift
+let docID = try! ditto.store["drinks"].upsert([
+    usedCount: 10,
+])
+
+ditto.store["drinks"].findByID(docID).update { mutableDoc in
+    mutableDoc?["usedCount"].replaceWithCounter()
+    mutableDoc?["usedCount"].increment(amount: 1)
+}
+
+print(ditto.store["drinks"].findByID(docID)) // 11
+
+ditto.store["drinks"].findByID(docID).update { mutableDoc in
+    mutableDoc?["usedCount"].increment(amount: 10)
+}
+
+print(ditto.store["drinks"].findByID(docID)) // 21
+
+ditto.store["drinks"].findByID(docID).update { mutableDoc in
+    mutableDoc?["usedCount"].remove()
+    mutableDoc?["usedCount"] = 0 
+    mutableDoc?["usedCount"].replaceWithCounter()
+}
+
+print(ditto.store["drinks"].findByID(docID)) // 0
+
+ditto.store["drinks"].findByID(docID).update { mutableDoc in
+    mutableDoc?["usedCount"].increment(amount: 1)
+}
+
+print(ditto.store["drinks"].findByID(docID)) // 1
+```
+
+## How it works
+
+Read more about [how Ditto's CRDT works](/how-it-works/crdt).

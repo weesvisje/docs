@@ -1,0 +1,93 @@
+---
+title: 'Documents'
+sidebar_position: 3
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SnippetGroup from '@site/src/components/SnippetGroup';
+
+Ditto is a NoSQL database, that can store JSON-like Documents organized by Collections. However, unlike JSON, Ditto allows you to apply updates to the document which will be synchronized with any other copy on other devices. In addition, it supports additional data types.
+
+## Collections
+
+You can think of a collection as a table in a traditional database. However,
+unlike traditional SQL databases, Ditto's collections are far simpler and more
+flexible. A collection merely referenced by its string value, there is no need
+to "create" a collection. While it is typically common for all documents in a
+collection to have the same structure, it is not a technical requirement. For
+example, all documents referencing cars can go in the "cars" collection and boat
+documents in the "boats" collection. You can create any number of collections
+that best represent your data model.
+
+To get a reference to a collection:
+
+<SnippetGroup
+  name='datamodel' 
+/>
+
+## Documents
+
+A Ditto document is a schema flexible unit of data in Ditto. If collections are
+similar to tables, then a document is similar to a row. A document, at its
+highest level, is a map that can contain arbitrarily nested keys and values.
+Each document has a primary key, often referred to as an id.
+
+## Document `_id`, the Primary Key
+In order for documents to sync, each document must have a unique identifier
+which we refer to as the id. This is the primary key of the document and is not
+optional.
+
+As an example, let's say we have a document in the `people` collection that looks like this:
+
+```jsonc
+{
+  "_id": "123abc",
+  "name": "Sam",
+  "age": 45,
+  "isOnline": false
+}
+```
+
+You can also supply your own unique identifier when creating a document:
+
+<SnippetGroup
+  name='upsert-id' 
+/>
+
+The id parameter is optional during insertion. If you do not supply a document `_id`, Ditto will automatically generate a random, unique string and use that as the document's `_id` instead.
+
+<SnippetGroup
+  name='upsert' 
+/>
+
+
+### Composite Primary Keys
+
+You may have a data model where documents are considered unique due to two or more values. Ditto's `_id` field allows for a map of values. For example, we may have a person document with a unique identifier as a combination of a string `userId` and an int `workId`. We can insert each document as a composite key as a nested map structure under the `_id` field:
+
+<SnippetGroup
+  name='upsert-composite-primary-key' 
+/>
+
+
+Note: `_id`s with the same key and values will be equal regardless of their defined order. Thus,  `{a: "foo", b: 1} == { b: 1, a: "foo" }`. This is because Ditto maps check for equality of key and value combinations and do not consider for literal order.
+
+
+## Allowed Document Data Types
+
+Like JSON, Ditto only supports strings as keys in documents. That means attempting to insert a document like the following will throw an error:
+
+```jsonc
+{
+    1: "numeric_keys_are_invalid",
+    "this_part": "is_valid_though"
+}
+```
+
+The following snippets show a various set of data types
+
+
+<SnippetGroup
+  name='upsert-datatypes' 
+/>

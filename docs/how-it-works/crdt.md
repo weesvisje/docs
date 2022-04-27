@@ -63,14 +63,12 @@ Version Vector: {
 
 | Type        | Description                                                                | Merge Semantics                |
 | ----------- | -----------                                                                | ---                            |
-| Register    | A single primitive value (Number, String, Boolean, Binary File)            | Last (temporal) Write Wins     |
-| Counter     | A special number capable of preserving incrementing and decrementing semantics | The sum of all site's counters |
-| Array       | An ordered sequence of any of the other types                              | Remove wins, updates merge     |
-| Map         | A dictionary of name->value mappings where name is a string and value is any of the other types | Remove wins, updates merge     |
+| [Register](/datamodel/register)    | A single primitive value (Number, String, Boolean, Binary File)            | Last (temporal) Write Wins     |
+| [Counter](/datamodel/counter)     | A special number capable of preserving incrementing and decrementing semantics | The sum of all site's counters |
+| [Replicatd Growable Array](/datamodel/array)       | An ordered sequence of any of the other types                              | Remove wins, updates merge     |
+| [Map](/datamodel/map)         | A dictionary of name->value mappings where name is a string and value is any of the other types | Remove wins, updates merge     |
 
-{.table .table-striped}
-
-## Examples
+## Documents 
 
 The Ditto document is a JSON like document made from a CRDT Map that represents
 the JSON Object. The JSON properties are map keys, and the values are any of the
@@ -78,126 +76,6 @@ types listed above. One way to think about the types that make up a Ditto
 document is like a tree, where there are collections (Array and Map) and leaf
 values that are registers or counters.
 
-The examples below illustrate the merge behaviour of each type with an example
-of using the type, and how to reason about concurrent changes.
-
-Ditto replicates `deltas` that describe changes to properties of the document. If
-a document has 100 named properties, and only the "X" property is changed, only
-the metadata and value for the change to the "X" property is replicated. If "X"
-is at the end of a path like `"a.b.c.y.X = 'foo'"` then the information that
-enables other replicas to correctly merge the nested objects that make up the
-path to "X" is replicated.
-
-### Register
-
-A primitive value, a string, or number, or boolean. Ditto uses a temporal
-timestamp called an HLC (hybrid logical clock) to associate each register value
-with a time. When two registers are merged the value with the highest timestamp
-wins.
-
-Imagine a customer who encounters two attendants, one after the other, in this
-case a Last Write Wins register is the perfect data type. For example, one
-attendant updates a customer's apartment number to '6', and another to apartment
-'9'. When the two conflicting versions merge, the edit with the highest
-timestamp wins.
-
-In that case that two updates occur at _exactly_ the same time, we use the unique ID of
-the Ditto SDK to tie-break, preferring the highest ID.
-
-In the case of a number like an apartment number, a last-write-wins register is
-a good choice, but some numbers represent quantities, and that is when a Counter
-is useful.
-
-### Counter
-
-A counter is a number that can be incremented and decremented. In this case we
-don't want the value with the latest time.
-
-Imagine a property with 3 entrances, each has a member of staff incrementing a
-counter each time a customer enters the location. If we used a last-write-wins
-register here the value would alternate between the latest updated value for any
-single entrance. Instead a counter merges by taking the sum of each locations
-value. Entrance A has seen 100 customer, Entrance B has see 33, and Entrance C
-has seen 98. The value of the counter is 100 + 33 + 98 = 231.
-
-Counters can be decremented too. A word of warning, there is nothing to stop a
-counter from going negative. If there is one can of Pepsi left, and two
-attendants decrement the Pepsi count by 1 concurrently, the result is -1 Pepsi
-cans.
-
-### Array
-
-An ordered collection of things. The elements of the array can be registers,
-counters, maps, even more arrays!
-
-Elements are added to the array at a position. For example a queue of customer
-objects can be inserted into an array. Where two customers are inserted at
-position four, after customer `X`, the merge will use causal information from
-the logical clock to decide which element gets the position, and which gets the
-following position. The result is deterministic.
-
-When elements of an array are updated, then the element merges as-per the merge
-behaviour of the type at that position in the array.
-
-Merging works in such a way that we never merge the element with a different
-element, even if it moves. If some element's position has changed (due to
-insertions or removes) at one device, we ensure to merge that element with it's
-corresponding version in the other devices.
-
-When an element is removed from the array, a tombstone is recorded, ensuring
-that if there is an update concurrent with the remove the remove wins.
-
-### Map
-
-The map represents a JSON like object, and it is the basis of the Ditto Document.
-Whenever you create a document you are creating a CRDT Map at its root. We nest maps within
-maps to allow complex JSON like document structures. A map is made up of
-properties and values. The values can be registers, counter, arrays, or maps.
-
-Maps merge with a remove-wins semantic. This means if some property of the map
-is concurrently updated and removed, the remove wins. The values of map
-properties merge using the correct method of their type.
-
-#### Type Conflicts
-
-One unique problem for Maps is that it is possible for one device to create a
-document where some property is a map, and another device creates the same
-document where that property is an array. For example:
-
-Site A creates:
-
-```json
-{
-  "name":"Bob Jones",
-  "address": {
-    "street":"Long Road",
-    "house number":10298,
-    "zip":"90210"
-  }
-}
-```
-
-Whilst Site B creates:
-
-```json
-{
-  "name": "Bob Jones",
-  "address":[
-    10298,
-    "Long Road",
-    "90210"
-  ]
-}
-```
-
-In this instance we cannot merge an array with an object. We chose not to let
-the "last updated type" win, as this could lead to a ping-pong of type changes
-between the devices. Instead we keep BOTH values for the the "address" property.
-We render only the last updated type when we show JSON, but we also provide a
-way for the programmer to chose which type to render for a property, or to
-render ALL types for a property. This way we can manage type level conflict, and
-allow different versions of an application that use different implicit schema to
-co-exist.
 
 ## Hybrid Logical Clock
 

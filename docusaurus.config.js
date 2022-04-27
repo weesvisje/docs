@@ -8,10 +8,11 @@ module.exports = {
   tagline: "Sync even without the internet",
   url: "https://docs.ditto.live",
   baseUrl: process.env.BASE_URL || '/',
-  onBrokenLinks: "throw",
+  onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico/favicon.ico",
   organizationName: "getditto", // Usually your GitHub org/user name.
+  trailingSlash: undefined,
   projectName: "docs", // Usually your repo name.
   plugins: [path.resolve(__dirname, "plugins/postcss-tailwindcss-loader"),
     [
@@ -22,6 +23,7 @@ module.exports = {
     ]
   ],
   themeConfig: {
+    autoCollapseSidebarCategories: true,
     colorMode: {
       defaultMode: 'light',
       disableSwitch: true,
@@ -53,10 +55,6 @@ module.exports = {
           href: "https://github.com/getditto/docs/issues",
         },
         {
-          label: "Discussions",
-          href: "https://github.com/getditto/docs/discussions",
-        },
-        {
           label: "Roadmap",
           href: "https://github.com/getditto/docs/discussions/categories/roadmap-and-ideas",
         },
@@ -64,11 +62,7 @@ module.exports = {
           href: "https://portal.ditto.live",
           label: "Get Started",
           position: "right",
-        },
-        {
-          label: `Changelog`,
-          href: "/changelog",
-        },
+        }
       ],
     },
     footer: {
