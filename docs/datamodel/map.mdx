@@ -112,6 +112,8 @@ Maps merge with a remove-wins semantic. This means if some property of the map
 is concurrently updated and removed, the remove wins. The values of map
 properties merge using the correct method of their type.
 
+Read more about [how Ditto's CRDT works](/how-it-works/crdt).
+
 One unique problem for Maps is that it is possible for one device to create a
 document where some property is a map, and another device creates the same
 document where that property is an array. For example:
@@ -151,4 +153,5 @@ render ALL types for a property. This way we can manage type level conflict, and
 allow different versions of an application that use different implicit schema to
 co-exist.
 
-Read more about [how Ditto's CRDT works](/how-it-works/crdt).
+
+Read more about [how to manage schema changes](/datamodel/schemas).
