@@ -56,7 +56,7 @@ An update to any field in a map is sent independent of other changes within a
 map. For example, if you want to update the mileage every three seconds, we don't want to also
 replicate changes to a very long json blob. Using the Map type allows you to make changes to just a single
 
-Device A
+Say that Devices A and B have this document:
 
 ```json
 {
@@ -68,8 +68,7 @@ Device A
 }
 ```
 
-
-The following `upsert` call will only change the property "color: red"  to
+Device A calls `upsert` to change the property "color: red"  to
 "color: blue". 
 
 ```js
@@ -79,13 +78,15 @@ upsert({
 })
 ```
 
-Another device could simultaneously update the mileage, and both updates will converge.
+Device B simultaneously updates the mileage.
 
 ```js
 findById("abc123").update(doc => {
   doc.mileage.incrememt(200)
 })
 ```
+
+When both devices synchronize, both updates will merge. You will see the mileage is incremented and the color is now blue.
 
 ```json
 {
