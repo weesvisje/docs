@@ -36,23 +36,4 @@ let appID = '7e150506-58b2-4332-b293-4e5d9f802c8b';
     })
 
     console.log(await people.findByID(id))
-    /*
-
-    await people.findByID(id).update((doc) => {
-        doc._replaceWithCounterAt('drinks')
-        doc._incrementCounterAt('drinks', 1)
-    })
-
-    await people.findByID(id).update((doc) => {
-        delete doc['drinks']
-    })
-
-    await people.findByID(id).update((doc) => {
-        doc['drinks'] = 0
-        doc._replaceWithCounterAt('drinks')
-        doc._incrementCounterAt('drinks', 1)
-    })
-
-    console.log(await people.findByID(id))
-    */
 })()

@@ -66,7 +66,6 @@ find("title != $args.title", { title: 'Lord of the rings' })
 ### Comparisons - Greater Or Less Than `>=`, `>`, `<`, `<=`
 
 
-
 ```js
 // finds documents where the age is less than or equal to 18
 find("age <= $args.age", { age: 18})
@@ -132,6 +131,12 @@ find("regex(title, '^([A-Za-z]|[0-9]|_)+$')")
 
 // A title property of "abc129_24A" will pass
 // A title property of "abc129_24A  3" will not pass
+```
+
+Queries also parse ISO-8601 date strings as comparable dates:
+
+```js
+find("created_at >= $args.date", { date: "2022-04-29T00:55:31.859Z"})
 ```
 
 ## Sort
