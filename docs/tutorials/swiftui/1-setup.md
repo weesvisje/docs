@@ -24,55 +24,10 @@ And finally click "Next" and select a directory to create the application.
 
 ![](./xcode-project-form-fill.png)
 
-## 1-2 Add dependencies (Cocoapods)
+## 1-2 Add dependencies (Cocoapods or Swift Package Manager)
 
-Currently, Ditto is published on [Cocoapods](https://guides.cocoapods.org/using/getting-started.html). However, we are working on Swift Package Manager support soon.
+Follow the instructions on the [Installation page for iOS](/installation/ios) to use CocoaPods or Swift Package Manager.
 
-If you have not installed Cocoapods, open up a terminal and run:
-
-```terminal
-$ sudo gem install cocoapods
-```
-
-Once Cocoapods is install, `cd` into the directory where Xcode created the __Tasks.xcproj__ and run:
-
-```terminal
-pod init
-```
-
-This will have created a __Podfile__ next to your __Tasks.xcproj__
-
-Open up the `Podfile` your favorite code editor and replace everything with:
-
-```ruby title="Podfile"
-platform :ios, '14.0'
-
-target 'Tasks' do
-  use_frameworks!
-
-  # Pods for Tasks
-  pod 'DittoSwift', '>=1.0.19'
-
-end
-```
-Save the file. In your terminal run:
-
-```terminal
-pod install --repo-update
-```
-
-Now Cocoapods should have generated a __Tasks.xcworkspace__ file and a __Pods/__ directory.
-
-Your file structure should now look like:
-
-```terminal title="Directory Structure" {6}
-Podfile
-Podfile.lock
-Pods
-Tasks
-Tasks.xcproj
-Tasks.xcworkspace
-```
 
 Now open __Tasks.xcworkspace__.
 
