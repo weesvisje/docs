@@ -133,7 +133,7 @@ find("regex(title, '^([A-Za-z]|[0-9]|_)+$')")
 // A title property of "abc129_24A  3" will not pass
 ```
 
-Queries also parse ISO-8601 date strings as comparable dates:
+Queries also parse ISO-8601 date strings as comparable dates
 
 ```js
 find("created_at >= $args.date", { date: "2022-04-29T00:55:31.859Z"})
