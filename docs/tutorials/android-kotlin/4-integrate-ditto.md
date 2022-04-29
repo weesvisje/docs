@@ -153,6 +153,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.task_view.view.*
 import live.ditto.*
+import live.ditto.transports.*
 import live.ditto.android.DefaultAndroidDittoDependencies
 import java.time.Instant
 ```
