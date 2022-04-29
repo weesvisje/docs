@@ -17,52 +17,13 @@ could be documents that do not conform with your new application code.
 Syncronizing with this "couch device" could cause other devices to crash
 unexpectedly in production.
 
+## When do I version my documents?
+
 Changing your schema is inevitable. To ensure reliability over time, you
 should create your own schema versioning pattern for each Ditto document. Many
 developers use typed structs, Codable (Swift) or TypeScript (JavaScript) to
 ensure that all documents are added and retrieved from their database in a
-predictable fashion. 
-
-## When do I version my documents?
-
-You should version all documents fom day zero of production deployment. This
-will help your application code properly render them. Now, you must decide your
-version support strategy. Will you support all application versions, some, the
-latest, or only applications that are running the same version?
-
-### Supporting the latest version
-
-When a new application version is detected, do not call `ditto.tryStartSync()`.
-To do this offline, you can detect that a new application version is available by querying for a
-`_schemaVersion` that is greater than the current version. If a new version is
-detected, stop sync and tell the user they need to upgrade their app to the
-latest version. 
-
-```js
-const query = '_schemaVersion > 1'
-collection.find(query).observe(() => {
-  // Notify user to update to latest application version.
-  ditto.stopSync()
-})
-```
-
-This is a common pattern that many applications use. For example, Apple Notes
-warns users that they are on an older version and will experience degraded
-features until they upgrade.
-
-### Supporting the same version
-
-You could also all documents that come from application versions
-that are older or newer than the current version.  This means that applications
-with the same schema will be able to sync with each other.
-
-```js
-const query = 'name == $args.name && age <= $args.age && _schemaVersion == 1'
-collection.find(query, () => {
-  age: 32,
-  name: 'Max',
-})
-```
+predictable fashion. You can use these types to detect older or incompatible versions before rendering them in your UI.
 
 ### Backwards-compatibility
 
@@ -135,4 +96,37 @@ func decode(car: DittoDocument) -> V1Car {
       return
   }
 }
+```
+
+
+### Supporting the latest version
+
+When a new application version is detected, you can stop syncronizing. You can detect that a new application version is available by querying for a
+`_schemaVersion` that is greater than the current version. If a new version is
+detected, stop sync and tell the user they need to upgrade their app to the
+latest version. 
+
+```js
+const query = '_schemaVersion > 1'
+collection.find(query).observe(() => {
+  // Notify user to update to latest application version.
+  ditto.stopSync()
+})
+```
+
+This is a common pattern that many applications use. For example, Apple Notes
+warns users that they are on an older version and will experience degraded
+features until they upgrade.
+
+### Supporting the same version
+
+You could also only synchronize documents that come from schema versions
+that are the same as your current schema version.  
+
+```js
+const query = 'name == $args.name && age <= $args.age && _schemaVersion == 1'
+collection.find(query, () => {
+  age: 32,
+  name: 'Max',
+})
 ```
