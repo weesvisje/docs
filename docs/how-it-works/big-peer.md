@@ -93,12 +93,12 @@ and can therefore potentially influence that other action, the actions must be
 ordered in the that way for everyone, ever after. If two actions are totally
 unrelated, they can be ordered any way the system chooses. By way of example:
 
-Imagine that you have two collections: Followers and Pictures. Before
-adding your holiday snaps to Pictures, you remove your boss from
-Followers. If these two independent actions were re-ordered by an
-eventually consistent system, bad things could happen. Causal
-Consistency ensures that the boss is removed _before_ the pictures are
-visible, regardless of the vagaries of networks, connections, and
+Imagine that you have two collections: Menus and Orders. First, you add a new
+item to the menu, and then create an order that points to the new item. If these
+two independent actions were re-ordered by an eventually consistent system, some
+devices could see that the menu item referenced in the order does not exist.
+Causal Consistency ensures that the menu item is added _before_ the order is 
+created, regardless of the vagaries of networks, connections, and
 ordering of messages. Transactional Causal Consistency means that we
 can apply this constraint across any number of related changes, across
 multiple documents, in multiple collections, as long as they are within the same
@@ -128,8 +128,8 @@ have equal timestamps, as they have no causal relationship/order.
 The key concept is that Transactions are Ordered by Timestamp. Changes that have
 a Causal relationship express their order relationship through the order of
 transaction timestamps. Transactions with no causal relationship can be ordered
-in any way. In the example above, as the change to the "Followers" collections
-happens before the changes to the "Pictures" collection. The first would have a
+in any way. In the example above, as the change to the Menu collection
+happens before the changes to Orders collection. The first would have a
 lower transaction ID than the second (if not part of the _same_ transaction.)
 
 Before going into more details about Ditto's implementation, some clarification
@@ -203,8 +203,8 @@ our data across three partitions, and have 2 replicas of each item, then we can
 deploy 6 servers, 2 in each partition.
 
 Returning to our example in Causal Consistency, imagine that the documents in
-the "Followers" Collection is stored in Partition 1, and the "Pictures"
-Collection in Partition 2 and that the change to Followers and pictures occurs
+the Menus Collection is stored in Partition 1, and the Orders
+Collection in Partition 2 and that the change to Menus and Orders occurs
 in the same transaction, Transaction One.
 
 This transaction contains documents that are stored in 2 different
@@ -212,10 +212,9 @@ partitions, across a total of 4 locations (2 replicas, 2 partitions.)
 
 In order to store the data for this transaction it needs to stored on
 all 4 servers. This is why the UST matters. If, by chance,
-Big Peer stores the "Pictures" change document _before_ storing the
-"Followers" change document and allow reads to always get the latest
-value, we can break the consistency constraint, and show the boss our
-holiday pictures.
+Big Peer stores the Orders change document _before_ storing the
+Menus change document and allow reads to always get the latest
+value, we can break the consistency constraint, and reference a menu item that doesn't exist.
 
 A more complex example:
 
