@@ -57,16 +57,16 @@ We will need a couple of additional icons to show the tasks' completed, incomple
 
 ![Add Vector Icons Menu](./add-icon-add-2.png)
 
-3. Follow steps 1 and 2 for "circle"
+3. Follow steps 1 and 2 for adding a circle_filled (icon name: "Brightness 1")
 
-![Add Vector Icons](./add-icons.png)
+![Add Vector Icons](./add-icon-circle.png)
 
-4. Follow steps 1 and 2 for "circle" but for "outline"
+4. Follow steps 1 and 2 for adding a circle_outline (icon name: "Panorama fish eye")
 
-![Add Vector Icons](./add-icon-circle-outline.png)
+![Add Vector Icons](./add-icon-circleOutline.png)
 
 You should have have 3 additional drawables with the following names:
 
 * `ic_baseline_add_24.xml`
-* `ic_baseline_circle_24.xml`
-* `ic_outline_circle_24.xml`
+* `ic_baseline_brightness_1_24.xml`
+* `ic_outline_panorama_fish_eye_24.xml`

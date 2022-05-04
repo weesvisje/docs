@@ -92,19 +92,19 @@ When we call `replaceWithCounter()`, the counter `orderCount` is initialized to 
 later. 
 
 Then, we render the seat list. We increment the counter when a user clicks
-the Plus button and decrement the counter when the user clicks the Minus button:
+the Plus button:
 
 `SeatFormViewController.swift`
 
 ```swift
-}.onPlusDidClick {
+.onPlusDidClick {
     seatDocument.update { doc in
         doc?["orderedCount"].increment(amount: 1)
     }
 }
 ```
 
-We can also show when we've run out of the tiem when `orderedCount` is greater than
+We can also show when we've run out of the item when `orderedCount` is greater than
 or equal to `totalAvailable`.
 
 

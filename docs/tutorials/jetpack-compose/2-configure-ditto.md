@@ -34,7 +34,10 @@ class TasksApplication: Application() {
         // construct a DefaultAndroidDittoDependencies object with the applicationContext
         val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
         // for this example we will use a Development identity
-        val identity = DittoIdentity.OnlinePlayground(appID = "REPLACE_ME", dependencies = androidDependencies);
+        val identity = DittoIdentity.OnlinePlaygroundV2(
+            appID = "REPLACE_ME", 
+            dependencies = androidDependencies, 
+            token = "REPLACE_ME")
         ditto = Ditto(androidDependencies, identity)
     }
 
