@@ -1,5 +1,5 @@
 ---
-title: "Supported Network Transports"
+title: "Supported Transports"
 sidebar_position: 10
 ---
 
@@ -114,7 +114,7 @@ Ditto will use Bluetooth Low Energy (BLE) to form **low-powered** and **high dis
 
 Most devices will have a Bluetooth 5.x chip if it was made during or after 2017. Bluetooth Low Energy is great for structured documents but performs poorly for large file sizes.
 
-> If you intend to run Ditto on a Raspberry Pi or Linux device, [please follow the instructions to enable Bluetooth Low Energy support](../installation/linux)
+> If you intend to run Ditto on a Raspberry Pi or Linux device, [please follow the instructions to enable Bluetooth Low Energy support](/installation/linux)
 
 ### Apple Wireless Direct Link (AWDL)
 
@@ -145,7 +145,7 @@ If devices are connected over the same Wi-Fi access point or via some other mean
 
 Many enterprise or educational networks may have Client Isolation Mode turned **ON**. If the network has this setting **ON** then devices are unable to discover each other and form a connection. Almost all "home" settings have this setting turned **OFF**. Different router manufacturers refer to this feature in a wide variety of different ways, but it generally has "isolation" in its name.
 
-Ditto's discovery protocol also uses **UDP multicasting**, which needs to be enabled if you want devices to automatically discover each other. If you don't enable multicasting, you will need to [manually configure the connections](https://docs.ditto.live/concepts/network#connecting-to-a-remote-ditto-instance) between peers.
+Ditto's discovery protocol also uses **UDP multicasting**, which needs to be enabled if you want devices to automatically discover each other. If you don't enable multicasting, you will need to [manually configure the connections](/guides/mesh-network/manual#connecting-to-a-remote-ditto-instance) between peers.
 
 There are some limitations affecting LAN sync on **iOS devices**.
 
