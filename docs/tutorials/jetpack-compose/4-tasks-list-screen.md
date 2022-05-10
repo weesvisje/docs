@@ -28,8 +28,8 @@ fun TaskRow(
     onClickBody: ((task: Task) -> Unit)? = null) {
 
     val iconId =
-        if (task.isCompleted) R.drawable.ic_baseline_circle_24 else R.drawable.ic_outline_circle_24
-    val color = if (task.isCompleted) R.color.purple_200 else R.color.gray
+        if (task.isCompleted) R.drawable.ic_baseline_brightness_1_24 else R.drawable.ic_baseline_panorama_fish_eye_24
+    val color = if (task.isCompleted) R.color.purple_200 else android.R.color.darker_gray
     var textDecoration = if (task.isCompleted) TextDecoration.LineThrough else
         TextDecoration.None
     Row(
@@ -43,12 +43,12 @@ fun TaskRow(
                 id = iconId
             ),
             "Localized description",
-            colorFilter = ColorFilter.tint(colorResource(id = color)),
+            colorFilter = tint(colorResource(id = color)),
             modifier = Modifier
                 .padding(end = 16.dp)
                 .size(24.dp, 24.dp)
-                .clickable { onToggleButton?.invoke(task) },
-            alignment = Alignment.CenterEnd
+                .clickable { onToggle?.invoke(task) },
+            alignment = CenterEnd
         )
         Text(
             text = task.body,
@@ -217,7 +217,6 @@ fun TasksListScreen(navController: NavController) {
             )
         },
         floatingActionButtonPosition = FabPosition.End,
-        scaffoldState = scaffoldState,
         content = {
             TasksList(
                 // 6
@@ -226,7 +225,7 @@ fun TasksListScreen(navController: NavController) {
                 onToggle = { tasksListViewModel.toggle(it) },
                 // 8.
                 onClickBody = { task ->
-                    navController.navigate("tasks/edit/${task._id}")
+                    navController.navigate("tasks/edit/${task}")
                 }
             )
         }
