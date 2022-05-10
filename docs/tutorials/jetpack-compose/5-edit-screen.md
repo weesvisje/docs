@@ -210,8 +210,8 @@ fun EditScreen(navController: NavController, taskId: String?) { // 1.
                 canDelete = canDelete,
                 body = body,
                 onBodyTextChange = { editScreenViewModel.body.value = it },
-                isCompleted = isCompleted,
-                onIsCompletedChanged = { editScreenViewModel.isCompleted.value = it },
+                isComplete = isCompleted,
+                onIsComplete = { editScreenViewModel.isCompleted.value = it },
                 onSaveButtonClicked = {
                     editScreenViewModel.save()
                     // 8.
