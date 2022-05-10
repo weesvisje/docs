@@ -25,18 +25,16 @@ The `Root` of our application hosts a `navController` which we use to switch bet
 fun Root() {
     val navController = rememberNavController()
 
-    TasksJetpackComposeTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(color = MaterialTheme.colors.background) {
-            NavHost(navController = navController, startDestination = "tasks") {
-                composable("tasks") { TasksListScreen(navController = navController) }
-                composable("tasks/edit") {
-                    EditScreen(navController = navController, taskId = null)
-                }
-                composable("tasks/edit/{taskId}") { backStackEntry ->
-                    val taskId: String? = backStackEntry.arguments?.getString("taskId")
-                    EditScreen(navController = navController, taskId = taskId)
-                }
+    // A surface container using the 'background' color from the theme
+    Surface(color = R.colors.white) {
+        NavHost(navController = navController, startDestination = "tasks") {
+            composable("tasks") { TasksListScreen(navController = navController) }
+            composable("tasks/edit") {
+                EditScreen(navController = navController, taskId = null)
+            }
+            composable("tasks/edit/{taskId}") { backStackEntry ->
+                val taskId: String? = backStackEntry.arguments?.getString("taskId")
+                EditScreen(navController = navController, taskId = taskId)
             }
         }
     }
