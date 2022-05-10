@@ -86,3 +86,55 @@ Each Ditto document includes a version vector. The replication system uses the v
 Although we decided that we could not build a system that resolved conflicts based purely on physical time, we needed to preserve the notion of physical time as not to confuse users of collaborative applications. However, each peer still needs a deterministic way to resolve conflicts. In other words, each peer when sharing CRDT deltas needs to always resolve conflicts exactly the same way. This requirement still needs _logical_ ordering. This requirement led us to implement the version vector with a Hybrid Logical Clock (often referred to as HLC).
 
 In Ditto's distributed system, the HLC is a 64-bit timestamp comprised of 48 bits of a physical timestamp and 16 bits of a monotonically increasing logical clock. 
+
+## Causal Consistency
+
+Causal Consistency is guaranteed by Ditto. It is causally consistent across any number of related
+changes, across many documents and different collections, as long as they are
+within the same Ditto AppID. 
+
+To give an intuition about causal consistency,
+imagine the following scenario:
+
+On a social network Bob posts a message:
+
+    Bob: "I lost my cat"
+
+Then after some time, he posts:
+
+    Bob: "I found him! What a relief!"
+
+To which Sue replies:
+
+    Sue: "Great news!"
+
+In contrast, an **eventually consistent** database shows messages in any order:
+
+    Bob: "I lost my cat"
+    Sue: "Great news!"
+    Bob: ...etc
+
+Ditto's Causal Consistency ensures that if a new message is written after seeing some
+prior message, then the new message is not visible unless that prior message is
+also visible.
+
+To help differentiate Causal Consistency from stronger consistency models, imagine that Alice replies:
+
+    Alice: "Wonderful!"
+
+Causal Consistency allows that the two concurrent messages "Great news!" from
+Sue and "Wonderful!" from Alice appear in any order. Both:
+
+    Bob: "I lost my cat"
+    Bob: "I found him! What a relief!"
+    Sue: "Great news!"
+    Alice: "Wonderful!"
+
+And:
+
+    Bob: "I lost my cat"
+    Bob: "I found him! What a relief!"
+    Alice: "Wonderful!"
+    Sue: "Great news!"
+
+Are allowed with Causal Consistency.
