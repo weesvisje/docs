@@ -14,7 +14,7 @@
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
     "download-changelog": "curl https://software.ditto.live/releases/releases.json > ditto-changelog.json",
-    "postinstall": "npm run download-changelog && npm run download-snippets",
+    "postinstall": "npm run download-changelog",
     "audit:fix": "npx yarn-audit-fix",
     "download-snippets": "curl https://software.ditto.live/releases/snippets.json > snippets.json"
   },
