@@ -59,28 +59,30 @@ In order for Ditto to sync, we will need to add permissions to the __AndroidMani
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="live.ditto.compose.tasks">
 
-+    <uses-permission android:name="android.permission.BLUETOOTH"
-+        android:maxSdkVersion="30" />
-+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
-+        android:maxSdkVersion="30" />
-+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
-+        android:usesPermissionFlags="neverForLocation" />
-+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
-+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
-+        android:maxSdkVersion="30" />
-+    <uses-permission android:name="android.permission.INTERNET" />
-+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
 
     <application
-+       android:name=".TasksApplication"
+        android:name=".TasksApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         ... more
