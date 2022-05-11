@@ -7,10 +7,13 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SnippetGroup from '@site/src/components/SnippetGroup';
 
-Ditto documents support all primitive JSON compatible values like `string`, `boolean`,
-`number`, and `null`. 
+Ditto documents support all primitive JSON compatible types like `string`, `boolean`,
+`number`, etc.
 
-Registers in Ditto are *"Last Writer Wins"*. When a device updates a document,
+All primitive types in Ditto are internally represented as so
+called [Registers](/how-it-works/crdt.md) with *"Last Writer Wins"* semantics.
+
+When a device updates a document,
 the last write to the document will win. A timestamp is attached to each
 update, and updates with later timestamps always win. To learn more about how
 this works, read about Ditto's [Hybrid Logical
@@ -24,13 +27,11 @@ Clock](/how-it-works/crdt#hybrid-logical-clock).
     </tr>
     <tr>
       <td>Boolean</td>
-      <td>
-        <p><code>false</code> or <code>true</code></p>
-      </td>
+      <td>Either <code>true</code> or <code>false</code>.</td>
     </tr>
     <tr>
       <td>String</td>
-      <td>A utf-8 encodable string value</td>
+      <td>A utf-8 encodable string value.</td>
     </tr>
     <tr>
       <td>Number</td>
@@ -40,11 +41,11 @@ Clock](/how-it-works/crdt#hybrid-logical-clock).
       <td>Array</td>
       <td>
         Arrays are an ordered list of values. Arrays can contain all primitive
-        values as well as nested collection types like other Arrays or Maps
+        values as well as nested collection types like other Arrays or Maps.
       </td>
     </tr>
     <tr>
-      <td>Maps</td>
+      <td>Map</td>
       <td>
         Sometimes referred to as a dictionary, a Map represents a nested object
         within the overall document. Comparing values at the map level for
@@ -56,7 +57,7 @@ Clock](/how-it-works/crdt#hybrid-logical-clock).
         <code>null</code>
       </td>
       <td>
-        This represents an absence of value
+        This represents an absence of a value.
       </td>
     </tr>
   </tbody>
@@ -69,7 +70,7 @@ Clock](/how-it-works/crdt#hybrid-logical-clock).
 
 ## How it works
 
-Ditto uses a temporal timestamp called an HLC (hybrid logical clock) to
+Ditto uses a temporal timestamp called an [HLC](/how-it-works/crdt#hybrid-logical-clock) (hybrid logical clock) to
 associate each register value with a time. When two registers are merged the
 value with the highest timestamp wins.
 
@@ -79,8 +80,8 @@ For example, one attendant updates a customer's seat number to '6', and another 
 In that case that two updates occur at _exactly_ the same time, we use the unique ID of
 the Ditto SDK to tie-break, preferring the highest ID.
 
-In the case of a number like a seat number, a last-write-wins register is
-a good choice, but some numbers represent quantities over time, and that is when
+In the case of a number, like a seat number, a last-write-wins register is
+a good choice. Some numbers represent quantities over time, and that is when
 a [Counter](/datamodel/counter) is useful.
 
 Read more about [how Ditto's CRDT works](/how-it-works/crdt).
