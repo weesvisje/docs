@@ -1,0 +1,18 @@
+---
+title: 'Overview'
+sidebar_position: 1
+---
+
+Testing peer-to-peer systems can be challenging, but worth the initial effort to
+ensure your data model works across multiple instances. It is important to test
+your business logic with end-to-end unit tests that involve multiple Ditto peers. 
+
+A typical test lifecycle is:
+
+1. Create two instances of Ditto with the same identity and different directories.
+2. Call `tryStartSync()` on both instances.
+3. Listen for changes to data using `observe()` and write tests as a response to the `observe()` function.
+4. Clean up Ditto directories between tests and stop any open syncronization
+threads using `stopSync()`.
+
+For complete examples and running tests, see the [open source samples GitHub repository](https://github.com/getditto/samples/tree/master/testing/).
