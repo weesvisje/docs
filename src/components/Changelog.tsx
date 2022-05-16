@@ -24,6 +24,7 @@ export interface SDKInfo {
 
 let changelog = require("../../ditto-changelog.json") || {}
 let bigpeer = require('../../big-peer-changelog.json')
+changelog["bigpeer"] = bigpeer
 const downloadedFrameworks: { [key: string]: SDKInfo[] } = parseFrameworks(
   changelog
 );
@@ -42,6 +43,7 @@ export function parseFrameworks(dittoChangeLog: { [key: string]: any }): {
     "dotnet",
     "js",
     "rustsdk",
+    "bigpeer"
   ];
   let frameworks: { [framework: string]: SDKInfo[] } = {};
   Object.keys(dittoChangeLog).forEach((framework) => {
@@ -161,6 +163,11 @@ export function parseFrameworks(dittoChangeLog: { [key: string]: any }): {
               ~~~
               `);
             }
+            if (framework === "bigpeer") {
+              sdkInfo["friendlyName"] = "Big Peer";
+              sdkInfo["friendlyDescription"] = "Cloud";
+              sdkInfo["installationSnippet"] = ""
+            }
             frameworks[framework].push(sdkInfo);
           });
       });
@@ -185,11 +192,14 @@ function TabContents({ sdkInfos, title }: TabContentProps) {
             <p>Released: {sdkInfo.dateReleased}</p>
             <p className="">Release Notes:</p>
             <div dangerouslySetInnerHTML={{ __html: sdkInfo.description }} />
-            <p>Installation: </p>
-            <div
-              dangerouslySetInnerHTML={{ __html: sdkInfo.installationSnippet }}
-            />
-            <a
+            {sdkInfo.installationSnippet.length > 0 && <>
+              <p>Installation: </p>
+              <div
+                dangerouslySetInnerHTML={{ __html: sdkInfo.installationSnippet }}
+              />
+            </>
+            }
+            {sdkInfo.apiReferenceDocsURL && <a
               role="button"
               style={{ color: "white", textDecoration: "none" }}
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-white"
@@ -197,6 +207,7 @@ function TabContents({ sdkInfos, title }: TabContentProps) {
             >
               API Reference URL
             </a>
+            }
           </div>
         );
       })}
@@ -258,7 +269,7 @@ export default function Changelog() {
             <TabContents title="Rust" sdkInfos={frameworks["rustsdk"]} />
           </TabItem>
           <TabItem value="bigpeer">
-            <div dangerouslySetInnerHTML={{ __html: markdownIt().render(bigpeer['description']) }}></div>
+            <TabContents title="Big Peer" sdkInfos={frameworks["bigpeer"]} />
           </TabItem>
         </Tabs>
       </div>
