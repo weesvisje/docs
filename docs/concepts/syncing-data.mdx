@@ -7,17 +7,22 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SnippetGroup from '@site/src/components/SnippetGroup';
 
-Ditto's sync system is query-based, which means, that by default the SDK will
-not sync data with other devices. Instead, the app creates query-based
-observations that define which data it wants to sync. When the device is
-observing a query, then other devices will share data matching that query
-with it.
+By default, Ditto will not sync data with other devices.  When the device is
+observing a query, it requests to syncronize data that matches the query from
+other devices in the mesh network. 
+
+In other words, when a live query is created, Ditto's sync system
+**pulls** data from other devices. There is no way to "push" data through the
+API explicitly. Devices select data they are interested in through the query
+system and then synchronize with the mesh network based on that query.
 
 ![Query-based Subscriptions](syncing_data_1.jpeg)
 
 ## Sync
 
-To enable Ditto to sync data, you'll need to call `ditto.tryStartSync()`. Preferably, you should call `tryStartSync()` early on in your application's life cycle like in your `AppDelegate.application(_:didFinishLaunchingWithOptions:)` or `Application.onCreate` methods. Your application only needs to call this function once.
+To enable Ditto to sync data, you'll need to call `ditto.tryStartSync()`. 
+
+Preferably, you should call `tryStartSync()` early on in your application's life cycle like in your `AppDelegate.application(_:didFinishLaunchingWithOptions:)` or `Application.onCreate` methods. Your application only needs to call this function once.
 
 <SnippetGroup
   name='sync-basic' 
@@ -27,6 +32,11 @@ To enable Ditto to sync data, you'll need to call `ditto.tryStartSync()`. Prefer
 
 Create a query with `.observe` to get notified when data changes. [Learn more about how to create queries](./querying)
 
+:::caution
+If the `liveQuery` object is deallocated the live query will stop. For long
+running queries, store them in an object.
+:::
+
 <SnippetGroup name="sync-observe" />
 
 
@@ -35,8 +45,8 @@ Create a query with `.observe` to get notified when data changes. [Learn more ab
 * The callback will get called with both local and remote changes that fit the query. 
 * The callback will rerun for each sync or write transaction.
 * You can create as many `LiveQuery` objects as you want.
-* The return value is a `liveQuery` object. If the `liveQuery` object is deallocated the live query will stop.
 * To manually stop the `liveQuery`, set it either to `null` or call `liveQuery.stop()`
+
 
 
 ## Subscribe
