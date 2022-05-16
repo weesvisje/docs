@@ -652,6 +652,56 @@ document.
 
 ::::
 
+#### Distinct Value Document Query: `/api/v1/documents/<collection>/distinct_values`
+
+- POST - Query for the distinct values in a collection. Returns a single document containing the paths and their distinct values.  Paths are specified as json arrays of strings. This query expects a body of json in the following format:
+  ```
+  {
+    "filter": "true"
+    "paths": [
+      "widgets",
+      "nested.device_id",
+      "nested.tags[*]",
+      "nested",
+      "nested.tags"
+    ]
+  }
+  ```
+  
+  
+  Parameters
+
+  - filter - The query used to select documents.
+  - paths (list) - A list of DittoQl paths to get distinct values for. See Supported Paths section below.
+  - timeout_millis (number, optional) - the timeout, in milliseconds
+
+  Supported paths
+
+  - Field access. Eg. `fieldA`, `fieldA.fieldB`.
+  - Array projection. Eg. `fieldA.arrayB[*]`, `fieldA.arrayB[*].fieldC`.
+  - No other access methods are supported.
+
+  Response
+
+  The response will contain an object where the keys are the requested paths (same format as the request) and their values are the unique values at the respective paths.
+  Note that only primitive values are returned distinctly. Any arrays or objects present at the specified path will appear in the result as an empty array `{}` or object `{}` respectively.
+
+  ```
+  HTTP/1.1 200 OK
+  Content-Type: application/json
+  X-DITTO-TXN-ID: 7
+  {
+    "item": {
+      "widgets": [1, 2, 3],
+      "nested.device_id": ["device1", "device2"],
+      "nested.tags[*]": ["tag1", "tag2"],
+      "nested": [{}],
+      "nested.tags": [[]],
+    }
+  }
+
+  ```
+
 ### TimeSeries 
 
 #### URL Template: `/api/v1/timeseries`
@@ -777,7 +827,7 @@ Example JSON
 
 #### URL Template: `/api/v2/timeseries/<timeseries_id>/distinct_values`
 
-- GET - Query for the distinct values in a timeseries, within a range of events in a TimeSeries using a half-open interval `[start, end)` (optional). Returns a single document containing the paths and their distinct values.  Paths are specified as json arrays of strings. This query expects a body of json in the following format:
+- POST - Query for the distinct values in a timeseries, within a range of events in a TimeSeries using a half-open interval `[start, end)` (optional). Returns a single document containing the paths and their distinct values.  Paths are specified as json arrays of strings. This query expects a body of json in the following format:
 
   ```
   {
