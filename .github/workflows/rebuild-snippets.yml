@@ -21,8 +21,11 @@ jobs:
           repository: getditto/ditto
           token: ${{ secrets.GH_PAT }} 
           path: ditto
+      - name: wget
+        uses: wei/wget@v1
+        with:
+          args: -qO- https://software.ditto.live/releases/snippets.json > snippets.json
       - run: npm i
-      - run: node ./bin/generate-snippets ./ditto snippets.json
       - run: git add snippets.json
       - run: git commit -m "Update snippets from latest ditto release" 
       - uses: repo-sync/pull-request@v2

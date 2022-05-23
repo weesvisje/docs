@@ -23,6 +23,26 @@ module.exports = {
     ]
   ],
   themeConfig: {
+    algolia: {
+      // The application ID provided by Algolia
+      appId: 'F25GUUSPFJ',
+
+      // Public API key: it is safe to commit it
+      apiKey: '2dc4c171eb7e798d53ab14599841cf4e',
+
+      indexName: 'docs',
+
+      // Optional: see doc section below
+      contextualSearch: true,
+
+      // Optional: Algolia search parameters
+      searchParameters: {},
+
+      // Optional: path for search page that enabled by default (`false` to disable it)
+      searchPagePath: 'search',
+
+      //... other Algolia params
+    },
     autoCollapseSidebarCategories: true,
     colorMode: {
       defaultMode: 'light',
