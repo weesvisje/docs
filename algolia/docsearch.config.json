@@ -1,0 +1,13 @@
+{
+    "index_name": "docs",
+    "renderJavaScript": true,
+    "start_urls": ["https://docs.ditto.live"],
+    "selectors": {
+      "lvl0": ".theme-doc-markdown header h1",
+      "lvl1": ".theme-doc-markdown h2",
+      "lvl2": ".theme-doc-markdown h3",
+      "lvl3": ".theme-doc-markdown h4",
+      "lvl4": ".theme-doc-markdown h5",
+      "text": ".theme-doc-markdown p,.theme-doc-markdown ol"
+    }
+  }
