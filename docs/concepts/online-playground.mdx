@@ -1,5 +1,5 @@
 ---
-title: 'Big Peer'
+title: 'Online Playground'
 sidebar_position: 10
 ---
 
@@ -18,8 +18,6 @@ import Lottie from "@site/src/components/Lottie"
   
 </div>
 
-## Online Playground
-
 To get started, you can syncronize with the Ditto Big Peer using
 the **Online Playground** . These apps can sync with the Big Peer if
 they have the same `appID`.  Online Playground applications have __no
@@ -30,6 +28,11 @@ about how to use Ditto's APIs without worrying about security architecture.
 * Apps with Online Playground can read and write to all collections.
 * Apps with Online Playground will connect to other peer devices or a Big Peer app with __same appID__.
 
+:::info
+Devices using Online Playground need to connect to the Internet at least once
+before syncronizing with other peers. This is required so devices can get a
+valid certificate before going offline.  
+:::
 
 <SnippetGroup name="online-playground" />
 
