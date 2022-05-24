@@ -22,3 +22,5 @@ yarn-error.log*
 ditto-changelog.json
 
 Adobe After Effects Auto-Save
+
+algolia/.env

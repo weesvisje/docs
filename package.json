@@ -17,7 +17,7 @@
     "postinstall": "npm run download-changelog",
     "audit:fix": "npx yarn-audit-fix",
     "download-snippets": "curl https://software.ditto.live/releases/snippets.json > snippets.json",
-    "search-indexes": "cd algolia && docker run -it --env-file=.env -e 'CONFIG=$(cat docsearch.config.json | jq -r tostring)' algolia/docsearch-scraper && cd .." 
+    "search-indexes": "cd algolia && ./run.sh && cd .."
   },
   "dependencies": {
     "@docusaurus/core": "=2.0.0-beta.9",
