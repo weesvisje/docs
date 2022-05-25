@@ -629,7 +629,7 @@ curl --verbose -X POST --data '{
          }
       }]
    }
-}'  -H 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAAew==' -H 'Content-Type: application/json' -H 'Accept: application/json' http://${APP_DOMAIN}/api/v1/store
+}'  -H 'X-DITTO-CLIENT-ID: AAAAAAAAAAAAAAAAAAAAew==' -H 'Content-Type: application/json' -H 'Accept: application/json' http://${APP_DOMAIN}/api/v1/store
 ```
 
 The resulting response will be:
@@ -704,13 +704,21 @@ document.
 
 ### TimeSeries 
 
+The event expiration can be specified in 3 ways, in order of preference:
+
+* `_expiration` field in the event body.
+* `X-EVENT-TTL-SECONDS` in the HTTP header.
+* A document in the `__timeseries` collection with `_id` equal to the timeseries name and a `default_ttl_seconds` field with a numeric value.
+
+An `_expiration` field will be added automatically event to the event if it takes the expiration from the HTTP header or `__timeseries` collection.
+
 #### URL Template: `/api/v1/timeseries`
 
 _Reserved for future use_
 
 #### URL Template: `/api/v1/timeseries/<timeseries_id>/events`
 
-- POST - Batch Upload Events to a specific time series. Unless required, we won't use the `X-HYDRA-ENSURE-INSERT` header unless we have reason to believe another client could by issuing a concurrent delete request. Note that `_time` is provided as a RFC3339 formatted string in this JSON API. See `Event` JSON Schema below for details of the required fields.
+- POST - Batch Upload Events to a specific time series. Unless required, we won't use the `X-DITTO-ENSURE-INSERT` header unless we have reason to believe another client could by issuing a concurrent delete request. Note that `_time` is provided as a RFC3339 formatted string in this JSON API. See `Event` JSON Schema below for details of the required fields.
 
   In the event the TimeSeries `my-time-series` does not exist, the time series will be created provided the client's JWT contains a write permission with a regex matching `my-time-series`.
 
