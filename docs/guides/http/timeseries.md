@@ -40,6 +40,16 @@ Batch Upload Events to a specific time series. Unless required, we won't use the
   {"txn_id": 10}
   ```
 
+#### TTL
+
+An event can be given a 'TTL' or 'time to live,' after which the event will expire and be deleted from the database. The event expiration can be specified in 3 ways, in order of preference:
+
+* `_expiration` field in the event body.
+* `X-EVENT-TTL-SECONDS` in the HTTP header.
+* A document in the `__timeseries` collection with `_id` equal to the timeseries name and a `default_ttl_seconds` field with a numeric value.
+
+An `_expiration` field will be added automatically event to the event if it takes the expiration from the HTTP header or `__timeseries` collection.
+
 ### ```GET```
 
 Query a range of events in a TimeSeries using a half-open interval `[start, end)`. Returns a stream of events in chronological order.
