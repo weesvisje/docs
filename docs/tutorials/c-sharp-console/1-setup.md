@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 The following guide will show you how to build a Task list application with a standard C# Console App Starter Project. This tutorial assumes that you have some familiarity with starting up a new Visual Studio Project.
 
-> Note: the C# SDK currently does not have the ability to sync over AWDL, LAN, or BLE communication just yet. We are working on this functionality. If this is very important to you please contact us at contact@ditto.live.
+> Note: the C# SDK currently does not have the ability to sync over AWDL, LAN, or BLE communication just yet. We are working on this functionality. If this is very important to you please [contact us](mailto:contact@ditto.live).
 
 ## 1-1 Create a new Console Project
 

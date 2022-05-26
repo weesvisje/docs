@@ -8,7 +8,7 @@ The document change stream is a coarse user-consumable Kafka queue that allows y
 
 :::info
 
-The Kafka settings are only enabled if your Organization is on a dedicated cluster. Contact us if you are interested in this feature.
+The Kafka settings are only enabled if your Organization is on a dedicated cluster. [Contact us](mailto:contact@ditto.live) if you are interested in this feature.
 
 :::
 
