@@ -71,7 +71,8 @@ module.exports = {
         },
         {
           type: "ref",
-          id: "guides/http"
+          label: "HTTP",
+          id: "guides/http/overview"
         },
       ],
     },
