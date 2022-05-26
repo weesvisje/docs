@@ -17,7 +17,7 @@ In the event of a failure of the consumer stream fails to keep up with the incom
 }
 ```
 
-This should signal you to call our HTTP RPC API endpoint to query using the transaction_id to catch your system up. Use the `txn_id` as part of the `X-HYDRA-TXN-ID`. 
+This should signal you to call our HTTP RPC API endpoint to query using the transaction_id to catch your system up. Use the `txn_id` as part of the `X-DITTO-TXN-ID`. 
 
 ## MirrorMaker2
 

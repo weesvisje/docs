@@ -459,7 +459,7 @@ authenticator->login_with_token("123", "my-auth", [](std::unique_ptr<DittoError>
 
   ```bash
   curl -X DELETE 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/<doc_id>' \
-    --header 'X-HYDRA-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+    --header 'X-DITTO-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
     --header 'Content-Type: application/json' 
   ```
 
