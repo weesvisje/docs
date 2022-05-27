@@ -8,6 +8,15 @@ import TabItem from '@theme/TabItem';
 import SnippetGroup from '@site/src/components/SnippetGroup';
 import Lottie from "@site/src/components/Lottie"
 
+:::caution
+__DO NOT__ ship an application to production with Online Playground. We call
+this a Playground because it's meant for getting started quickly without having to implement
+security. We recommend that you use Online Playground in a development app (e.g., *myappname-dev*).
+
+For using the Big Peer with an OAuth client suitable for production, use 
+[Online With Authentication](/security/online-with-authentication/overview).
+:::
+
 <div style={{display: 'flex'}}>
 <Lottie path="/animations/intro/data.json" style={{maxWidth:'400px'}} />
 
@@ -21,30 +30,23 @@ import Lottie from "@site/src/components/Lottie"
 To get started, you can syncronize with the Ditto Big Peer using
 the **Online Playground** . These apps can sync with the Big Peer if
 they have the same `appID`.  Online Playground applications have __no
-restrictions to data__ and each peer is
-randomly assigned a unique `userID`. Online playgrounds are perfect for learning
+restrictions to data__. Online playgrounds are perfect for learning
 about how to use Ditto's APIs without worrying about security architecture.
 
 * Apps with Online Playground can read and write to all collections.
 * Apps with Online Playground will connect to other peer devices or a Big Peer app with __same appID__.
 
-:::info
-Devices using Online Playground need to connect to the Internet at least once
-before syncronizing with other peers. This is required so devices can get a
-valid certificate before going offline.  
-:::
+### Going offline
+
+Online Playground devices must connect to the internet first
+*before* going offline.  Online Playground certificates will expire after **15 minutes**.
+That means that any device can be offline for only 15 minutes until that device
+must re-connect to the Internet and refresh their certificate. Use
+[OnlineWithAuthentication](/guides/authentication/intro) to specify a longer
+expiration time. 
 
 <SnippetGroup name="online-playground" />
 
-
-:::caution
-__DO NOT__ ship an application to production with Online Playground. We call
-this a Playground because it's meant for getting started quickly without having to implement
-security. 
-
-For using the Big Peer with an OAuth client suitable for production, use 
-[Online With Authentication](/security/online-with-authentication/overview).
-:::
 
 ## Get your appID
 
@@ -52,3 +54,11 @@ To find your **appID**, go to your app in the Ditto portal and find the __Authen
 
 ![Online Playground enabled in the Ditto Portal](./portal-playground-setting.png)
 
+
+## How it works
+
+Online Playground requires that devices must first connect to the Big Peer
+to create [a X.509 certificate](/how-it-works/certificate-security). This
+certificate ensures that devices are allowed to syncronize with each other
+either offline or online. Online Playground allows anyone to syncronize until
+the certificate expires.
