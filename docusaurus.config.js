@@ -80,7 +80,7 @@ module.exports = {
         },
         {
           href: "https://portal.ditto.live",
-          label: "Get Started",
+          label: "Login",
           position: "right",
         }
       ],
