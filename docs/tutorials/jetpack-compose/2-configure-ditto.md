@@ -98,10 +98,12 @@ The app will show a `Toast` error if `tryStartSync` encounters a mistake. Don't 
 
 ```kotlin title="MainActivity" {5-18}
 class MainActivity : ComponentActivity() {
+
+    val ditto = TasksApplication.ditto
+
     override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
 
-      val ditto = TasksApplication.ditto
       try {
           ditto!!.tryStartSync()
       } catch (e: DittoError) {
@@ -119,6 +121,23 @@ class MainActivity : ComponentActivity() {
       setContent {
           // ...
       }
+    }
+
+    fun checkPermissions() {
+        val missing = DittoSyncPermissions(this).missingPermissions()
+        if (missing.isNotEmpty()) {
+            this.requestPermissions(missing, 0)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<out String>,
+    grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        // Regardless of the outcome, tell Ditto that permissions maybe changed
+        ditto?.refreshPermissions()
     }
 }
 ```
