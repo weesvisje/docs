@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[1136],{64887:function(e){e.exports=JSON.parse('{"pluginId":"raspberrypi","version":"current","label":"Next","banner":null,"badge":false,"className":"docs-version-current","isLast":true,"docsSidebars":{"docs":[{"type":"link","label":"Installation","href":"/pr-preview/pr-218/raspberrypi/installation"}]}}')}}]);
