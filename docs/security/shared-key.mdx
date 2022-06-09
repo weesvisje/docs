@@ -39,6 +39,9 @@ command. At time of writing this will not work on Macs.
 openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -outform pem | openssl pkcs8 -topk8 -nocrypt -outform der | base64 -w 0
 ```
 
+:::info
+The SharedKey identity requires an [offline license token](/concepts/offline-license), which can be requested in the Ditto Portal.
+:::
 
 <SnippetGroup name='shared-key' />
 
