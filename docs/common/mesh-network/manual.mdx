@@ -1,6 +1,6 @@
 ---
 title: 'Manual Configuration'
-sidebar_position: 13
+sidebar_position: 99
 ---
 
 import Tabs from '@theme/Tabs';
@@ -12,6 +12,14 @@ There are instances where you may want to configure additional connections confi
 :::info
 If you do not attempt to configure a `DittoTransportConfig` but call `ditto.TryStartSync()`, your Ditto instance will automatically attempt to connect to other ditto instances on the Local Area Network. However, if you supply a `DittoTransportConfig`, this will not automatically be enabled. You'll need to remember to enable local area network peer to peer connnections with `EnableAllPeerToPeer()`.
 :::
+
+## Observing Peers 
+
+There could be a situation where you need to know the device names of peers you
+are connected to. You can manually set the device name of those peers and
+observe those peers in the network.
+
+<SnippetGroup name="device-name" />
 
 ## Connecting to a Remote Ditto Peer
 

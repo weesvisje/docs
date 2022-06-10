@@ -83,3 +83,21 @@ Instead of `.observe`, call `.observeLocal` like so:
 <SnippetGroup name="sync-observe-local" />
 
 Note: if your Ditto instance has not called `tryStartSync`, there will be no difference between `.observe` and `.observeLocal`.
+
+
+## Observing Peers 
+
+There could be a situation where you need to know the device names of peers you
+are connected to. You can manually set the device name of those peers and
+observe those peers in the network.
+
+<SnippetGroup name="device-name" />
+
+Because ditto is a pull-based sync system, each device observes changes that
+other devices have made. If you want to observe changes made by a particular
+device, include the device name as a field in the document and query for that field in
+your [ditto live query](./querying)
+
+```
+"status == 'open' && edited_by == 'deviceC'"
+```
