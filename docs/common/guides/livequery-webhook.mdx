@@ -1,0 +1,115 @@
+---
+title: 'Webhooks'
+sidebar_position: 1
+---
+
+A Live Query Webhook allows you to respond to changes to data in real-time. It
+is one way to implement CDC ([Change Data
+Capture](https://en.wikipedia.org/wiki/Change_data_capture)) and is free for all
+Ditto apps. For a more robust method, contact us to upgrade your organization for access to
+[Kafka](../guides/kafka/intro).
+
+## Creating a LiveQuery Webhook
+
+First, you'll need a publicly accessible HTTPS route deployed on a domain of
+your choice. For testing, you can use a service like
+[Glitch](http://glitch.com). Your webhook will receive an HTTP POST request from the Ditto Big Peer.
+
+## Configure the webhook
+
+Login to the [Ditto Portal](https://portal.ditto.live/) and choose your app. 
+
+**My App > Live Query Settings > Live Query Webhooks**
+
+![Screenshot of configured live query webhook](/img/livequery.png)
+
+Type the name of the collection as well as the [query](../concepts/querying) you
+want to monitor. You can use `true` to be notified of all changes to documents
+within that collection.
+
+## New document created
+
+When a new document is created, `method` is `upsert` and the property `change.oldValue` will always be null.
+
+:::info
+Please take note of the `txnID` field which describes a timestamp of when the big peer internally replicated data modifications from small peers. This number is an always increasing value.
+:::
+
+```json
+{
+  "txnId": 552789,
+  "type": "documentChanged",
+  "collection": "people",
+  "change": {
+    "method": "upsert",
+    "oldValue": null,
+    "newValue": {
+      "_id": "6213e9c90012e4af0017cb9f",
+      "date": 1645472201,
+      "name": "Susan",
+      "age": 31
+    }
+  }
+}
+```
+
+## Update
+
+When a document was updated, `method` is `upsert`, `change.oldValue` will contain the old version of the document and `change.newValue` contains the full document after the upsert was complete. `newValue` also includes all properties that did not change as a result of this operation. For example, even though we do not change "age" in the following example, we still see `age` in the resulting Kafka stream. 
+
+After updating the document `6213e9c90012e4af0017cb9f` with the properties:
+```
+{
+  ownedCars: 0, 
+  friends: [], 
+  name: "Frank"
+}
+```
+
+We will see the following JSON event stream through the Kafka console:
+
+```json
+{
+  "txnId": 553358,
+  "type": "documentChanged",
+  "collection": "people",
+  "change": {
+    "method": "upsert",
+    "oldValue": {
+      "_id": "6213e9c90012e4af0017cb9f",
+      "date": 1645472312,
+      "name": "Susan",
+      "age": 31
+    },
+    "newValue": {
+      "_id": "6213e9c90012e4af0017cb9f",
+      "date": 1645472312,
+      "name": "Frank",
+      "age": 31,
+      "ownedCars": 0,
+      "friends": []
+    }
+  }
+}
+```
+
+## Remove
+
+When a document was removed, `method` is `remove`, and the property `change.value` contains the full document at the time it was removed. 
+
+```json
+{
+  "txnId": 701251,
+  "type": "documentChanged",
+  "collection": "people",
+  "change": {
+    "method": "remove",
+    "value": {
+      "_id": "6213e9c90012e4af0017cb9f",
+      "date": 1645468039,
+      "name": "Susan",
+      "age": 31 
+    }
+  }
+}
+```
