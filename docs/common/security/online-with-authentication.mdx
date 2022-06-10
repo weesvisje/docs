@@ -49,7 +49,6 @@ sequenceDiagram
     end
 ```
 
-
 ## Example of authentication with Facebook and an iOS app with Ditto
 
 Let's say you're using something like Facebook authentication to identity users in __Your App__.
@@ -69,6 +68,7 @@ sequenceDiagram
     Ditto Big Peer->>Your App: Ditto Credentials
     Your App->Ditto Big Peer: Ditto can begin sync with Ditto Big Peer
 ```
+
 
 
 ## Creating your client
@@ -365,9 +365,11 @@ ditto.try_start_sync()?;
 
 ## Login
 
-Login takes two paramters: the first is `token`, which should be a JSON web
-token (JWT). The second paramter is the name of the provider which you must add
-through the Ditto portal.
+Login takes two paramters: the first is `token`. The token can be any string
+value. Most auth services use a [JWT (JSON Web Token)](https://jwt.io/), but you
+can send any token you want from the client.  For example, during testing you
+may want to create a secret code for development
+use. This string will be sent in a POST request to the HTTP route.
 
 ![Sample Authentication Webhook Endpoint in the Portal](./sample-authentication-webhook-endpoint.png)
 
