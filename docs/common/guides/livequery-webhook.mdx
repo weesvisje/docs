@@ -55,7 +55,7 @@ Please take note of the `txnID` field which describes a timestamp of when the bi
 
 ## Update
 
-When a document was updated, `method` is `upsert`, `change.oldValue` will contain the old version of the document and `change.newValue` contains the full document after the upsert was complete. `newValue` also includes all properties that did not change as a result of this operation. For example, even though we do not change "age" in the following example, we still see `age` in the resulting Kafka stream. 
+When a document was updated, `method` is `upsert`, `change.oldValue` will contain the old version of the document and `change.newValue` contains the full document after the upsert was complete. `newValue` also includes all properties that did not change as a result of this operation. For example, even though we do not change "age" in the following example, we still see `age`. 
 
 After updating the document `6213e9c90012e4af0017cb9f` with the properties:
 ```
