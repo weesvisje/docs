@@ -1,6 +1,6 @@
 ---
 title: 'Shared Key'
-sidebar_position: 5 
+sidebar_position: 4 
 ---
 
 import Tabs from '@theme/Tabs';
@@ -14,7 +14,7 @@ device knows the same secret key, and uses this to validate incoming
 connections. The benefit of this approach is that distinct certificates do not
 have to be distributed to every device, simplifying the deployment.
 
-Small Peers in this mode use a `SharedKey` [identity type](../security/identities). The secret key must be provided as a
+Small Peers in this mode use a `SharedKey` [identity type](../mesh-network/identities). The secret key must be provided as a
 String when initializing the `DittoIdentity` on each peer. This key should be securely and randomly generated and Ditto
 expects it to be in a particular format.
 
@@ -40,7 +40,7 @@ openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -outform pem | op
 ```
 
 :::info
-The SharedKey identity requires an [offline license token](/concepts/offline-license), which can be requested in the Ditto Portal.
+The SharedKey identity requires an [offline license token](../mesh-network/offline-license), which can be requested in the Ditto Portal.
 :::
 
 <SnippetGroup name='shared-key' />
