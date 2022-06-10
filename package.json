@@ -26,6 +26,10 @@
     "@heroicons/react": "^1.0.4",
     "@lottiefiles/react-lottie-player": "^3.4.1",
     "@mdx-js/react": "^1.6.21",
+    "@styled-icons/boxicons-logos": "^10.38.0",
+    "@styled-icons/fa-brands": "^10.38.0",
+    "@styled-icons/material": "^10.34.0",
+    "@styled-icons/simple-icons": "^10.45.0",
     "@svgr/webpack": "^5.5.0",
     "axios": "^0.21.4",
     "clsx": "^1.1.1",
@@ -43,6 +47,7 @@
     "react-force-graph-2d": "^1.23.8",
     "react-sizeme": "^3.0.2",
     "semver": "^7.3.5",
+    "styled-components": "^5.3.5",
     "ts-dedent": "^2.2.0",
     "twin.macro": "^2.7.0",
     "url-loader": "^4.1.1"

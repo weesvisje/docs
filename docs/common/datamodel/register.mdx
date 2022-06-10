@@ -1,0 +1,95 @@
+---
+title: 'Register'
+sidebar_position: 1
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SnippetGroup from '@site/src/components/SnippetGroup';
+
+Ditto documents support all primitive JSON compatible types like `string`, `boolean`,
+`number`, etc.
+
+All primitive types in Ditto are internally represented as so
+called [Registers](../how-it-works/crdt) with *"Last Writer Wins"* semantics.
+
+When a device updates a document,
+the last write to the document will win. A timestamp is attached to each
+update, and updates with later timestamps always win. To learn more about how
+this works, read about Ditto's [Hybrid Logical
+Clock](../how-it-works/crdt#hybrid-logical-clock).
+
+<table class="table-auto">
+  <tbody>
+    <tr>
+      <th>Data Type</th>
+      <th>Allowed Values</th>
+    </tr>
+    <tr>
+      <td>Boolean</td>
+      <td>Either <code>true</code> or <code>false</code>.</td>
+    </tr>
+    <tr>
+      <td>String</td>
+      <td>A utf-8 encodable string value.</td>
+    </tr>
+    <tr>
+      <td>Unsigned integer</td>
+      <td>An unsigned 64-bit integer value.</td>
+    </tr>
+    <tr>
+      <td>Signed integer</td>
+      <td>A signed 64-bit integer value.</td>
+    </tr>
+    <tr>
+      <td>Float</td>
+      <td>A 64-bit floating point value.</td>
+    </tr>
+    <tr>
+      <td>Array</td>
+      <td>
+        Arrays are an ordered list of values. Arrays can contain all primitive
+        values as well as nested collection types like other Arrays or Maps.
+      </td>
+    </tr>
+    <tr>
+      <td>Map</td>
+      <td>
+        Sometimes referred to as a dictionary, a Map represents a nested object
+        within the overall document. Comparing values at the map level for
+        equality first checks that each key and each value match.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>null</code>
+      </td>
+      <td>
+        This represents an absence of a value.
+      </td>
+    </tr>
+  </tbody>
+
+</table>
+
+<SnippetGroup
+  name='upsert-datatypes'
+/>
+
+## How it works
+
+Ditto uses a temporal timestamp called an [HLC](../how-it-works/crdt#hybrid-logical-clock) (hybrid logical clock) to
+associate each register value with a time. When two registers are merged the
+value with the highest timestamp wins.
+
+For example, one attendant updates a customer's seat number to '6', and another to seat
+'9'. When the two conflicting versions merge, the edit with the highest timestamp wins.
+
+In that case that two updates occur at _exactly_ the same time, we use the unique ID of
+the Ditto SDK to tie-break, preferring the highest ID.
+
+In the case of a number, like a seat number, a last-write-wins register is
+a good choice. Some numbers represent quantities over time, and that is when
+a [Counter](../datamodel/counter) is useful.
+
+Read more about [how Ditto's CRDT works](../how-it-works/crdt).

@@ -1,4 +1,6 @@
 import React from 'react';
+import useUserPreferencesContext from "@theme/hooks/useUserPreferencesContext";
+import getLanguagesForPlatform from "@site/src/lib/getLanguagesForPlatform";
 import snippets from '../../snippets.json';
 import CodeBlock from '@theme/CodeBlock';
 import Tabs from '../theme/Tabs';
@@ -24,26 +26,21 @@ export function Snippet({name, language, label}) {
 
 
 export default function SnippetGroup({children, name}) {
-  let languages = [
-    {label: 'JavaScript', value: 'javascript'},
-    {label: 'Swift', value: 'swift'},
-    {label: 'Objective-C', value: 'objc'},
-    {label: 'Kotlin', value: 'kotlin'},
-    {label: 'Java', value: 'java'},
-    {label: 'C#', value: 'csharp'},
-    {label: 'C++', value: 'cpp'},
-    {label: 'Rust', value: 'rust'},
-    {label: 'HTTP', value: 'bash'}
-  ]
+  const { tabGroupChoices, setTabGroupChoices } = useUserPreferencesContext();
+  const platform = tabGroupChoices['platform']
+  const languages = getLanguagesForPlatform(platform)
+  const lang = languages[0]
+
 
   return <Tabs
+    platform={platform}
     groupId="programming-language"
-    defaultValue="javascript"
+    defaultValue={lang ? lang.value : 'swift'}
     values={languages}
   >
     {languages.map(language => {
       return (
-        <TabItem value={language.value}>
+        <TabItem key={`${language.value}-${name}`} value={language.value}>
           <Snippet name={name} language={language.value} label={language.label} />
         </TabItem>
       )

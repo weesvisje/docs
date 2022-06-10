@@ -9,11 +9,7 @@
  Create as many sidebars as you want.
  */
 
-const downloadedChangelog = require("./ditto-changelog.json");
+const downloadedChangelog = require("../../ditto-changelog.json");
+const common = require('./common/sidebar.js')
 
-module.exports = {
-  // By default, Docusaurus generates a sidebar from the docs folder structure
-  docs: [
-    "intro",
-  ]
-};
+module.exports = common({api: downloadedChangelog.android.Ditto.latest.api_reference_docs_url});

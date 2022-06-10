@@ -3,6 +3,23 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 const path = require("path");
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
+
+const languages = [
+   'csharp', "http", "javascript", "android", "ios", "rust", "cpp", "raspberrypi"
+]
+
+const plugins = languages.map(id => [
+  '@docusaurus/plugin-content-docs',
+  {
+    path: `docs/${id}`,
+    routeBasePath: id,
+    id: id,
+    sidebarPath: require.resolve(`./docs/${id}/sidebar.js`),
+    sidebarCollapsible: true,
+    editUrl: 'https://github.com/getditto/docs/tree/master',
+  },
+])
+
 module.exports = {
   title: "Ditto",
   tagline: "Sync even without the internet",
@@ -14,13 +31,14 @@ module.exports = {
   organizationName: "getditto", // Usually your GitHub org/user name.
   trailingSlash: undefined,
   projectName: "docs", // Usually your repo name.
-  plugins: [path.resolve(__dirname, "plugins/postcss-tailwindcss-loader"),
+  plugins: [
+    path.resolve(__dirname, "plugins/postcss-tailwindcss-loader"),
     [
       require.resolve('docusaurus-gtm-plugin'),
       {
         id: 'GTM-PV7QFWF',
       }
-    ]
+    ], ...plugins
   ],
   themeConfig: {
     algolia: {
@@ -50,7 +68,7 @@ module.exports = {
       respectPrefersColorScheme: false,
     },
     prism: {
-      additionalLanguages: ['objectivec', 'java', 'csharp'],
+      additionalLanguages: ['objectivec', 'java', 'csharp', 'bash'],
       theme: require('prism-react-renderer/themes/vsDark'),
     },
     gtag: {
@@ -65,24 +83,32 @@ module.exports = {
         src: "img/logo.png",
       },
       items: [
-        { href: "/", label: "Home", position: "left" },
+        { href: "/", label: "Documentation", position: "left" },
         {
-          label: "Sample Apps",
+          label: "Example Apps",
           href: "https://github.com/getditto/samples",
         },
         {
-          label: "GitHub Issues",
-          href: "https://github.com/getditto/docs/issues",
-        },
-        {
-          label: "Roadmap",
-          href: "https://github.com/getditto/docs/discussions/categories/roadmap-and-ideas",
+          label: "Open Source",
+          href: "https://github.com/getditto",
         },
         {
           href: "https://portal.ditto.live",
           label: "Login",
           position: "right",
-        }
+        },
+        {
+          label: "Roadmap", 
+          href: "https://github.com/getditto/docs/discussions/categories/roadmap-and-ideas"
+        },
+        {
+          href: "/changelog",
+          label: "Changelog"
+        },
+        {
+          href: "/faq",
+          label: "FAQ"
+        },
       ],
     },
     footer: {
@@ -92,7 +118,7 @@ module.exports = {
           title: "Docs",
           items: [
             {
-              label: "Quick Start",
+              label: "Documentation",
               to: "/",
             },
             {
@@ -100,12 +126,16 @@ module.exports = {
               href: "https://www.ditto.live/",
             },
             {
-              label: "Samples Apps",
+              label: "Example Apps",
               href: "https://github.com/getditto/samples",
             },
             {
-              label: "Changelog",
               href: "/changelog",
+              label: "Changelog"
+            },
+            {
+              href: "https://portal.ditto.live",
+              label: "Login"
             },
           ],
         },
@@ -117,8 +147,12 @@ module.exports = {
               href: "https://github.com/getditto/docs/discussions",
             },
             {
-              label: "GitHub Issues",
-              href: "https://github.com/getditto/docs/issues",
+              label: "Roadmap", 
+              href: "https://github.com/getditto/docs/discussions/categories/roadmap-and-ideas"
+            },
+            {
+              label: "Open Source",
+              href: "https://github.com/getditto/",
             },
             {
               label: "Stack Overflow",
@@ -175,8 +209,10 @@ module.exports = {
               },
             ],
           ],
+          path: 'docs/common',
+          id: 'common',
           routeBasePath: "/",
-          sidebarPath: require.resolve("./sidebars.js"),
+          sidebarPath: false,
           // Please change this to your repo.
           editUrl: "https://github.com/getditto/docs/edit/master/",
         },

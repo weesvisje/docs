@@ -1,0 +1,29 @@
+---
+title: 'Installation'
+---
+
+import { Snippet } from '@site/src/components/SnippetGroup';
+import { InstallCode } from "@site/src/components/Changelog.tsx"
+
+Ditto's JavaScript SDK can run either in the browser, NodeJS, or Electron
+environments. React Native support is currently under development. For more
+information about browser, NodeJS and Electron support [click
+here.](./supported-platforms)
+
+1. Add the JS package with either npm or yarn.
+
+<InstallCode framework="js" />
+
+```
+npm install --save @dittolive/ditto
+# or with yarn
+yarn add @dittolive/ditto
+```
+
+2. Import it like any other NPM package in your source and start using it:
+
+<Snippet name='online-playground' language='javascript' />
+
+:::info
+Need to run NodeJS on a Linux or Raspberry Pi? [Make sure to read this.](/installation/linux)
+:::

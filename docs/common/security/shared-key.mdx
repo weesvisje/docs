@@ -1,0 +1,47 @@
+---
+title: 'Shared Key'
+sidebar_position: 5 
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SnippetGroup from '@site/src/components/SnippetGroup';
+
+Ditto offers an intermediate level of security for applications where all users
+and devices are trusted. For example, this could be appropriate for an
+enterprise application run on centrally managed devices. In this mode, every
+device knows the same secret key, and uses this to validate incoming
+connections. The benefit of this approach is that distinct certificates do not
+have to be distributed to every device, simplifying the deployment.
+
+Small Peers in this mode use a `SharedKey` [identity type](../security/identities). The secret key must be provided as a
+String when initializing the `DittoIdentity` on each peer. This key should be securely and randomly generated and Ditto
+expects it to be in a particular format.
+
+The recommended way to generate a shared key is to download Ditto's open source cross-platform utility
+[`ditto-authtool`](https://github.com/getditto/authtool), which provides an easy command to generate new shared keys
+from a terminal or command prompt:
+
+```console
+./ditto-authtool generate-shared-key
+```
+
+or
+
+```console
+.\ditto-authtool.exe generate-shared-key
+```
+
+Alternatively, if you have a Linux machine running an up-to-date version of OpenSSL then you can use the following
+command. At time of writing this will not work on Macs.
+
+```console
+openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -outform pem | openssl pkcs8 -topk8 -nocrypt -outform der | base64 -w 0
+```
+
+:::info
+The SharedKey identity requires an [offline license token](/concepts/offline-license), which can be requested in the Ditto Portal.
+:::
+
+<SnippetGroup name='shared-key' />
+

@@ -1,0 +1,305 @@
+---
+title: 'Replicated Growable Array'
+sidebar_position: 3
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SnippetGroup from '@site/src/components/SnippetGroup';
+
+
+:::warning
+### You might want to use a Map instead
+Ditto is a distributed database. Distributed databases work really well with
+stable ids. Arrays are really challenging to use, because items are referenced
+by their index. Indexes can change, which means indexes are not stable
+identifiers. Two peers can see different values for the same index.
+
+If you're having trouble with duplicate data, you may want to use a [map](../datamodel/map) instead. 
+:::
+
+Arrays are an ordered list of values. Arrays can contain all primitive
+values as well as nested collection types like other Arrays or Maps.
+
+* Push - upserts a value on to the end of an array 
+* Pop - removes a value at the end of an array
+
+<SnippetGroup
+  name='array' 
+/>
+
+If two devices `push` this data, both devices will see `["Susan", "Susan"]`.
+
+## When do I use an array?
+
+
+### Text editing
+
+For example, if two users are editing the same text box at the same time (or
+concurrently), an array will automatically converge their edits into a single,
+cohesive list of characters.
+
+Device A:
+
+```js
+collection.upsert({
+  id: 'abc123',
+  text: ['i', ' ', 'l', 'o', 'v', 'e', ' ', 's', 'u', 's', 'h', 'i']
+})
+```
+
+Device B:
+
+```js
+collection.upsert({
+  id: 'abc123',
+  text: ['i', ' ', 'l', 'o', 'v', 'e', ' ', 's', 'u', 's', 'h', 'i']
+})
+```
+
+When these two devices synchronize, you will see the following document:
+
+```json
+{
+  "id": "abc123",
+  "text": "i love sushii love sushi"
+}
+```
+
+You'd expect this result from a collaborative text editor; if two users type
+into the same document textbox at the same time, you would want to preserve the
+intent of the user and render all typed characters. 
+
+For inserting characters and removing characters from an index in an array, see
+the API reference for your language. 
+
+### Immutable Logs
+
+:::caution
+If you're looking to create many documents to model a timeseries, do not
+use arrays. Instead, see the [Timeseries API](/guides/http).
+:::
+
+You can also use the array for recording a log of immutable items within a
+document. For example, you might want to use an array like this for reporting
+errors about a particular document that isn't relevant for other documents
+within a collection.
+
+
+Device A:
+
+```js
+collection.upsert({
+  id: 'abc123',
+  log: []
+})
+```
+
+You can use `push` to append new entries to the end of the list. This will be
+consistent for all devices. 
+
+Device A:
+
+```js
+collection.update(doc => {
+  doc.log.push({
+    time: '2:00pm', // your language's built-in date time library
+    error: 'First error',
+    deviceId: "device1"
+  })
+}
+```
+
+Device B:
+
+```js
+collection.update(doc => {
+  doc.log.push({
+    time: '2:05pm', // your language's built-in date time library
+    error: 'Another error',
+    deviceId: "device2"
+  })
+}
+```
+
+Concurrent `push` operations will be merged into a single ordered list. The
+order between two concurrent `push` operations is deterministic after
+syncronization, which means all devices will see the same order. 
+
+```json
+{
+  "id": "abc123",
+  "log": [
+    {
+      "time": "2:05pm",
+      "error": "Another error",
+      "deviceId": "device2"
+    },
+    {
+      "time": "2:00pm",
+      "error": "First error",
+      "deviceId": "device1"
+    }
+  ]
+}
+```
+
+Note that all these items could be out of order, depending on if devices are
+calling `push` while connected or disconnected from each other. 
+
+### Mutable Items
+
+:::caution
+Putting objects into an array is an advanced feature and should be avoided
+unless you really know what you're doing. We recommend that you use register
+values inside an array.
+:::
+
+If you are still convinced that you need an array, but it isn't for text editing
+or immutable items, **it is still probably better use a Map instead**.
+
+Use these rules of thumb to prevent unexpected behavior in your application:
+
+**Use `upsert` to initialize the array.**
+
+```js
+let susanId = people.upsert({
+  name: "Susan",
+  friends: []
+})
+```
+
+**Use the `update` API to modify the array**
+
+```js
+people.update(doc => {
+  doc.friends.push("John")
+})
+```
+
+**Reference objects by their id**
+
+This means that that objects can be modified concurrently. Otherwise, updates could be
+lost or duplicated with concurrent `push` and `pop` operations.
+
+```js
+let johnId = people.upsert({
+  name: "John",
+  friends: []
+})
+people.findById(susanId).update(doc => {
+  doc.friends.push(johnId)
+})
+```
+
+**Watch out for duplicates**
+
+You may want to ignore duplicate items with the same ID by turning your arrays into Sets within application code.
+
+```js
+let susan = people.findById(susanId)
+let unique = Set(susan.friends)
+render(unqiue)
+```
+
+
+## Querying 
+
+For the following examples assume a document structure like:
+
+
+```json
+{
+  "_id": "123abc",
+  "books": [
+    {
+      "title": "Harry Potter",
+      "authors": ["J. K. Rowling"]
+    },
+    {
+      "title": "Lord of the Rings",
+      "authors": ["J. R. R. Tolkien"]
+    },
+    {
+      "title": "Game of Thrones",
+      "authors": ["George R. R. Martin"]
+    },
+    {
+      "title": "The Talisman",
+      "authors": ["Stephen King", "Peter Straub"]
+    }
+  ],
+  "tags": ["fantasy", "novel"],
+  "scores": [12, 14]
+}
+```
+
+Use `array[index]` to access a specific index of an array property. Let's say we have a document that looks like:
+
+```js
+// finds the first book property under "books" and checks for the "title" property
+find("books[0].title == 'Harry Potter'")
+```
+
+Use `length(propertyPath)` to return an integer value that represents the size of the array
+
+```js
+// finds books that have at least 2 tags
+find("length(tags) >= 2")
+```
+
+Use `sum(propertyPath)` to return a summation float that represents the sum of the array values
+
+```js
+// finds documents who have a sum of all their scores to be less than 10
+find("sum(scores) < 10")
+```
+
+Use `array[? expression]` to return an array containing only the input array items that satisfy the expression.
+  
+Eg. `books[? length(authors) >= 2]` for the example document is `[{"title": "The Talisman", "authors": ["Stephen King", "Peter Straub"]}]`.
+
+```js
+// finds documents with books that have 2 or more authors
+find("books[? length(authors) >= 2] != []")
+```
+
+Use `array[*].subpath` to collect a subpath of each input array item in the result array.
+
+Eg. `books[*].authors[0]` for the example document is `["J. K. Rowling", "J. R. R. Tolkien", "George R. R. Martin", "Stephen King"]`
+
+Eg. `books[*].authors` for the example document is `[["J. K. Rowling"], ["J. R. R. Tolkien"], ["George R. R. Martin"], ["Stephen King", "Peter Straub"]]`
+  
+```js
+// finds documents with books whose first author is Stephen King 
+find("contains('Stephen King', books[*].authors[0])")
+```
+
+Use `array[]` to flatten the input array by one level. Elements of the input array that are not arrays are pushed as-is to the result array.
+
+Eg. `(books[*].authors)[]` for the example document is `["J. K. Rowling", "J. R. R. Tolkien", "George R. R. Martin", "Stephen King", "Peter Straub"]`
+
+```js
+// finds documents with books authored or co-authored by Stephen King
+find("contains('Stephen King', (books[*].authors)[])")
+```
+
+## How it works
+
+Elements are added to the array at a position. Where two element are inserted at
+position four, after items `X`, the merge will use causal information from
+the logical clock to decide which element gets the position, and which gets the
+position + 1. The result is deterministic.
+
+When elements of an array are updated, then the element merges as-per the merge
+behaviour of the type at that position in the array.
+
+Merging works in such a way that we never merge the element with a different
+element, even if it moves. If some element's position has changed (due to
+insertions or removes) at one device, we ensure to merge that element with it's
+corresponding version in the other devices.
+
+When an element is removed from the array, a tombstone is recorded, ensuring
+that if there is an update concurrent with the remove the remove wins.
+
+Read more about [how Ditto's CRDT works](../how-it-works/crdt).

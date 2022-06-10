@@ -9,6 +9,7 @@ import dedent from "ts-dedent";
 import moment from "moment";
 import markdownIt from "markdown-it";
 import CodeBlock from "../theme/CodeBlock";
+import getLanguagesForPlatform from "../lib/getLanguagesForPlatform";
 
 export interface SDKInfo {
   framework: string;
@@ -217,14 +218,13 @@ function TabContents({ sdkInfos, title }: TabContentProps) {
 
 export default function Changelog() {
   const { siteConfig } = useDocusaurusContext();
-
   const frameworks = downloadedFrameworks;
 
   return (
     <div className="prose prose-lg max-w-none">
       <div className="col margin-vert--lg" style={{ maxWidth: "800px" }}>
         <Tabs
-          defaultValue="swift"
+          defaultValue={"swift"}
           groupId="framework"
           values={[
             { label: "JavaScript", value: "javascript" },
