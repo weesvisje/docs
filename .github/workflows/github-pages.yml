@@ -2,9 +2,9 @@ name: deploy-to-github-pages
 
 on:
   pull_request:
-    branches: [master]
+    branches: [main]
   push:
-    branches: [master]
+    branches: [main]
   # Whenever there is a new `ditto` release and, with it, an update of the `releases.json` file.
   repository_dispatch:
     types: ['new-ditto-release']
