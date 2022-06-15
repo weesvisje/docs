@@ -3,29 +3,20 @@
     "renderJavaScript": true,
     "start_urls": [
       {
-        "url": "https://docs.ditto.live",
-        "page_rank": 5
-      },
-      {
-        "url": "https://docs.ditto.live/concepts/overview",
-        "page_rank": 4,
-        "tags": ["concepts"]
-      },
-      {
-        "url": "https://docs.ditto.live/concepts/documents",
-        "page_rank": 4,
-        "tags": ["concepts"]
-      },
-      {
-        "url": "https://docs.ditto.live/guides/",
-        "page_rank": 3
-      },
-      {
-        "url": "https://docs.ditto.live/security/",
-        "page_rank": 3
+        "url": "https://docs.ditto.live/"
       }
     ],
-    "stop_urls": ["https://docs.ditto.live/changelog"],
+    "stop_urls": [
+      "changelog",
+      "ios/common/.*$",
+      "android/common/.*$",
+      "csharp/common/.*$",
+      "http/common/.*$",
+      "raspberrypi/common/.*$",
+      "cpp/common/.*$",
+      "javascript/common/.*$",
+      "rust/common/.*$"
+    ],
     "selectors": {
       "lvl0": ".theme-doc-markdown header h1",
       "lvl1": ".theme-doc-markdown h2",

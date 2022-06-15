@@ -212,8 +212,6 @@ module.exports = {
           path: 'docs/common',
           id: 'common',
           routeBasePath: "/",
-          sidebarPath: false,
-          // Please change this to your repo.
           editUrl: "https://github.com/getditto/docs/edit/master/",
         },
       },
