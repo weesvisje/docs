@@ -47,7 +47,7 @@ const ContextSwitcher = ({ className }) => {
 
     let path = `/${newDoc}/${docPath.join('/')}`;
 
-    if (pathExists(newDoc, path, data)) {
+    if (pathExists(newDoc, path, data) && path !== `/${newDoc}/`) {
       // navigate to same document in the last version
       // append hash to path for navigating to anchor tags, if they exist
       if (window.location.hash) path += window.location.hash;
