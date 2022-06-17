@@ -14,10 +14,10 @@ If you are having trouble syncronizing devices in Ditto, follow this guide.
 
 1. Turn Use Location on
 1. Turn Bluetooth Scanning on
-1. Are permisisons set correctly? See [installation](./installation).
+1. Are permissions set correctly? See [installation](./installation).
 1. Go to your OS-level permissions for Bluetooth and clear the app permissions for your application.
 1. Delete the app, install it again, and open it. Does it ask for Bluetooth permissions?
-1. Android only: are you calling `ditto?.refreshPermissions()`
+1. Android only: are you calling `ditto.refreshPermissions()`?
 
 ### LAN is not working
 
@@ -42,6 +42,14 @@ If you are having trouble syncronizing devices in Ditto, follow this guide.
 If your app need full offline access without ever connecting to the Internet, please
 request an [offline license token](./mesh-network/offline-license).
 
+### Online with Authentication
+
+1. Did you follow the [tutorial](./guides/authentication/intro)?
+1. Is the website address behind `https` and available on the open Internet? 
+1. Verfiy that your server is reachable by the Big Peer at `https://APP_ID.ditto.live` and `https://cloud.ditto.live`.
+1. Are you implementing the [authentication expiring soon](./security/online-with-authentication#creating-your-client) delegate?
+1. Verify that your webhook provider name is [correctly copied in the Ditto portal](./security/online-with-authentication#login).
+
 ### Offline Playground and Shared Key
 
 1. Login to the [Ditto Portal](https://portal.ditto.live).
@@ -55,3 +63,4 @@ request an [offline license token](./mesh-network/offline-license).
 
 Email us at [support@ditto.live](support.ditto.live) or [login to your Ditto account](https://portal.ditto.live) to chat with the support bot in the
 lower right corner of your screen. An engineer will reach out to you shortly.
+
