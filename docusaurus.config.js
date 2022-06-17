@@ -16,9 +16,22 @@ const plugins = languages.map(id => [
     id: id,
     sidebarPath: require.resolve(`./docs/${id}/sidebar.js`),
     sidebarCollapsible: true,
-    editUrl: 'https://github.com/getditto/docs/tree/master',
+    editUrl: 'https://github.com/getditto/docs/tree/main',
   },
 ])
+
+plugins.push(
+  [
+    '@docusaurus/plugin-content-docs',
+    {
+      path: 'docs/main',
+      id: 'main',
+      routeBasePath: '/',
+      sidebarPath: false,
+      editUrl: 'https://github.com/getditto/docs/tree/main',
+    }, 
+  ]
+)
 
 module.exports = {
   title: "Ditto",
@@ -211,9 +224,9 @@ module.exports = {
           ],
           path: 'docs/common',
           id: 'common',
-          routeBasePath: "/",
-          editUrl: "https://github.com/getditto/docs/edit/master/",
-        },
+          routeBasePath: "/common",
+          editUrl: "https://github.com/getditto/docs/edit/main/",
+        }
       },
     ],
   ],

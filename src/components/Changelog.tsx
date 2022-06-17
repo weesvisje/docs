@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
-import clsx from "clsx";
-import Layout from "@theme/Layout";
+import useUserPreferencesContext from "@theme/hooks/useUserPreferencesContext";
+import LANGUAGES from './Languages.js';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
@@ -9,7 +9,6 @@ import dedent from "ts-dedent";
 import moment from "moment";
 import markdownIt from "markdown-it";
 import CodeBlock from "../theme/CodeBlock";
-import getLanguagesForPlatform from "../lib/getLanguagesForPlatform";
 
 export interface SDKInfo {
   framework: string;
@@ -217,15 +216,17 @@ function TabContents({ sdkInfos, title }: TabContentProps) {
 }
 
 export default function Changelog() {
+  const { tabGroupChoices } = useUserPreferencesContext()
   const { siteConfig } = useDocusaurusContext();
   const frameworks = downloadedFrameworks;
+  const defaultContext = LANGUAGES.find(item => item.id === tabGroupChoices["platform"])
 
   return (
     <div className="prose prose-lg max-w-none">
       <div className="col margin-vert--lg" style={{ maxWidth: "800px" }}>
         <Tabs
-          defaultValue={"swift"}
-          groupId="framework"
+          defaultValue={defaultContext?.id || 'swift'}
+          groupId="programming-language"
           values={[
             { label: "JavaScript", value: "javascript" },
             { label: "Swift", value: "swift" },

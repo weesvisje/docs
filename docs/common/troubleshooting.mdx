@@ -1,0 +1,57 @@
+# Troubleshooting
+
+## Ditto won't sync
+
+If you are having trouble syncronizing devices in Ditto, follow this guide.
+
+### Initial diagnostics
+
+1. Set `DittoLogger.minimumLogLevel = DittoLogLevel.VERBOSE` before you initialize `Ditto(identity)`.
+1. Look at the logs. Do you see any helpful errors or warnings?
+1. Verify that your app id is the same on all devices
+
+### Bluetooth is not working
+
+1. Turn Use Location on
+1. Turn Bluetooth Scanning on
+1. Are permisisons set correctly? See [installation](./installation).
+1. Go to your OS-level permissions for Bluetooth and clear the app permissions for your application.
+1. Delete the app, install it again, and open it. Does it ask for Bluetooth permissions?
+1. Android only: are you calling `ditto?.refreshPermissions()`
+
+### LAN is not working
+
+1. Are both devices connected to the same WiFi network?
+1. Check your router settings and see the [LAN troubleshooting guide](./mesh-network/supported-transports/#local-area-network).
+
+### Online Playground 
+
+#### Is your playground token copied correctly? 
+
+1. Login to the [Portal](https://portal.ditto.live) 
+1. Go to your App.
+1. Make sure that the portal playground token is the same as the value you are using in your code.
+
+![Online Playground enabled in the Ditto Portal](./mesh-network/portal-playground-setting.png)
+
+#### Did your device connect to the internet?
+
+`OnlinePlayground` applications must connect to the Big Peer first
+*before* going offline. [Read more about online playground](./mesh-network/online-playground).
+
+If your app need full offline access without ever connecting to the Internet, please
+request an [offline license token](./mesh-network/offline-license).
+
+### Offline Playground and Shared Key
+
+1. Login to the [Ditto Portal](https://portal.ditto.live).
+1. Check the value of your offline license token in the Ditto Portal. Is the offline license token expired?
+1. Is the offline license token copied correctly?
+1. Is the shared key copied correctly? [Generate a new shared key.](./security/shared-key)
+
+### Still having trouble?
+
+1. Are you creating many live queries? Reduce the number of live queries in your app. 
+
+Email us at [support@ditto.live](support.ditto.live) or [login to your Ditto account](https://portal.ditto.live) to chat with the support bot in the
+lower right corner of your screen. An engineer will reach out to you shortly.

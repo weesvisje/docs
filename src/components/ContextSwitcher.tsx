@@ -11,7 +11,6 @@ import LANGUAGES from './Languages.js';
 const getContext = (id) => LANGUAGES.find((context) => context.id === id);
 
 const pathExists = (context, path, data) => {
-  console.log(context, path)
   let docs = data[context].versions[0].docs
   let some = docs.some((doc) => doc.path === path);
   return some
@@ -39,7 +38,6 @@ const ContextSwitcher = ({ className }) => {
 
   const handleChange = (newValue) => {
     setContext(newValue);
-
     setTabGroupChoices("platform", newValue.id);
     const [, ...docPath] = getCurrentPageInfo();
 
