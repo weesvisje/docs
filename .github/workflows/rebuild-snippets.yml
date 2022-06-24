@@ -38,10 +38,16 @@ jobs:
           npm i 
           git config --global user.email "actions@github.com"
           git config --global user.name "gh-actions"
-          git checkout -b update-snippets
           git add snippets.json
-          git commit -m "Update snippets from latest ditto release" 
-          git push origin update-snippets
+      - name: Run the Action
+        uses: devops-infra/action-commit-push@master
+        with:
+          github_token: "${{ secrets.GH_PAT }}"
+          add_timestamp: true
+          commit_prefix: "[AUTO]"
+          commit_message: "Automatic commit"
+          force: false
+          target_branch: update-snippets
       - uses: repo-sync/pull-request@v2
         name: pull-request
         with:
@@ -50,4 +56,4 @@ jobs:
           pr_body: "👑 *An automated PR*"
           pr_reviewer: "okdistribute"
           pr_draft: false
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_PAT }}
