@@ -4,6 +4,7 @@ on:
   # Whenever there is a new `ditto` release and, with it, an update of the `releases.json` file.
   repository_dispatch:
     types: ['new-ditto-release']
+  workflow_dispatch:
 
 jobs:
   create-pull-request:
