@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: webfactory/ssh-agent@v0.5.0
         with:
-          ssh-private-key: ${{ secrets.GH_PAT }}
+          ssh-private-key: ${{ secrets.GH_PAGES_DEPLOY }}
       - name: Checkout ditto repository
         uses: actions/checkout@v3
         with:
