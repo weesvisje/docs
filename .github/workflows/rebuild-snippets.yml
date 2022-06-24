@@ -10,11 +10,18 @@ jobs:
     name: Update snippets 
     runs-on: ubuntu-latest
     environment: rebuild-snippets
+    env:
+      USE_SSH: true
+      GIT_USER: git
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
           node-version: '14.x'
+      
+      - uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: ${{ secrets.GH_PAT }}
       - name: Checkout ditto repository
         uses: actions/checkout@v3
         with:
@@ -27,7 +34,10 @@ jobs:
           args: -qO- https://software.ditto.live/releases/snippets.json > snippets.json
       - run: npm i
       - run: git add snippets.json
-      - run: git commit -m "Update snippets from latest ditto release" 
+      - run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "gh-actions"
+          git commit -m "Update snippets from latest ditto release" 
       - uses: repo-sync/pull-request@v2
         name: pull-request
         with:
