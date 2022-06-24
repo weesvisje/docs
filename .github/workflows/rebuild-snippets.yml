@@ -25,6 +25,8 @@ jobs:
           repository: getditto/ditto
           token: ${{ secrets.GH_PAT }} 
           path: ditto
+          ssh-key: ${{secrets.GH_PAGES_DEPLOY}}
+          fetch-depth: 0
       - name: wget
         uses: wei/wget@v1
         with:
