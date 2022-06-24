@@ -12,11 +12,8 @@ jobs:
     environment: rebuild-snippets
     steps:
       - uses: actions/setup-node@v1
-      - with:
+        with:
           node-version: '14.x'
-      - env:
-          USE_SSH: true
-          GIT_USER: git
       - uses: actions/checkout@v1
       - uses: webfactory/ssh-agent@v0.5.0
         with:
@@ -32,6 +29,9 @@ jobs:
         with:
           args: -qO- https://software.ditto.live/releases/snippets.json > snippets.json
       - name: "Add snippets" 
+        env:
+          USE_SSH: true
+          GIT_USER: git
         run: |
           npm i 
           git config --global user.email "actions@github.com"
