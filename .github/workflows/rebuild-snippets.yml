@@ -42,18 +42,22 @@ jobs:
       - name: Run the Action
         uses: devops-infra/action-commit-push@master
         with:
-          github_token: "${{ secrets.GH_PAT }}"
+          github_token: ${{ secrets.GH_PAT }}
           add_timestamp: true
           commit_prefix: "[AUTO]"
-          commit_message: "Automatic commit"
+          commit_message: "Updating snippets"
           force: false
           target_branch: update-snippets
-      - uses: repo-sync/pull-request@v2
-        name: pull-request
+      - name: Run the Action
+        uses: devops-infra/action-pull-request@v0.4.2
         with:
-          destination_branch: "main"
-          pr_title: "Updating snippets from latest ditto release"
-          pr_body: "👑 *An automated PR*"
-          pr_reviewer: "okdistribute"
-          pr_draft: false
           github_token: ${{ secrets.GH_PAT }}
+          target_branch: main
+          title: Update Snippets
+          body: "**Automated pull request**"
+          reviewer: okdistribute
+          assignee: okdistribute
+          draft: false
+          new_string: "** Automatic pull request**"
+          get_diff: true
+          ignore_users: "dependabot"
