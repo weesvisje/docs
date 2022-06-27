@@ -14,18 +14,11 @@ jobs:
     steps:
       - uses: actions/setup-node@v1
         with:
-          node-version: '14.x'
+          node-version: '16.x'
       - uses: actions/checkout@v1
       - uses: webfactory/ssh-agent@v0.5.0
         with:
           ssh-private-key: ${{ secrets.GH_PAGES_DEPLOY }}
-      - name: Checkout ditto repository
-        uses: actions/checkout@v3
-        with:
-          repository: getditto/ditto
-          token: ${{ secrets.GH_PAT }} 
-          path: ditto
-          fetch-depth: 0
       - name: wget
         uses: wei/wget@v1
         with:
