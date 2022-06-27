@@ -12,9 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: rebuild-snippets
     steps:
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '16.x'
       - uses: actions/checkout@v1
       - uses: webfactory/ssh-agent@v0.5.0
         with:
