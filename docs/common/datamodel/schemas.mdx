@@ -25,7 +25,53 @@ developers use typed structs, Codable (Swift) or TypeScript (JavaScript) to
 ensure that all documents are added and retrieved from their database in a
 predictable fashion. You can use these types to detect older or incompatible versions before rendering them in your UI.
 
-### Backwards-compatibility
+### Same-version compatibility
+
+Some applications do not need backward- or forward- compatibility, which can
+simplify their business logic significantly.  If that sounds like your
+application, we recommend that you use a pattern where you change the name of
+the collection for each schema version of your application. This enforces
+further that field types never change. For example, you can use
+`myCollection_v{number}` as a convention to specify the collection schema
+version your app will be listening to. When a schema change is necessary, bump
+the number. Collections are very cheap to create in Ditto, so this will scale
+even for applications that run for many years. 
+
+You could also only synchronize documents that come from schema versions
+that are the same as your current schema version.  
+
+```js
+const query = 'name == $args.name && age <= $args.age && _schemaVersion == 1'
+collection.find(query, () => {
+  age: 32,
+  name: 'Max',
+})
+```
+
+### Forward-compatibility
+
+In a typical centralized database like PostgreSQL, developers often focus on
+backward-compatbility, where newer versions of the application can open old
+documents. In a distributed system, you do not have central control of all
+modifications to data. In an offline peer-to-peer mesh, it is difficult and
+sometimes impossible to control all versions of your application that are active
+in production environments. Because of these constraints, you need to not only
+think of backward-compatibility, but also forward-compatibility.
+
+An application is forward-compatible when existing code is able to read new
+data. We can see [forward-compatibility in web development](https://developer.mozilla.org/en-US/docs/Web/Guide/Writing_forward-compatible_websites).
+
+To achieve forward-compatibility of your database, you should never change
+the type of an existing field. In other words, developers should only ever add
+new fields, and never remove or modify old fields. You can ensure this by
+creating a controller that encapsulates Ditto and is used across your
+application(s) to validate the field values and their associated types before
+upserting those values into the database. In Swift, it is common to use
+[Codable](https://developer.apple.com/documentation/swift/codable), and in
+JavaScript it is common to use [JSONSchema](https://json-schema.org/). The
+choice is up to you.  
+
+### Backward-compatibility
 
 Older data could be very important, or it could not be. It's your choice to
 decide what to do with these old documents: you could accept (as-is), reject
@@ -118,15 +164,3 @@ This is a common pattern that many applications use. For example, Apple Notes
 warns users that they are on an older version and will experience degraded
 features until they upgrade.
 
-### Supporting the same version
-
-You could also only synchronize documents that come from schema versions
-that are the same as your current schema version.  
-
-```js
-const query = 'name == $args.name && age <= $args.age && _schemaVersion == 1'
-collection.find(query, () => {
-  age: 32,
-  name: 'Max',
-})
-```
