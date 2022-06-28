@@ -12,33 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     environment: rebuild-snippets
     steps:
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
       - uses: actions/checkout@v1
       - uses: webfactory/ssh-agent@v0.5.0
         with:
           ssh-private-key: ${{ secrets.GH_PAGES_DEPLOY }}
-      - name: Checkout ditto repository
-        uses: actions/checkout@v3
-        with:
-          repository: getditto/ditto
-          token: ${{ secrets.GH_PAT }} 
-          path: ditto
-          fetch-depth: 0
       - name: wget
         uses: wei/wget@v1
         with:
           args: -qO- https://software.ditto.live/releases/snippets.json > snippets.json
-      - name: "Add snippets" 
-        env:
-          USE_SSH: true
-          GIT_USER: git
-        run: |
-          npm i 
-          git config --global user.email "actions@github.com"
-          git config --global user.name "gh-actions"
-          git add snippets.json
       - name: Run the Action
         uses: devops-infra/action-commit-push@master
         with:
