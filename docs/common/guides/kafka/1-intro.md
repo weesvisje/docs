@@ -5,7 +5,7 @@ title: '1 - Enabling Kafka'
 # Enabling Kafka
 
 :::info
-The Kafka settings are only enabled if your Organization is on a dedicated cluster. [Contact us](mailto:contact@ditto.live) if you are interested in this feature.  You can also use Ditto's [Live Query Webhook](/concepts/livequery-webhook), which is free for all users.
+The Kafka settings are only enabled if your Organization is on a dedicated cluster. [Contact us](mailto:contact@ditto.live) if you are interested in this feature.  You can also use Ditto's [Live Query Webhook](../livequery-webhook), which is free for all users.
 :::
 
 Kafka is one way to implement CDC ([Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture)). The document change stream is a coarse user-consumable Kafka queue that allows you to react to changes made as documents are inserted, updated, or deleted from Ditto's Big Peer. You should use this in conjunction with the HTTP API. Ditto supports connecting to Kafka and retrieving updates and events for your data through a Kafka topic. 
