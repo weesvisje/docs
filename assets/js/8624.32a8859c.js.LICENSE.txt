@@ -2,6 +2,10 @@
    * Wait for document loaded before starting the execution
    */
 
+/*! ../../accessibility */
+
+/*! ../../commonDb */
+
 /*! ../../config */
 
 /*! ../../dagre-wrapper/index.js */
@@ -34,6 +38,8 @@
 
 /*! ../utils */
 
+/*! ./c4Db */
+
 /*! ./classDb */
 
 /*! ./clusters */
@@ -43,6 +49,14 @@
 /*! ./createLabel */
 
 /*! ./defaultConfig */
+
+/*! ./diagrams/c4/c4Db */
+
+/*! ./diagrams/c4/c4Renderer */
+
+/*! ./diagrams/c4/parser/c4Diagram */
+
+/*! ./diagrams/c4/styles */
 
 /*! ./diagrams/class/classDb */
 
@@ -186,11 +200,15 @@
 
 /*! ./markers */
 
+/*! ./mermaid */
+
 /*! ./mermaid-graphlib */
 
 /*! ./mermaidAPI */
 
 /*! ./nodes */
+
+/*! ./parser/c4Diagram */
 
 /*! ./parser/classDiagram */
 
@@ -254,7 +272,7 @@
 
 /*! @braintree/sanitize-url */
 
-/*! @license DOMPurify 2.3.4 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/2.3.4/LICENSE */
+/*! @license DOMPurify 2.3.8 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/2.3.8/LICENSE */
 
 /*! Check if previously processed */
 
@@ -319,6 +337,10 @@
   \************************/
 
 /*!*************************!*\
+  !*** ./src/commonDb.js ***!
+  \*************************/
+
+/*!*************************!*\
   !*** external "khroma" ***!
   \*************************/
 
@@ -347,6 +369,10 @@
   \*****************************/
 
 /*!******************************!*\
+  !*** ./src/accessibility.js ***!
+  \******************************/
+
+/*!******************************!*\
   !*** ./src/defaultConfig.js ***!
   \******************************/
 
@@ -363,6 +389,10 @@
   \******************************/
 
 /*!*********************************!*\
+  !*** ./src/diagrams/c4/c4Db.js ***!
+  \*********************************/
+
+/*!*********************************!*\
   !*** ./src/diagrams/er/erDb.js ***!
   \*********************************/
 
@@ -373,6 +403,10 @@
 /*!**********************************!*\
   !*** ./src/themes/theme-dark.js ***!
   \**********************************/
+
+/*!***********************************!*\
+  !*** ./src/diagrams/c4/styles.js ***!
+  \***********************************/
 
 /*!***********************************!*\
   !*** ./src/diagrams/er/styles.js ***!
@@ -392,6 +426,10 @@
 
 /*!************************************!*\
   !*** ./src/dagre-wrapper/nodes.js ***!
+  \************************************/
+
+/*!************************************!*\
+  !*** ./src/diagrams/c4/svgDraw.js ***!
   \************************************/
 
 /*!************************************!*\
@@ -452,6 +490,10 @@
 
 /*!***************************************!*\
   !*** ./src/dagre-wrapper/clusters.js ***!
+  \***************************************/
+
+/*!***************************************!*\
+  !*** ./src/diagrams/c4/c4Renderer.js ***!
   \***************************************/
 
 /*!***************************************!*\
@@ -581,6 +623,10 @@
 /*!***********************************************!*\
   !*** ./src/diagrams/gantt/parser/gantt.jison ***!
   \***********************************************/
+
+/*!************************************************!*\
+  !*** ./src/diagrams/c4/parser/c4Diagram.jison ***!
+  \************************************************/
 
 /*!************************************************!*\
   !*** ./src/diagrams/class/classRenderer-v2.js ***!
