@@ -9,7 +9,7 @@ in the background, you need to tell iOS to keep the app active. To do this, we
 recommend playing silent music in the background.
 
 Create an instance of `BackgroundSync` on your main controller and call
-```BackgroundSync.start()```.
+```BackgroundSync.shared.start()```.
 
 ```swift
 final public class BackgroundSync {
