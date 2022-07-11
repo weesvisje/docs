@@ -8,9 +8,6 @@ background. If you need Ditto to continue syncronizing while the application is
 in the background, you need to tell iOS to keep the app active. To do this, we
 recommend playing silent music in the background.
 
-Create an instance of `BackgroundSync` on your main controller and call
-```BackgroundSync.shared.start()```.
-
 ```swift
 final public class BackgroundSync {
     public static let shared = BackgroundSync()
@@ -54,6 +51,27 @@ final public class BackgroundSync {
             (info[AVAudioSessionInterruptionTypeKey]! as AnyObject).getValue(&intValue)
             if intValue == 1 { self.player.play() }
         }
+    }
+}
+```
+
+Then, call ```BackgroundSync.shared.start()``` when your application goes into the background. For example,
+
+```swift
+@UIApplicationMain
+final class AppDelegate: UIResponder, UIApplicationDelegate {
+    var window: UIWindow?
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // ... your app
+    }
+
+    func applicationWillResignActive(_ application: UIApplication) {
+        BackgroundSync.shared.start()
+    }
+
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        BackgroundSync.shared.stop()
     }
 }
 ```
