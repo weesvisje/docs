@@ -3,15 +3,13 @@ title: 'Prolonged Background Sync'
 sidebar_position: 5
 ---
 
-iOS apps will deallocate Ditto and stop syncronization when the application is
-put out of focus and into the background. If you need Ditto to continue
-syncronizing while the application is in the background, you need to tell iOS to keep the
-app active.
+iOS apps will stop Ditto's sync protocol when the application is put into the
+background. If you need Ditto to continue syncronizing while the application is
+in the background, you need to tell iOS to keep the app active. To do this, we
+recommend playing silent music in the background.
 
-To do this, we recommend playing empty music in the background which will keep the app active.
-
-Create an instnace of `BackgroundSync` on your main controller and call
-```BackgroundSync.start()``` to start playing empty music.
+Create an instance of `BackgroundSync` on your main controller and call
+```BackgroundSync.start()```.
 
 ```swift
 final public class BackgroundSync {
