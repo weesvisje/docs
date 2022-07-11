@@ -33,7 +33,7 @@ openssl ecparam -name prime256v1 -genkey -text | openssl pkcs8 -topk8 -nocrypt -
 openssl ec -in priv.key -pubout -out pub.key
 ```
 
-* a [shared key](../security/shared-key). 
+* a [shared key](../common/security/shared-key)
 
 ### Code samples
 
