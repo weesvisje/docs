@@ -14,7 +14,7 @@ device knows the same secret key, and uses this to validate incoming
 connections. The benefit of this approach is that distinct certificates do not
 have to be distributed to every device, simplifying the deployment.
 
-Small Peers in this mode use a `SharedKey` [identity type](../../mesh-network/identities). The secret key must be provided as a
+Small Peers in this mode use a `SharedKey` [identity type](../mesh-network/identities). The secret key must be provided as a
 String when initializing the `DittoIdentity` on each peer. This key should be securely and randomly generated and Ditto
 expects it to be in a particular format.
 
