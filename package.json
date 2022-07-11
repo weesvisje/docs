@@ -39,7 +39,7 @@
     "lottie-web": "^5.7.13",
     "markdown-it": "^12.2.0",
     "mdx-mermaid": "^1.1.0",
-    "mermaid": "^8.13.8",
+    "mermaid": "^9.1.2",
     "moment": "^2.29.2",
     "prism-react-renderer": "^1.2.1",
     "react": "^17.0.1",
