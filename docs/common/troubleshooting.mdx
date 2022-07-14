@@ -14,21 +14,21 @@ If you are having trouble syncronizing devices in Ditto, follow this guide.
 
 1. Turn Use Location on
 1. Turn Bluetooth Scanning on
-1. Are permissions set correctly? See [installation](./installation).
+1. Are permissions set correctly? See [installation](../installation).
 1. Go to your OS-level permissions for Bluetooth and clear the app permissions for your application.
 1. Delete the app, install it again, and open it. Does it ask for Bluetooth permissions?
 1. Android only: are you calling `ditto.refreshPermissions()`?
 
 ### Apple Wireless Direct Link, P2P-Wifi, Wifi Aware 
 
-1. Are permissions set correctly? See [installation](./installation).
+1. Are permissions set correctly? See [installation](../installation).
 1. Go to your OS-level permissions and clear the app permissions for your application.
 1. Delete the app, install it again, and open it. Does it ask for location permissions?
 1. If you are using a custom `TransportConfig`, make sure you have enabled all peer-to-peer transports using `enableAllPeerToPeer()`.
 
 ### Local Area Network (LAN)
 
-1. Are permissions set correctly? See [installation](./installation).
+1. Are permissions set correctly? See [installation](../installation).
 1. Are both devices connected to the same WiFi network?
 1. Check your router settings and see the [LAN troubleshooting guide](./mesh-network/supported-transports/#local-area-network).
 
