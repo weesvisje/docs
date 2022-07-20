@@ -40,6 +40,8 @@ We will have two small peer Ditto instances running locally:
 * One configured as an HTTP listener and identity provider
 * One configured as a WebSocket client.
 
+[See the full code in the Samples Repository](https://github.com/getditto/samples/tree/master/c-sharp-server)
+
 #### Server code
 
 The server and their other devices can use SharedKey identity while a web
@@ -80,7 +82,7 @@ serverDitto.SetTransportConfig(serverConfig);
 try
 {
     ditto.SetOfflineOnlyLicenseToken(license);
-    ditto.TryStartSync();
+    ditto.StartSync();
 }
 catch (DittoException ex)
 {
