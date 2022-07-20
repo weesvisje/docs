@@ -31,7 +31,7 @@ const ContextSwitcher = ({ className }) => {
     let [doc] = getCurrentPageInfo();
     let platform = tabGroupChoices['platform']
     let path = window.location.pathname
-    if (platform && platform !== doc) {
+    if (platform && platform !== doc && doc === 'common') {
       return history.push(`/${platform}${path}`)
     }
 
