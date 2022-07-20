@@ -16,12 +16,9 @@ Counters can be changed through a special method called increment which takes a
 number to increment the counter by. If you wish to decrement the counter then
 you can supply a negative number.
 
-To create a counter, first insert a document with number value. You must then
-call an update function to convert the number into a counter with the
-replaceWithCounter method. This will convert the number into a counter.
-
-Once the value in the document is a counter, you can proceed to increment or
-decrement the value. This will preserve an accurate value once devices sync.
+To create a counter, first insert a document with Counter. Once the value in the
+document is a counter, you can proceed to increment or decrement the value. This
+will preserve an accurate value whenever devices sync.
 
 
 <SnippetGroup
@@ -59,7 +56,6 @@ concurrently, the result is -1.
 In this example, we will:
 
 * Use `upsert` to ensure the document exists before interacting with it.
-* Replace a document's number value with a counter.
 * Use `update` to increment the counter.
 
 First, when the app loads we call `populateSeats()`, and then we
@@ -77,17 +73,13 @@ flightIds.forEach {
   try! collection.upsert([
       "_id": $0,
       "name": "Flight ABC123",
-      "orderedCount": 0,
+      "orderedCount": DittoCounter(),
       "totalAvailable": 300
   ], writeStrategy: .insertDefaultIfAbsent)
-
-  collection.findByID($0).update { newSeats in
-      newSeats?["orderedCount"].replaceWithCounter()
-  }
 }
 ```
 
-When we call `replaceWithCounter()`, the counter `orderCount` is initialized to 0.
+When we call `DittoCounter()`, the counter `orderedCount` is initialized to 0.
 `totalAvailable` is a [Register](../datamodel/register) value that doesn't change unless we update it
 later. 
 
@@ -99,7 +91,7 @@ the Plus button:
 ```swift
 .onPlusDidClick {
     seatDocument.update { doc in
-        doc?["orderedCount"].increment(amount: 1)
+        doc?["orderedCount"].counter?.increment(by: 1)
     }
 }
 ```
@@ -141,35 +133,36 @@ encounter unexpected behavior. Proceed with caution.
 
 ```swift
 let docID = try! ditto.store["drinks"].upsert([
-    usedCount: 10,
+    usedCount: DittoCounter(),
 ])
 
 ditto.store["drinks"].findByID(docID).update { mutableDoc in
-    mutableDoc?["usedCount"].replaceWithCounter()
-    mutableDoc?["usedCount"].increment(amount: 1)
+    mutableDoc?["usedCount"].counter?.increment(by: 11)
 }
 
-print(ditto.store["drinks"].findByID(docID)) // 11
+print(ditto.store["drinks"].findByID(docID)) // {usedCount: 11}
 
 ditto.store["drinks"].findByID(docID).update { mutableDoc in
-    mutableDoc?["usedCount"].increment(amount: 10)
+    mutableDoc?["usedCount"].counter?.increment(by: 10)
 }
 
-print(ditto.store["drinks"].findByID(docID)) // 21
+print(ditto.store["drinks"].findByID(docID)) // {usedCount: 21}
 
 ditto.store["drinks"].findByID(docID).update { mutableDoc in
     mutableDoc?["usedCount"].remove()
-    mutableDoc?["usedCount"] = 0 
-    mutableDoc?["usedCount"].replaceWithCounter()
 }
 
-print(ditto.store["drinks"].findByID(docID)) // 0
+let docID = try! ditto.store["drinks"].findById(docID).upsert([
+    usedCount: DittoCounter(),
+])
+
+print(ditto.store["drinks"].findByID(docID)) // {usedCount: 0}
 
 ditto.store["drinks"].findByID(docID).update { mutableDoc in
-    mutableDoc?["usedCount"].increment(amount: 1)
+    mutableDoc?["usedCount"].counter?.increment(by: 1)
 }
 
-print(ditto.store["drinks"].findByID(docID)) // 1
+print(ditto.store["drinks"].findByID(docID)) // {usedCount: 1}
 ```
 
 ## How it works

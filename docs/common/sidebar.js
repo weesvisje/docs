@@ -79,6 +79,7 @@ module.exports = function (opts) {
         href: opts.api,
       },
       "common/supported-platforms",
+      "common/v2",
       "common/troubleshooting"
     ]
   }

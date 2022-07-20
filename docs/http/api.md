@@ -189,8 +189,7 @@ All RPC requests are POST requests to `https://<app-uuid>.cloud.ditto.live/api/v
         "type": "string",
         "enum": [
           "set",
-          "increment",
-          "replaceWithCounter"
+          "increment"
         ]
       },
       "WriteCommand": {
