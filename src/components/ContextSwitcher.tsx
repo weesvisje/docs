@@ -30,9 +30,8 @@ const ContextSwitcher = ({ className }) => {
   useEffect(() => {
     let [doc] = getCurrentPageInfo();
     let platform = tabGroupChoices['platform']
-    if (!platform) platform = LANGUAGES[0].id
-    if (platform !== doc) {
-      let path = window.location.pathname
+    let path = window.location.pathname
+    if (platform && platform !== doc) {
       return history.push(`/${platform}${path}`)
     }
 
