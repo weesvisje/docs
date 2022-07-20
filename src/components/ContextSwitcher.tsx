@@ -28,7 +28,13 @@ const ContextSwitcher = ({ className }) => {
   const history = useHistory();
 
   useEffect(() => {
-    const [doc] = getCurrentPageInfo();
+    let [doc] = getCurrentPageInfo();
+    let platform = tabGroupChoices['platform']
+    if (!platform) platform = LANGUAGES[0].id
+    if (platform !== doc) {
+      let path = window.location.pathname
+      return history.push(`/${platform}${path}`)
+    }
 
     const currContext = getContext(doc);
     if (currContext && currContext.id !== context.id) {
