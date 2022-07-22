@@ -26,7 +26,7 @@ And finally click "Next" and select a directory to create the application.
 
 ## 1-2 Add dependencies (Cocoapods or Swift Package Manager)
 
-Follow the instructions on the [Installation page for iOS](/installation/ios) to use CocoaPods or Swift Package Manager.
+Follow the instructions on the [Installation page for iOS](/ios/installation) to use CocoaPods or Swift Package Manager.
 
 
 Now open __Tasks.xcworkspace__.
