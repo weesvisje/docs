@@ -34,7 +34,7 @@ class TaskTableViewController: UITableViewController {
         super.viewDidLoad()
         
         // Create an instance of Ditto
-        ditto = Ditto(identity: .onlinePlayground(appID: "REPLACE_ME"))
+        ditto = Ditto(identity: .onlinePlayground(appID: "YOUR_APP_ID_HERE", token: "YOUR_TOKEN_HERE"))
 
         // This starts Ditto's background synchronization
         ditto.tryStartSync()
@@ -115,7 +115,7 @@ override func viewDidLoad() {
     super.viewDidLoad()
 
     // Create an instance of Ditto
-    ditto = Ditto(identity: .onlinePlayground(appID: "REPLACE_ME"))
+    ditto = Ditto(identity: .onlinePlayground(appID: "YOUR_APP_ID_HERE", token: "YOUR_TOKEN_HERE"))
 
     // This starts Ditto's background synchronization
     ditto.tryStartSync()
@@ -206,7 +206,7 @@ code-tabs
         if let body = alert.textFields?[0].text
         {
             // Insert the data into Ditto
-            _ = try! self.collection.insert([
+            _ = try! self.collection.upsert([
                 "body": body,
                 "isCompleted": false
             ])
@@ -222,7 +222,7 @@ Take note that this logic is using the Ditto `insert()` API to create a task doc
 code-tabs
 
 ```swift
-_ = try! self.collection.insert([
+_ = try! self.collection.upsert([
     "body": body,
     "isCompleted": false
 ])
