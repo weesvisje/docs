@@ -27,7 +27,7 @@ target 'Tasks' do
   use_frameworks!
 
   # Pods for Tasks
-  pod 'DittoSwift', '~> 1.0.6'
+  pod 'DittoSwift', '=2.0.0-alpha1'
 
 end
 ```
