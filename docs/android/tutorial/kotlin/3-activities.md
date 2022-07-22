@@ -50,7 +50,7 @@ We will add a function and override two now that `MainActivity` is an abstract c
 ```kotlin title=MainActivity
 override fun onDialogSave(dialog: DialogFragment, task:String) {
     // Add the task to Ditto
-    this.collection!!.insert(mapOf("body" to task, "isCompleted" to false))
+    this.collection!!.upsert(mapOf("body" to task, "isCompleted" to false))
 }
 
 override fun onDialogCancel(dialog: DialogFragment) { }
