@@ -41,7 +41,7 @@ When Xcode generated your project, there should be a file called __TasksApp.swif
 1. First import Ditto with `import DittoSwift`
 2. Construct an instance of Ditto with an online playground identity using the APP ID of the app that you just created on the portal. We are using an `.onlinePlayground` setup, which should suffice for this tutorial. However, you should never deploy this to a production environment like the Apple App Store.
 3. We will call `tryStartSync` as soon as the app's `ContentView` appears. This method can throw an error in the event that the license token is invalid or expired. Add two `@State` variables to capture if `ditto.tryStartSync` throws an error. One variable will be `@State var isPresentingAlert = false` and the other is a `@State var errorMessage = ""`.
-4. Add an `.onAppear` function and give it a license token. Look for `"<REPLACE_ME>"` and insert your valid license token. You can get a license token from our [Big Peer portal](https://portal.ditto.live). If the `tryStartSync()` fails, we will set `isPresentingAlert = true` and set the `errorMessage` to the error's `.localizedDescription`.
+4. Add an `.onAppear` function and give it a license token. Look for `"YOUR_APP_ID_HERE"` and insert your valid license token. You can get a license token from our [Big Peer portal](https://portal.ditto.live). If the `tryStartSync()` fails, we will set `isPresentingAlert = true` and set the `errorMessage` to the error's `.localizedDescription`.
 5. We will then present a `.alert` if `isPresentingAlert` is true. Notice that we will pass a `@State` variable as a binding type, which is why we denoted `$isPresentingAlert` prefixed with a `$`. To learn more about SwiftUI's `Binding` types like `@State` [click here.](https://developer.apple.com/documentation/swiftui/state-and-data-flow)
 
 ```swift title=TasksApp.swift
@@ -55,7 +55,7 @@ struct TasksApp: App {
 
     // 2.
     // highlight-next-line
-    var ditto = Ditto(identity: .onlinePlayground(appID: "<REPLACE_ME>"))
+    var ditto = Ditto(identity: .onlinePlayground(appID: "YOUR_APP_ID_HERE", token: "YOUR_TOKEN_HERE"))
 
     // 3.
     // highlight-start
@@ -65,7 +65,7 @@ struct TasksApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TasksListScreen(ditto: ditto)
 
                 // 4
                 // highlight-start
@@ -116,7 +116,8 @@ Create a new Swift file called __Task.swift__ in your project.
 2. Add the matching variables `let _id: String`, `let body: String`, and `let isCompleted: Bool` to the struct. We will use this to match the document values to to the struct.
 3. Add an `init` constructor to `Task` that takes in a `DittoDocument`
 4. In the `init` constructor, parse out the document's keys with Ditto's type safe value accessors. This will safely map all the document's values to the struct's variables that we created in step 2.
-5. Add an `extension Task: Identifiable` right below the `Task` struct definition and implement `var id: String` to return the `_id` key. We add the `Identifiable` protocol to assist SwiftUI's `List` view and `ForEach` component in later sections. Collection views in SwiftUI require knowing if a view is unique to prevent wasteful redraws. While it may seem confusing, we are only allowing the protocol to read the `_id` that we added in step 2.
+5. Add a second `init` constructor to `Task` that just takes a `String` and a `bool`
+6. Add an `extension Task: Identifiable` right below the `Task` struct definition and implement `var id: String` to return the `_id` key. We add the `Identifiable` protocol to assist SwiftUI's `List` view and `ForEach` component in later sections. Collection views in SwiftUI require knowing if a view is unique to prevent wasteful redraws. While it may seem confusing, we are only allowing the protocol to read the `_id` that we added in step 2.
 
 ```swift title="Task.swift"
 // 1.
@@ -136,9 +137,16 @@ struct Task {
         body = document["body"].stringValue
         isCompleted = document["isCompleted"].boolValue
     }
+    
+    // 5.
+    init(body: String, isCompleted: Bool) {
+        self._id = UUID().uuidString
+        self.body = body
+        self.isCompleted = isCompleted
+    }
 }
 
-// 5.
+// 6.
 extension Task: Identifiable {
     var id: String {
         return _id
