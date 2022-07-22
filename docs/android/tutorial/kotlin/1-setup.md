@@ -70,7 +70,7 @@ plugins {
 
 dependencies {
     // ...
-    implementation "live.ditto:ditto:1.1.6"
+    implementation "live.ditto:ditto:2.0.0-alpha1"
 }
 
 android {
