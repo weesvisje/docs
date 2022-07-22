@@ -90,7 +90,7 @@ namespace Tasks
         {
           // 5.
           // highlight-start
-          ditto = new Ditto(identity: DittoIdentity.Development(appID: "live.ditto.tasks"));
+          ditto = new Ditto(DittoIdentity.OnlinePlaygroundV2("REPLACE_ME_WITH_YOUR_APP_ID", "REPLACE_ME_WITH_YOUR_PLAYGROUND_TOKEN"), path);
 
           try
           {
