@@ -40,7 +40,7 @@ namespace Tasks
 
         public static void Main(params string[] args)
         {
-            ditto = new Ditto(identity: DittoIdentity.Development(appName: "live.ditto.tasks"));
+            ditto = new Ditto(DittoIdentity.OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID", "REPLACE_ME_WITH_YOUR_PLAYGROUND_TOKEN"), path);
 
             /**
             * Omitted for brevity
