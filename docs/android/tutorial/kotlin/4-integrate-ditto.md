@@ -33,7 +33,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
     // Create an instance of Ditto
     val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
-    val ditto = Ditto(androidDependencies, DittoIdentity.OnlinePlaygroundV2(androidDependencies, "REPLACE_WITH_YOUR_APP_ID", "REPLACE_WITH_TOKEN"))
+    val ditto = Ditto(androidDependencies, DittoIdentity.OnlinePlayground(androidDependencies, "REPLACE_WITH_YOUR_APP_ID", "REPLACE_WITH_TOKEN"))
     this.ditto = ditto
 
     // This starts Ditto's background synchronization
