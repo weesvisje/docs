@@ -105,7 +105,7 @@ class MainActivity : ComponentActivity() {
       super.onCreate(savedInstanceState)
 
       try {
-          ditto!!.tryStartSync()
+          ditto!!.startSync()
       } catch (e: DittoError) {
           // 2.
           Toast.makeText(
