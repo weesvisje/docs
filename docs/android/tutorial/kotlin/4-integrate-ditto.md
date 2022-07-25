@@ -37,7 +37,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
     this.ditto = ditto
 
     // This starts Ditto's background synchronization
-    ditto.tryStartSync()
+    ditto.startSync()
 
     // Add swipe to delete
     val swipeHandler = object : SwipeToDeleteCallback(this) {
