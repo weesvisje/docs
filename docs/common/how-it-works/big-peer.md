@@ -8,7 +8,7 @@ return <div style={{padding: '2rem', margin: '2rem', borderRadius: '8px', backgr
 
 Ditto's distributed database architecture is a composition of Small Peers and Big Peers. Small peers are predominantly used to synchronize data across web, mobile, desktop, and IoT apps where storage, RAM, and CPU resources are generally static and unchangable. For example, if you were to buy an iPhone with 256 Gigabytes of storage, you are pretty much stuck with this size unless you buy another iPhone.
 
-Conversely, Big Peers are database peers which live in the cloud and are capable of sharding or partitioning. When they sync with small peers, they look like any other peer. However, a Big Peer can be split across multiple virtual or physical nodes allowing for both horiztonal and vertical scaling of resources as your application demands grow.
+Conversely, Big Peers are database peers which live in the cloud and are capable of sharding or partitioning. When they sync with small peers, they look like any other peer. However, a Big Peer can be split across multiple virtual or physical nodes allowing for both horizontal and vertical scaling of resources as your application demands grow.
 
 The Big Peer fits into Ditto's vision of syncing data, anywhere. Big Peer is cloud-ready, multi-tenant, highly available, fault
 tolerant, offers causally consistent transactions, and works seamlessly with Small Peer devices.
@@ -97,7 +97,7 @@ Imagine that you have two collections: Menus and Orders. First, you add a new
 item to the menu, and then create an order that points to the new item. If these
 two independent actions were re-ordered by an eventually consistent system, some
 devices could see that the menu item referenced in the order does not exist.
-Causal Consistency ensures that the menu item is added _before_ the order is 
+Causal Consistency ensures that the menu item is added _before_ the order is
 created, regardless of the vagaries of networks, connections, and
 ordering of messages. Transactional Causal Consistency means that we
 can apply this constraint across any number of related changes, across
@@ -152,14 +152,14 @@ represent the current version of the database. For example, when transaction
 with sequence number 1 is committed, the database is at version 1. When
 the 2nd transaction commits, the database is at version 2, and so on.
 
-Let's walk through a replication example to understand how reads work. Say we hvae two replicas of our data, A and B. Replica 
+Let's walk through a replication example to understand how reads work. Say we have two replicas of our data, A and B. Replica
 A commits transaction 1, and then sends it to replica B, who also commits it.
 Now the database is at version 1, and both replicas will return the same answer.
 But what if transaction two doesn't make it to replica B? This can happen if
 there is a brief network outage, or for some reason the message is delayed. So
 while message B is delayed, A has committed transactions 1 and 2, but the B only
 has committed transaction 1. Since Ditto is eventually consistent, it never
-blocks reads or writes. This means that a client can read even while replicas 
+blocks reads or writes. This means that a client can read even while replicas
 are in an inconsistent state.
 
 If the system wishes to spread the read load equally, and a client reads from
@@ -411,7 +411,7 @@ As per the Random Slicing algorithm, we think of the keyspace as the range 0 to
 
 In our initial, naive, implementation the capacity is the number of partitions we
 wish to have. We enforce an equal number of replicas per-partition, and thus all
-clusters are rectangular. E.g. 1*1, or 2*3, or 5\*2, etc., where the first
+clusters are rectangular. E.g. 1\*1, or 2\*3, or 5\*2, etc., where the first
 number is the number of partitions, and the second the number of replicas.
 Random Slicing allows in future to have heterogeneous nodes, assigning the
 capacity accordingly.
@@ -525,7 +525,7 @@ We store the Current Config, and the Next Config in a strongly consistent metada
 
 The servers in `p1-p3` are all in the Current Config, and the Next Config. The servers in `p4` are only in the Next Config.
 
-A server will consume from the log if it is in either config. Those in both configs will store data in all intervals they own in both configs. In our example each of the current config servers stores a subset of the current sub-interval of its current ownership in the next config. The new servers in `p4`` start to consume from the log at once, and gossip to all their peers in both configs.
+A server will consume from the log if it is in either config. Those in both configs will store data in all intervals they own in both configs. In our example each of the current config servers stores a subset of the current sub-interval of its current ownership in the next config. The new servers in `p4` start to consume from the log at once, and gossip to all their peers in both configs.
 
 ### Backfill, again
 
@@ -535,7 +535,7 @@ For example, we start the new servers when the oldest transaction available on t
 
 In the section on UST we described a scalar value, the Transaction Timestamp. In reality this value is a pair of the `ConfigurationId` and the UST. The `ConfigurationId` rises monotonically, the initial Configuration being `ConfigId 1`, the second `ConfigId 2`, etc.
 
-This allows us to calculate a UST per-configuration. Before we began the transition the UST was `(1, 1000)`. The UST may never go backwards (that would break Causal Consistency). After starting the new servers and notifying nodes about the Next Config, the UST in the Current Config is `(1, 1000)` and in the Next Config is `(2, 0)`. During this period of transition the nodes in `p4`` cannot be routed to for querying. Only nodes in the Current Config can coordinate queries, and these nodes decide what Configuration to use for Routing based on the USTs in each of the Current and Next Config. We call this the Routing Config. It is calculated. And like everything else in Big Peer, it progresses monotonically upwards.
+This allows us to calculate a UST per-configuration. Before we began the transition the UST was `(1, 1000)`. The UST may never go backwards (that would break Causal Consistency). After starting the new servers and notifying nodes about the Next Config, the UST in the Current Config is `(1, 1000)` and in the Next Config is `(2, 0)`. During this period of transition the nodes in `p4` cannot be routed to for querying. Only nodes in the Current Config can coordinate queries, and these nodes decide what Configuration to use for Routing based on the USTs in each of the Current and Next Config. We call this the Routing Config. It is calculated. And like everything else in Big Peer, it progresses monotonically upwards.
 
 After the new nodes have Backfilled, and after some period of gossip, the UST in the Next Config arrives at a value that is `>=` the UST in the current config\* the servers in the Current Config will begin to Route queries using the Next Config. Recall that nodes gossip a GC timestamp that is based on active Read Transactions. A Read Transaction is identified by the Timestamp at which it began. For example `(1, 1000)` is a Read Transaction that began at UST 1000 in the Current Configuration. When all the replicas in the Current Configuration are Routing with the next configuration, (i.e. the Cluster GC timestamp is in the Next Configuration, `(2, 1300)` for example) the Transition is complete. Any of the nodes can store the Next Config into the Strongly Consistent metadata store as the Current Config. Each node is signaled, and eventually all will have a Current Config with `ConfigId 2`, and will forget metadata related to `ConfigId 1`. Furthermore, Garbage Collection will ensure that replicas drop data that they no longer own.
 
@@ -579,7 +579,7 @@ In order to not be required to query Big Peer for all data requested by Small Pe
 
 The document cache takes data from the mesh clients and puts it on the log as transactions. It also consumes from the log, so that it can keep the data in the cache up to date, without querying Big Peer. Any documents that it observes on the log, that are potentially of interest to the cache, must first be "Upqueried" from Big Peer to populate the cache. As a cache becomes populated Upqueries decrease in size and number.
 
-As clients disconnect, if any data is no long required in the cache, it is eventually garbage collected away.
+As clients disconnect, if any data is no longer required in the cache, it is eventually garbage collected away.
 
 ## What Next?
 
