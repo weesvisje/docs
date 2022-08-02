@@ -29,7 +29,7 @@ final public class BackgroundSync {
     }
 
     public func start() {
-        guard isOn else { return }
+        if (isOn) { return }
 
         NotificationCenter.default.addObserver(self, selector: #selector(interuptedAudio), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
         self.player.play()
