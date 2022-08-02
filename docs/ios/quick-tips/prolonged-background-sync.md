@@ -75,3 +75,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 ```
+
+:::warning
+If you're using scenes, UIKit will not call this method. `Use sceneWillEnterForeground()` instead to prepare your app to enter the foreground. ([source](https://developer.apple.com/documentation/uikit/uiapplicationdelegate/1623076-applicationwillenterforeground))
+:::
