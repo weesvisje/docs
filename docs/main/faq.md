@@ -65,6 +65,8 @@ Ditto can be used in Airplane Mode. If Bluetooth or WiFi is manually toggled on 
 * P2P WiFi: similar to WiFi speeds
 * Bluetooth LE: typically 4 kB/second (higher speeds currently in development)
 
+The Big Peer can handle 40k transactions per second (25k write txns + 15k reads) and the peer-to-peer sync over WiFi (LAN) can do 1 gigabyte of data in times as low as 8 seconds. For Bluetooth, if you’re using modern phones you have BLE L2CAP which will get in the order of 20 kilobytes per second. If you’re using a rather old phone (e.g. pre Android v8) then it will use BLE GATT which is a few kilobytes per second.
+
 ### How much data can Ditto hold? How big can a Ditto document be?
 
 There isn't a size limit to a Ditto document or store. Like other databases, Ditto will use as much data as you insert into the device. Controlling the size of Ditto in your app is completely up to your descretion.
