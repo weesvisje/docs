@@ -113,7 +113,7 @@ Yes. The Ditto SDK provides `tryStartSync()` and `stopSync()` methods that will 
 
 ### Will the app sync in the background?
 
-Partial support. iOS offers best-effort background sync provided Bluetooth LE is enabled and the Bluetooth central and peripheral background modes are enabled. Android can sync in the background over WiFi. Development is ongoing to permit background sync in more scenarios.
+[iOS](/ios/quick-tips/prolonged-background-sync) offers best-effort background sync provided Bluetooth LE is enabled and the Bluetooth central and peripheral background modes are enabled. Android can sync in the background over WiFi. 
 
 ### Does the sync happen even when the device is locked?
 
