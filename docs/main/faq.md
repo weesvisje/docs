@@ -9,8 +9,8 @@ sidebar_position: 14
 
 There are 3 ways for Ditto enabled apps to sync without connectivity.
 
-* WiFi Access Point
-WiFi Access Point is when devices discover and sync with each other over the same local network. Typically, this means you have a wireless access point where your devices are all connected to. Even if the internet or modem fails, devices will still be able to synchronize. This is completely cross platform
+* WiFi Access Point (LAN)
+WiFi Access Point, also known as LAN, is when devices discover and sync with each other over the same local network. Typically, this means you have a wireless access point where your devices are all connected to. Even if the internet or modem fails, devices will still be able to synchronize. This is completely cross platform
 
 * WiFi Direct and Apple Wireless Direct
 iOS and Android devices are able to create peer to peer WiFi connections with each other. However these are not cross platform. Meaning that, iOS devices are only able to connect to other iOS devices via Apple Wireless Direct. Android devices are able to make P2P WiFi Direct connections with each other.
