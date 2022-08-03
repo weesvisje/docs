@@ -155,7 +155,7 @@ If a device is disconnected, this will be reflected through the `observePeers()`
 
 ### Can I specify the connection type?
 
-You can specify which transport types to enable, e.g. Bluetooth only, WiFi only, or everything. Ditto will use its own algorithms to decide which devices to connect to and which modes to use.
+You can specify which transport types to enable, e.g. Bluetooth only, WiFi only, or everything. Ditto will use its own algorithms to decide which devices to connect to and which modes to use. Ditto always prioritizes the fastest connection that is available, and will optimistically upgrade to a faster connection whenever possible. 
 
 ### Can you keep track of offline devices in your team?
 
