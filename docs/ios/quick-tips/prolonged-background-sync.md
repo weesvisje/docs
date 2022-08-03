@@ -8,6 +8,9 @@ background. If you need Ditto to continue syncronizing while the application is
 in the background, you need to tell iOS to keep the app active. To do this, we
 recommend playing silent music in the background.
 
+Firstly, make sure you have enabled audio and Bluetooth background capabilities:
+![](./background_capabilities.png)
+
 ```swift
 final public class BackgroundSync {
     public static let shared = BackgroundSync()
@@ -30,6 +33,7 @@ final public class BackgroundSync {
 
     public func start() {
         if (isOn) { return }
+        isOn = true
 
         NotificationCenter.default.addObserver(self, selector: #selector(interuptedAudio), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
         self.player.play()
@@ -40,6 +44,7 @@ final public class BackgroundSync {
         NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: nil)
         if player.isPlaying {
             player.stop()
+            isOn = false
             print("BackgroundSync stopped")
         }
     }
