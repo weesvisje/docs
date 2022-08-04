@@ -10,7 +10,10 @@ import SnippetGroup from '@site/src/components/SnippetGroup';
 There are instances where you may want to configure additional connections configurations for the current Ditto instance. This section will teach you how to configure your Ditto instance to listen for connections on a port explicitly and to connect to remote instances via a host (IP) and port. To do this, _before_ you call `tryStartSync()`, construct a `DittoTransportConfig` value and set `ditto.SetTransportConfig`.
 
 :::info
-If you do not attempt to configure a `DittoTransportConfig` but call `ditto.TryStartSync()`, your Ditto instance will automatically attempt to connect to other ditto instances on the Local Area Network. However, if you supply a `DittoTransportConfig`, this will not automatically be enabled. You'll need to remember to enable local area network peer to peer connnections with `EnableAllPeerToPeer()`.
+Ditto will automatically attempt to connect to other ditto instances on
+the Local Area Network, Bluetooth, and AWDL. However, if you supply a
+`DittoTransportConfig`, this will not automatically be enabled. You'll need to
+remember to enable peer to peer connnections with `EnableAllPeerToPeer()`.  
 :::
 
 ## Observing Peers 
