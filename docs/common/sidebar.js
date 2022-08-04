@@ -73,11 +73,7 @@ module.exports = function (opts) {
           dirName: 'common/how-it-works'
         }]
       },
-      opts.api && {
-        type: "link",
-        label: "API Reference", 
-        href: opts.api,
-      },
+      opts.api,
       "common/supported-platforms",
       "common/v2",
       "common/troubleshooting"
