@@ -6,7 +6,7 @@
         "installation",
         {
           type: "category",
-          label: "Main Concepts",
+          label: "Getting Started",
           collapsed: false,
           items: [
             'common/concepts/documents',
