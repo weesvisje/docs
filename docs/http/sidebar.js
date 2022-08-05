@@ -28,6 +28,7 @@
           },
         "api",
         "how-it-works",
+        "common/v2",
     ]
 }
  

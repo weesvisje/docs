@@ -1,597 +1,880 @@
 ---
-title: 'API'
+title: 'API Reference'
 sidebar_position: 2
 ---
 
-## `POST /api/v1/store`
+## OpenAPI 
 
-All RPC requests are POST requests to `https://<app-uuid>.cloud.ditto.live/api/v1/store`.  
-
+All RPC requests are POST requests to `https://{app_id}.cloud.ditto.live/api/v2/store`.  
 
 <details>
-<summary>RPC Request Schema</summary>
+<summary>OpenAPI Spec (swagger.json)</summary>
 
   ```json
-  {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "RPC Request",
-    "description": "This is defines the contents of any request to /api/v1/store.  This object should be serialized as JSON or CBOR and be in the body of the POST",
-    "oneOf": [
+ {
+    "openapi": "3.0.3",
+    "info": {
+      "title": "Ditto HTTP RPC API",
+      "version": "2.0.0"
+    },
+    "servers": [
       {
-        "title": "Find Parameters",
-        "type": "object",
-        "required": [
-          "method",
-          "parameters"
-        ],
-        "properties": {
-          "method": {
-            "type": "string",
-            "enum": [
-              "find"
-            ]
-          },
-          "parameters": {
-            "type": "object",
-            "required": [
-              "args",
-              "collection",
-              "query"
-            ],
-            "properties": {
-              "args": {
-                "title": "Query Arguments",
-                "description": "If any variables are used in the query then the values should be passed in here.",
-                "type": [
-                  "object",
-                  "null"
-                ]
-              },
-              "collection": {
-                "title": "Collection",
-                "description": "The name of the collection to query",
-                "type": "string"
-              },
-              "describe": {
-                "title": "Describe",
-                "description": "Turns the query into a Describe query",
-                "default": false,
-                "type": "boolean"
-              },
-              "limit": {
-                "title": "Limit",
-                "description": "The maximum number of values to return",
-                "default": 1000,
-                "type": "integer",
-                "format": "uint32",
-                "maximum": 10000.0,
-                "minimum": 0.0
-              },
-              "offset": {
-                "title": "Offset",
-                "description": "The number of records to skip at the beginning of a query",
-                "type": [
-                  "integer",
-                  "null"
-                ],
-                "format": "uint32",
-                "minimum": 0.0
-              },
-              "query": {
-                "title": "Query",
-                "description": "The query to run",
-                "type": "string"
-              }
-            }
-          }
-        }
-      },
-      {
-        "title": "FindById Parameters",
-        "type": "object",
-        "required": [
-          "method",
-          "parameters"
-        ],
-        "properties": {
-          "method": {
-            "type": "string",
-            "enum": [
-              "findById"
-            ]
-          },
-          "parameters": {
-            "type": "object",
-            "required": [
-              "_id",
-              "collection"
-            ],
-            "properties": {
-              "_id": {
-                "$ref": "#/definitions/AnyValue"
-              },
-              "collection": {
-                "title": "Collection",
-                "description": "The name of the collection to query",
-                "type": "string"
-              }
-            }
-          }
-        }
-      },
-      {
-        "title": "Write Parameters",
-        "type": "object",
-        "required": [
-          "method",
-          "parameters"
-        ],
-        "properties": {
-          "method": {
-            "type": "string",
-            "enum": [
-              "write"
-            ]
-          },
-          "parameters": {
-            "type": "object",
-            "required": [
-              "commands"
-            ],
-            "properties": {
-              "commands": {
-                "title": "Commands",
-                "description": "The list of all write commands to be run.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/WriteCommand"
-                }
-              }
-            }
+        "url": "https://{app_id}.cloud.ditto.live/api/v2/store",
+        "description": "The Ditto Big Peer that syncronizes and makes data availabile cloud compute & storage.",
+        "variables": {
+          "app_id": {
+            "default": "REPLACE_WITH_MY_APP_ID",
+            "description": "This is your App ID from the Ditto Portal"
           }
         }
       }
     ],
-    "definitions": {
-      "AnyValue": true,
-      "UpdateCommand": {
-        "type": "object",
-        "required": [
-          "method",
-          "path"
-        ],
-        "properties": {
-          "method": {
-            "title": "Method",
-            "description": "The operation to perform on the property.",
-            "allOf": [
-              {
-                "$ref": "#/definitions/UpdateCommandMethod"
-              }
-            ]
-          },
-          "path": {
-            "type": "string"
-          },
-          "value": {
-            "title": "Value",
-            "description": "The value to use in the operation.",
-            "default": null,
-            "allOf": [
-              {
-                "$ref": "#/definitions/AnyValue"
-              }
-            ]
-          }
-        }
-      },
-      "UpdateCommandMethod": {
-        "type": "string",
-        "enum": [
-          "set",
-          "increment"
-        ]
-      },
-      "WriteCommand": {
-        "oneOf": [
-          {
-            "title": "Update Command",
-            "description": "If a value matching this query exists, update it with each given command.",
-            "type": "object",
-            "required": [
-              "args",
-              "collection",
-              "commands",
-              "method",
-              "query"
-            ],
-            "properties": {
-              "args": {
-                "title": "Query Arguments",
-                "description": "If any variables are used in the query then the values should be passed in here.",
-                "type": [
-                  "object",
-                  "null"
-                ]
-              },
-              "collection": {
-                "type": "string"
-              },
-              "commands": {
-                "title": "Commands",
-                "description": "This is a series of commands to be applied to the matched documents.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/UpdateCommand"
+    "paths": {
+      "/find": {
+        "post": {
+          "description": "",
+          "operationId": "find_endpoint",
+          "requestBody": {
+            "description": "Find up to $limit number of records from an $offset in the $collection.  The query is formed with the parameter $query and the parameters $args.  Optionally query details can be turned on with $describe and type annotation can be enabled with $serializeAs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindRequest"
                 }
-              },
-              "method": {
-                "type": "string",
-                "enum": [
-                  "update"
-                ]
-              },
-              "query": {
-                "title": "Query",
-                "description": "The query to run",
-                "type": "string"
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "The call was completed successfully, even if not records were found.  Anydocuments found will be returned as an array in the documents parameter.  If no records are found it will be an empty array ",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/FindResponse"
+                  }
+                },
+                "application/cbor": {
+                  "schema": {
+                    "$ref": "#/components/schemas/FindResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                },
+                "application/cbor": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Forbidden",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                },
+                "application/cbor": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                },
+                "application/cbor": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                }
               }
             }
           },
-          {
-            "title": "Upsert Command",
-            "description": "If a value matching this ID exists, update it with the contents of value.  If it doesn't exist, insert it.",
-            "type": "object",
-            "required": [
-              "collection",
-              "method",
-              "value"
-            ],
-            "properties": {
-              "collection": {
-                "type": "string"
-              },
-              "method": {
-                "type": "string",
-                "enum": [
-                  "upsert"
-                ]
-              },
-              "value": {
-                "title": "Value to Upsert",
-                "description": "The new document to insert.  This must document be an object with an _id parameter",
-                "type": "object"
+          "deprecated": false
+        }
+      },
+      "/findbyid": {
+        "post": {
+          "description": "",
+          "operationId": "find_by_id_endpoint",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindByIdRequest"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "RPC call was successful",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/FindByIdResponse"
+                  }
+                },
+                "application/cbor": {
+                  "schema": {
+                    "$ref": "#/components/schemas/FindByIdResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                },
+                "application/cbor": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Forbidden",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                },
+                "application/cbor": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                },
+                "application/cbor": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                }
               }
             }
           },
-          {
-            "title": "Remove Command",
-            "description": "Run a query and delete all documents that match.",
-            "type": "object",
-            "required": [
-              "args",
-              "collection",
-              "method",
-              "query"
-            ],
-            "properties": {
-              "args": {
-                "title": "Query Arguments",
-                "description": "If any variables are used in the query then the values should be passed in here.",
-                "type": [
-                  "object",
-                  "null"
-                ]
-              },
-              "collection": {
+          "deprecated": false
+        }
+      },
+      "/write": {
+        "post": {
+          "description": "",
+          "operationId": "write_endpoint",
+          "parameters": [
+            {
+              "name": "X-DITTO-CLIENT-ID",
+              "in": "header",
+              "description": "The client ID to be used for this request.",
+              "required": true,
+              "deprecated": false,
+              "schema": {
                 "type": "string"
               },
-              "method": {
-                "type": "string",
-                "enum": [
-                  "remove"
-                ]
-              },
-              "query": {
-                "title": "Query",
-                "description": "The query to run",
+              "example": "AAAAAAAAAAAAAAAAAAAAew=="
+            },
+            {
+              "name": "X-DITTO-TXN-ID",
+              "in": "header",
+              "description": "This optional header is the minimum transaction ID to act on.  If big peer isn't on the transaction ID or newer then a 404 will be returned with no changes made.",
+              "required": false,
+              "deprecated": false,
+              "schema": {
                 "type": "string"
               }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WriteRequest"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "RPC call was successful",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/WriteResponse"
+                  }
+                },
+                "application/cbor": {
+                  "schema": {
+                    "$ref": "#/components/schemas/WriteResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                },
+                "application/cbor": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Forbidden",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                },
+                "application/cbor": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                },
+                "application/cbor": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RpcError"
+                  }
+                }
+              }
+            }
+          },
+          "deprecated": false
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "FindResponse": {
+          "type": "object",
+          "required": [
+            "documents"
+          ],
+          "properties": {
+            "txnId": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "documents": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Document"
+              }
+            }
+          },
+          "example": {
+            "documents": {
+              "id": 1,
+              "contents": {
+                "name": "Francis",
+                "favoriteBook": {
+                  "title": "The Great Gatsby",
+                  "published": 1925
+                }
+              }
+            },
+            "txnId": 9000
+          }
+        },
+        "SerializedAs": {
+          "type": "string",
+          "default": "latestValues",
+          "enum": [
+            "latestValues",
+            "latestValuesAndTypes"
+          ]
+        },
+        "FindByIdResponse": {
+          "type": "object",
+          "properties": {
+            "txnId": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Transaction ID"
+            },
+            "document": {
+              "$ref": "#/components/schemas/Document"
             }
           }
-        ]
-      }
-    }
-  }
-  ```
-</details>
-
-<details>
-<summary>RPC Response Schema</summary>
-
-
-  ```json
-  {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "RpcResponse",
-    "anyOf": [
-      {
-        "title": "FindById Response",
-        "type": "object",
-        "properties": {
-          "document": {
-            "title": "Document",
-            "description": "The contents of the document, if found",
-            "anyOf": [
+        },
+        "RpcError": {
+          "type": "object",
+          "required": [
+            "message"
+          ],
+          "properties": {
+            "message": {
+              "type": "string",
+              "description": "A human readable description"
+            }
+          },
+          "description": "Error during request",
+          "example": {
+            "message": "Some kind of human readable description of the error"
+          }
+        },
+        "Update": {
+          "type": "object",
+          "required": [
+            "collection",
+            "query",
+            "commands"
+          ],
+          "properties": {
+            "args": {
+              "$ref": "#/components/schemas/AnyValue"
+            },
+            "collection": {
+              "type": "string",
+              "description": "The Collection type"
+            },
+            "commands": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/UpdateCommand"
+              }
+            },
+            "query": {
+              "type": "string",
+              "description": "The query"
+            }
+          },
+          "description": "Update an existing value"
+        },
+        "Remove": {
+          "type": "object",
+          "required": [
+            "collection",
+            "query"
+          ],
+          "properties": {
+            "query": {
+              "type": "string"
+            },
+            "collection": {
+              "type": "string"
+            },
+            "args": {
+              "$ref": "#/components/schemas/AnyValue"
+            }
+          },
+          "description": "Removing a field"
+        },
+        "WriteCommand": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "update": {
+                  "$ref": "#/components/schemas/Update"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "upsert": {
+                  "$ref": "#/components/schemas/Upsert"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "remove": {
+                  "$ref": "#/components/schemas/Remove"
+                }
+              }
+            }
+          ],
+          "description": "The corresponding database transaction to perform"
+        },
+        "WriteCommandResult": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "update": {
+                  "$ref": "#/components/schemas/UpdateResult"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "upsert": {
+                  "$ref": "#/components/schemas/UpsertResult"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "remove": {
+                  "$ref": "#/components/schemas/RemoveResult"
+                }
+              }
+            }
+          ]
+        },
+        "TypeOverride": {
+          "type": "string",
+          "description": "This is a list of possible value type overrides for an upsert.  We will accept counter or",
+          "enum": [
+            "counter",
+            "register"
+          ]
+        },
+        "UpsertResult": {
+          "type": "object",
+          "required": [
+            "transactionId"
+          ],
+          "properties": {
+            "transactionId": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "FindRequest": {
+          "type": "object",
+          "required": [
+            "collection",
+            "query",
+            "limit",
+            "describe",
+            "serializedAs"
+          ],
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "format": "int32",
+              "description": "The limit",
+              "default": 1000
+            },
+            "describe": {
+              "type": "boolean",
+              "default": false
+            },
+            "query": {
+              "type": "string",
+              "description": "The parameterized query to run."
+            },
+            "serializedAs": {
+              "$ref": "#/components/schemas/SerializedAs"
+            },
+            "args": {
+              "$ref": "#/components/schemas/AnyValue"
+            },
+            "collection": {
+              "type": "string",
+              "description": "The collection to query"
+            },
+            "offset": {
+              "type": "integer",
+              "format": "int32",
+              "description": "The offset"
+            }
+          },
+          "description": "A data transfer object for a request to the \"Find\" RPC method.  This can either come in directly or nested inside of a [RpcRequest]",
+          "example": {
+            "collection": "people",
+            "query": "favoriteBook.title == 'The Great Gatsby'"
+          }
+        },
+        "UpdateResult": {
+          "type": "object",
+          "required": [
+            "transactionId",
+            "updated",
+            "error",
+            "internalError",
+            "permissionDenied"
+          ],
+          "properties": {
+            "transactionId": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "error": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "internalError": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "permissionDenied": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "updated": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "RemoveResult": {
+          "type": "object",
+          "required": [
+            "transactionId",
+            "deleted",
+            "permissionDenied",
+            "internalError"
+          ],
+          "properties": {
+            "permissionDenied": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "deleted": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "internalError": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "transactionId": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "WriteResponse": {
+          "type": "object",
+          "required": [
+            "results"
+          ],
+          "properties": {
+            "results": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/WriteCommandResult"
+              }
+            }
+          },
+          "description": "Response from a write"
+        },
+        "FindByIdRequest": {
+          "type": "object",
+          "required": [
+            "collection",
+            "id",
+            "serializedAs"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/components/schemas/AnyValue"
+            },
+            "serializedAs": {
+              "$ref": "#/components/schemas/SerializedAs"
+            },
+            "collection": {
+              "type": "string",
+              "description": "The name of the ditto collection"
+            }
+          },
+          "description": "Find a document by it's id",
+          "example": {
+            "collection": "people",
+            "id": "abc123"
+          }
+        },
+        "UpdateCommandMethod": {
+          "type": "string",
+          "description": "Update commands for mutatable fields",
+          "enum": [
+            "set",
+            "increment",
+            "replaceWithCounter"
+          ]
+        },
+        "UpdateCommand": {
+          "type": "object",
+          "required": [
+            "method",
+            "path",
+            "value"
+          ],
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "value": {
+              "$ref": "#/components/schemas/AnyValue"
+            },
+            "method": {
+              "$ref": "#/components/schemas/UpdateCommandMethod"
+            }
+          },
+          "description": "Update an existing value"
+        },
+        "Upsert": {
+          "type": "object",
+          "required": [
+            "collection",
+            "id",
+            "value"
+          ],
+          "properties": {
+            "valueTypeOverrides": {
+              "type": "object"
+            },
+            "value": {
+              "$ref": "#/components/schemas/AnyValue"
+            },
+            "id": {
+              "$ref": "#/components/schemas/AnyValue"
+            },
+            "collection": {
+              "type": "string"
+            }
+          },
+          "description": "Upserting a value"
+        },
+        "Document": {
+          "type": "object",
+          "required": [
+            "id",
+            "fields"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/components/schemas/AnyValue"
+            },
+            "fields": {
+              "$ref": "#/components/schemas/AnyValue"
+            }
+          },
+          "description": "A Document is a Map that can contain other CRDT types"
+        },
+        "WriteRequest": {
+          "type": "object",
+          "required": [
+            "commands"
+          ],
+          "properties": {
+            "commands": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/WriteCommand"
+              }
+            }
+          },
+          "description": "Open a write transaction",
+          "example": {
+            "collection": "people",
+            "commands": [
               {
-                "$ref": "#/definitions/AnyValue"
-              },
-              {
-                "type": "null"
+                "method": "upsert",
+                "collection": "people",
+                "id": 1,
+                "value": {
+                  "name": "Susan",
+                  "age": 31,
+                  "favoriteBook": {
+                    "published": 1925,
+                    "title": "The Great Gatsby"
+                  }
+                }
               }
             ]
-          },
-          "txnId": {
-            "title": "Transaction ID",
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "uint64",
-            "minimum": 0.0
-          },
-          "version": {
-            "title": "Version",
-            "deprecated": true,
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "uint64",
-            "minimum": 0.0
           }
-        }
+        },
+        "AnyValue": {}
       },
-      {
-        "title": "Find Response",
-        "type": "object",
-        "required": [
-          "documents"
-        ],
-        "properties": {
-          "documents": {
-            "title": "Documents",
-            "description": "All documents matching the query.  If none the array will be empty",
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/AnyValue"
-            }
-          },
-          "txnId": {
-            "title": "Transaction ID",
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "uint64",
-            "minimum": 0.0
-          },
-          "version": {
-            "title": "Version",
-            "deprecated": true,
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "uint64",
-            "minimum": 0.0
-          }
-        }
-      },
-      {
-        "title": "Write Response",
-        "type": "object",
-        "required": [
-          "results"
-        ],
-        "properties": {
-          "results": {
-            "title": "Results",
-            "description": "The individual results of each write command in the call",
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/WriteCommandResult"
-            }
-          }
+      "securitySchemes": {
+        "api_jwt_token": {
+          "type": "http",
+          "scheme": "bearer"
         }
       }
-    ],
-    "definitions": {
-      "AnyValue": true,
-      "WriteCommandResult": {
-        "oneOf": [
-          {
-            "title": "Update Command Result",
-            "type": "object",
-            "required": [
-              "error",
-              "internalError",
-              "method",
-              "permissionDenied",
-              "transactionId",
-              "updated"
-            ],
-            "properties": {
-              "error": {
-                "title": "Error",
-                "description": "The number of records that matched the query but were not updated due to an problem applying the command.",
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              },
-              "internalError": {
-                "title": "Internal Error",
-                "description": "The number of records that matched the query but were not updated due to some type of internal error",
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              },
-              "method": {
-                "type": "string",
-                "enum": [
-                  "update"
-                ]
-              },
-              "permissionDenied": {
-                "title": "Permission Denied",
-                "description": "The number of records that matched the query but the client doesn't have sufficient permission to update",
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              },
-              "transactionId": {
-                "title": "Transaction ID",
-                "description": "The ID of the transaction for the update.  Use this to ensure read-follows-writes consistency.",
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              },
-              "updated": {
-                "title": "Updated",
-                "description": "The number of documents successfully updated",
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              }
-            }
-          },
-          {
-            "title": "Upsert Command Result",
-            "type": "object",
-            "required": [
-              "method",
-              "transactionId"
-            ],
-            "properties": {
-              "method": {
-                "type": "string",
-                "enum": [
-                  "upsert"
-                ]
-              },
-              "transactionId": {
-                "title": "Transaction ID",
-                "description": "The ID of the transaction for the insert or update.  Use this to ensure read-follows-writes consistency.",
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              }
-            }
-          },
-          {
-            "type": "object",
-            "required": [
-              "deleted",
-              "internalError",
-              "method",
-              "permissionDenied",
-              "transactionId"
-            ],
-            "properties": {
-              "deleted": {
-                "title": "Deleted",
-                "description": "The number of records that matched the query and were successfully deleted.",
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              },
-              "internalError": {
-                "title": "Internal Error",
-                "description": "The number of records that matched the query but were not deleted due to some type of internal error",
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              },
-              "method": {
-                "type": "string",
-                "enum": [
-                  "remove"
-                ]
-              },
-              "permissionDenied": {
-                "title": "Permission Denied",
-                "description": "The number of records that matched the query but the client doesn't have sufficient permission to delete.",
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              },
-              "transactionId": {
-                "title": "Transaction ID",
-                "description": "The ID of the transaction for the remove.  Use this to ensure read-follows-writes consistency.",
-                "type": "integer",
-                "format": "uint64",
-                "minimum": 0.0
-              }
-            }
-          }
-        ]
-      }
+    },
+    "externalDocs": {
+      "url": "https://docs.ditto.live/http/installation/",
+      "description": "For more detailed instructions on how to use this API and the Ditto SDK, please see the documentation."
     }
-  }
+}
   ```
-
-
 </details>
 
 
+## Usage
 
-All methods will accept or return JSON or CBOR depending on the accept and content-type headers you use.  There are a few parameters that are required for all methods. 
 
-* `method`: `write`, `find` and `findById`.  
-* `parameters`: (object). Contain an object of parameters to that method.  The contents of the parameter field will depend on which method is being used.  
+The HTTP API is accessible through the `https://{app_id}.cloud.ditto.live/api/v2/store/[method]` endpoint.
 
-### Example
+### Endpoints
 
-Below see an example HTTP request. Notice that commands is an array.  You are able to string together multiple write commands together in order here and each will be performed serially.  The response will contain an individual result object for each write command.  Each write will be in a separate transaction and the transaction IDs can be found in the response.
+* `/api/v2/store/write`
+* `/api/v2/store/findbyid`
+* `/api/v2/store/find`
 
-```bash
-curl --verbose -X POST --data '{
-   "method": "write",
-   "parameters": {
+
+### Write
+
+A full example with `curl` that shows how to use the HTTP API to create explicit
+types. In this example, we create a `friends` key with a Register that is an
+array, and `orderCount` which is a counter.
+
+
+```
+curl -X POST 'https://<CLOUD_ENDPOINT>/api/v2/store/write' \
+  --header 'X-DITTO-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+  --header 'Content-Type: application/json' \
+  --data-raw '{
       "commands": [{
-         "method": "upsert",
-         "collection": "cars",
-         "value": {
-            "_id": "car",
-            "make": "Toyota",
-            "year": 2004
-         }
+        "method": "upsert",
+        "collection": "people",
+        "id": "123abc",
+        "value": {
+          "name": "John",
+          "friends": ["Susan"],
+          "orderCount": 5
+        },
+        "valueTypeOverrides": {
+          "orderCount": "counter"
+        }
       }]
-   }
-}'  -H 'X-DITTO-CLIENT-ID: AAAAAAAAAAAAAAAAAAAAew==' -H 'Content-Type: application/json' -H 'Accept: application/json' http://${APP_DOMAIN}/api/v1/store
+  }'
 ```
 
-The resulting response will be:
+To create and modify a mutable type such as Register Map or Counter in the HTTP API
+for v2, you can annotate the value with the type you intend to use. In v2, Arrays are registers by default. That means you do not need to add
+`register` to the `valueTypeOverrides` payload, but you can if you want to be
+explicit.
+
+In this example, We use the `counter` override by adding the following key to the payload:
 
 ```
-{"results":[{"method":"upsert","transactionId":62}]}
+"valueTypeOverrides": {
+  "orderCount": "counter",
+  "friends": "register"
+}
 ```
-
-For more examples, see the corresponding sections in the Concepts section for [querying](/concepts/querying), [update](/concepts/update), and [remove](/concepts/remove).
 
 :::info
+**Can I issue a find query inside of a write command?**
 
-**Can I do a query inside of an upsert?**
-
-No. The HTTP API will look to see if a document with that _id
-exists, and then merge the two. 
-
-To implement `update` behavior, you must issue two HTTP requests.  First, send a `find`, and then after a response, send an `upsert` request.
+No. First, send a `find`, and then after a response, send an `write` request.
 ::::
 
-### Distinct Values
+### FindByID
 
-`POST https://<app-uuid>.cloud.ditto.live/api/v1/documents/<collection>/distinct_values`
+
+To find this document you can use `/api/v2/store/findbyid`:
+```
+curl --location --request POST 'https://<CLOUD_ENDPOINT>/api/v2/store/findbyid' \
+--header 'X-DITTO-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "collection": "people",
+  "id": "123abc"
+}'
+```
+
+```
+{
+  "collection": "people",
+  "id": "123abc"
+}
+```
+
+### Find
+
+When you query for this data using `/api/v2/store/find`, you can use the key `serializedAs: latestValuesAndTypes`  to receive a response with each
+type specified:
+
+Request:
+```
+curl -X POST 'https://<CLOUD_ENDPOINT>/api/v2/store/find' \
+  --header 'X-DITTO-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
+  --header 'Content-Type: application/json' \
+  --data-raw '{
+    "collection": "people",
+    "query": "name=='John'",
+    "limit": 2,
+    "serializedAs": "latestValuesAndTypes"
+}'
+```
+
+Response: 
+
+```json
+{
+  "value": {
+    "_id": "123abc",
+    "fields": {
+      "name": {
+          "register": { "value": "John" },
+      },
+      "friends": {
+          "register": { "value": ["Susan"] },
+      },
+      "orderCount": {
+          "counter": { "value": 5 }
+      },
+    }
+  }
+}
+```
+
+For more examples, see the corresponding sections in the Concepts section for [querying](./common/concepts/querying), [update](./common/concepts/update), and [remove](./common/concepts/remove).
+
+## Distinct Values
+
+`POST https://<app-uuid>.cloud.ditto.live/api/v1/collections/<collection_name>/distinct_values`
 
 Query for the distinct values in a collection. Returns a single document containing the paths and their distinct values.  Paths are specified as json arrays of strings. This query expects a body of json in the following format:
 
