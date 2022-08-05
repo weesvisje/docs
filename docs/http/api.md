@@ -770,7 +770,7 @@ array, and `orderCount` which is a counter.
 
 
 ```
-curl -X POST 'https://<CLOUD_ENDPOINT>/api/v2/store/write' \
+curl -X POST 'https://{app_id}.cloud.ditto.live/api/v2/store/write' \
   --header 'X-DITTO-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
   --header 'Content-Type: application/json' \
   --data-raw '{
@@ -815,7 +815,7 @@ No. First, send a `find`, and then after a response, send an `write` request.
 
 To find this document you can use `/api/v2/store/findbyid`:
 ```
-curl --location --request POST 'https://<CLOUD_ENDPOINT>/api/v2/store/findbyid' \
+curl --location --request POST 'https://{app_id}.cloud.ditto.live/api/v2/store/findbyid' \
 --header 'X-DITTO-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -838,7 +838,7 @@ type specified:
 
 Request:
 ```
-curl -X POST 'https://<CLOUD_ENDPOINT>/api/v2/store/find' \
+curl -X POST 'https://{app_id}.cloud.ditto.live/api/v2/store/find' \
   --header 'X-DITTO-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
   --header 'Content-Type: application/json' \
   --data-raw '{
@@ -874,7 +874,7 @@ For more examples, see the corresponding sections in the Concepts section for [q
 
 ## Distinct Values
 
-`POST https://<app-uuid>.cloud.ditto.live/api/v1/collections/<collection_name>/distinct_values`
+`POST https://{app_id}.cloud.ditto.live/api/v1/collections/<collection_name>/distinct_values`
 
 Query for the distinct values in a collection. Returns a single document containing the paths and their distinct values.  Paths are specified as json arrays of strings. This query expects a body of json in the following format:
 

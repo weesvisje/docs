@@ -12,10 +12,10 @@ The Ditto HTTP API follows a RESTful pattern and is organized into several resou
 
 The Ditto HTTP API provides a programmatic interface for interactions with Ditto-powered Apps which expose an HTTP Server Interface. A primary use case for the HTTP API is external systems which integrate with `cloud.ditto.live`.
 
-The canonical root URL for the HTTP API is `https://<app-uuid>.cloud.ditto.live/api/v2/`. The standard port 443 is used.
+The canonical root URL for the HTTP API is `https://{app_id}.cloud.ditto.live/api/v2/`. The standard port 443 is used.
 
 ```bash
-curl https://f81d4fae-7dec-11d0-a765-00a0c91e6bf6.cloud.ditto.live/api/v1
+curl https://{app_id}.cloud.ditto.live/api/v2
 ```
 
 For simple examples for using the HTTP API for document storage, see the corresponding sections in the Concepts section for [querying](/concepts/querying), [update](/concepts/update), and [remove](/concepts/remove). 
@@ -34,7 +34,7 @@ Ditto HTTP API errors are indicated with an HTTP Status Code and with a JSON res
 
 ## Authorization
 
-Access to the Ditto HTTP API is mediated by an `Authorization: Bearer` HTTP Header containing a valid, signed, JWT Token (RFC 7519). This token can be obtained from the following endpoint: `https://<app-uuid>.cloud.ditto.live/_ditto/auth/login`. See [Online With Authentication](/security/online-with-authentication) to secure your HTTP endpoint.
+Access to the Ditto HTTP API is mediated by an `Authorization: Bearer` HTTP Header containing a valid, signed, JWT Token (RFC 7519). This token can be obtained from the following endpoint: `https://{app_id}.cloud.ditto.live/_ditto/auth/login`. See [Online With Authentication](/security/online-with-authentication) to secure your HTTP endpoint.
 
 The JWT encodes the identity of the client, the target application, and the permissions the client is entitled to access.
 

@@ -460,7 +460,7 @@ authenticator->login_with_token("123", "my-auth", [](std::unique_ptr<DittoError>
 <TabItem value="http">
 
   ```bash
-  curl -X DELETE 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents/<doc_id>' \
+  curl -X DELETE 'https://{app_id}.cloud.ditto.live/api/v1/collections/people/documents/<doc_id>' \
     --header 'X-DITTO-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
     --header 'Content-Type: application/json' 
   ```

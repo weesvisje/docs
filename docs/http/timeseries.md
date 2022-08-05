@@ -6,7 +6,7 @@ sidebar_position: 3
 ## Events
 
 
-`https://<app-uuid>.cloud.ditto.live/api/v1/timeseries/<timeseries_id>/events`
+`https://{app_id}>.cloud.ditto.live/api/v1/timeseries/<timeseries_id>/events`
 
 ### `POST` 
 
@@ -164,7 +164,7 @@ Delete a Range of Events from a TimeSeries. Accepts most of the same arguments a
 
 ## Distinct Values
 
-`https://<app-uuid>.cloud.ditto.live//api/v2/timeseries/<timeseries_id>/distinct_values`
+`https://{app_id}.cloud.ditto.live//api/v2/timeseries/<timeseries_id>/distinct_values`
 
 ### ```POST```
 

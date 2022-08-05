@@ -31,7 +31,7 @@ While the script is running, make a change to see the event in the console. For 
 <TabItem value="http">
 
   ```bash
-  curl -X POST 'https://<CLOUD_ENDPOINT>/api/v1/collections/people/documents' \
+  curl -X POST 'https://{app_id}.cloud.ditto.live/api/v1/collections/people/documents' \
     --header 'X-DITTO-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
     --header 'Content-Type: application/json' \
     --data-raw '{"name": "Susan", "age": 31}'
