@@ -50,47 +50,7 @@ Now you will be able to access this Ditto anywhere in your application like so:
 val docs = TasksApplication.ditto!!.store["tasks].findAll().exec()
 ```
 
-## 2-3 Add Permissions and Register Class
-
-In order for Ditto to sync, we will need to add permissions to the __AndroidManifest.xml__ file. [For more information about these permissions, click here](/installation/android#android-platform-permissions). In addition we will need to register our custom `TasksApplication` as the main Application class in the `<application>` tag.
-
-```diff title="AndroidManifest.xml" {5-15,18}
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="live.ditto.compose.tasks">
-
-    <uses-permission android:name="android.permission.BLUETOOTH"
-        android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
-        android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
-        android:usesPermissionFlags="neverForLocation" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
-        android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"
-        android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-
-
-    <application
-        android:name=".TasksApplication"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        ... more
-        />
-
-```
-
-## 2-4 Start Ditto Sync
+## 2-3 Start Ditto Sync
 
 When Android studio created the project, it should have created a file called __MainActivity.kt__. In this file, we will take the singleton `TasksApplication.ditto!!` and begin to start the sync process with `tryStartSync()`
 
@@ -143,7 +103,7 @@ class MainActivity : ComponentActivity() {
 ```
 
 
-## 2-5 Create a Task data class
+## 2-4 Create a Task data class
 
 Ditto is a document database, which represents all of its rows in the database a JSON-like structure. In this tutorial, we will define each task like so:
 

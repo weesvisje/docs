@@ -23,7 +23,13 @@ And finally click "Finish" and wait for Android Studio to setup the project.
 
 ![](./new-project-2.png)
 
-## 1-2 Add dependencies
+## 1-2 Install Ditto
+
+Android requires requesting permission to use Bluetooth Low Energy and P2P Wifi. 
+
+Follow the [Installation instructions for Android](../../installation).
+
+## 1-3 Add Jetpack Compose dependencies
 
 In your application's Module __build.gradle__ file add the additional dependencies.
 
@@ -33,8 +39,6 @@ dependencies {
 
   // Add the following dependencies below
 
-  // Ditto
-  implementation "live.ditto:ditto:latest.release"
   // Jetpack Compose View Model
   implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
   // Live Data
@@ -45,7 +49,7 @@ dependencies {
 
 ```
 
-## 1-3 Add Vector Icons
+## 1-4 Add Vector Icons
 
 We will need a couple of additional icons to show the tasks' completed, incompleted states. We will reference these vector resources in our code later. You will need to add 3 icons
 

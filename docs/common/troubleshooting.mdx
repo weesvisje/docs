@@ -4,6 +4,10 @@
 
 If you are having trouble syncronizing devices in Ditto, follow this guide.
 
+### Syncronization seems slow, or comes to a halt over time
+
+Ensure that you are only creating a fixed number of live queries. Each live query will 
+
 ### General diagnostics
 
 1. Set `DittoLogger.minimumLogLevel = DittoLogLevel.VERBOSE` before you initialize `Ditto(identity)`.

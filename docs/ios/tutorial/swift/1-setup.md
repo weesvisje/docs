@@ -27,8 +27,3 @@ And finally click "Next" and select a directory to create the application.
 ## 1-2 Add dependencies (Cocoapods or Swift Package Manager)
 
 Follow the instructions on the [Installation page for iOS](/ios/installation) to use CocoaPods or Swift Package Manager.
-
-
-Now open __Tasks.xcworkspace__.
-
-> From now on open up Tasks.xcworkspace and _not_ Tasks.xcproj or else you will not be able to compile references to Ditto

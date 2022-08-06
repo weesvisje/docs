@@ -19,46 +19,19 @@ In newer version of Android Studio the Basic Activity template includes addition
 * fragment_second.xml
 * nav_graph.xml
 
-Android requires requesting permission to use Bluetooth Low Energy and P2P Wifi, open the `AndroidManifest.xml` and add the following:
-
-```xml title=AndroidManifest.xml
-    <uses-permission android:name="android.permission.BLUETOOTH"
-        android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
-        android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
-        android:usesPermissionFlags="neverForLocation" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission
-        android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-```
-
-It should look like this now:
-
-![Create Project 3](./img/create_project3.png)
-
 ## 1-2 Install Ditto
 
-To install Ditto, we need to add it as a dependency in the `build.gradle`
-script for the app, as well as ensuring that we have the relevant Java
-compatibility set:
+To install Ditto, we need to add it as a dependency in the `build.gradle` script for the app, as well as ensuring that we have the relevant Java
+-compatibility set.
 
-<div class="alert alert-warning">
+Android requires requesting permission to use Bluetooth Low Energy and P2P Wifi. Follow the [Installation instructions for Android](../../installation).
+
+
+## 1-3 Add Extensions 
 
 For the UI in this example, we are still using Kotlin synthetics, which are no
 longer bundled automatically. We need to add `kotlin-android-extensions` in the
 the `plugins` section of `build.gradle` to enable.
-</div>
 
 ```xml title=build.gradle
 plugins {
@@ -66,10 +39,6 @@ plugins {
     id 'kotlin-android-extensions'
 }
 
-dependencies {
-    // ...
-    implementation "live.ditto:ditto:2.0.0-alpha1"
-}
 
 android {
     // ...
