@@ -3,14 +3,6 @@ title: 'Using Ditto with Codable Support'
 sidebar_position: 1
 ---
 
-:::info
-This section requires DittoSwift version 1.0.14 or higher. To install a higher version use the following line in your Podfile
-
-```ruby title="Podfile"
-pod 'DittoSwift', '>=1.0.14'
-```
-
-:::
 
 By default `DittoSwift` adds support for Foundaton Framework's [`Codable`](https://developer.apple.com/documentation/foundation/archives_and_serialization/encoding_and_decoding_custom_types) types. This means that it's extremely easy to use static typed structs and classes to serialize and deserialized `DittoDocument` types in your Swift application.
 
@@ -45,8 +37,8 @@ do {
 Once your `Car: Codable` type is defined, you can construct an instance an `insert` the document value 
 
 ```swift
-let car = Car(_id: "123abc", name: "Ford", mileage: 45000, tags: ["A", "B", "C"])
-let insertedId = try! ditto.store["cars"].insert(car)
+let car = Car(_id: "123abc", name: "Ford", mileage: 45000.0, tags: ["A", "B", "C"])
+let insertedId = try! ditto.store["cars"].upsert(car)
 print(insertedId.value) // "616f529700a262fb00b88425"
 
 // We can retrieve our car object by decoding it with `.typed`
@@ -72,7 +64,7 @@ Now you can insert a document by omitting the `_id` parameter while filling out 
 
 ```swift
 let car = Car(name: "Ford", mileage: 45000, tags: ["A", "B", "C"])
-let insertedId = try! ditto.store["cars"].insert(car)
+let insertedId = try! ditto.store["cars"].upsert(car)
 print(insertedId.value) // "616f529700a262fb00b88425"
 ```
 
@@ -101,7 +93,7 @@ Now you can insert a document with your strongly typed structs:
 ```swift
 let _id = OrderLineItem.OrderLineItemId(orderId: "456abc", productId: 56)
 let orderLineItem = OrderLineItem(_id: _id, quantity: 5, price: 12)
-try! ditto.store["orderLineItems"].insert(orderLineItem)
+try! ditto.store["orderLineItems"].upsert(orderLineItem)
 ```
 
 
@@ -157,8 +149,8 @@ Since Ditto is an eventually consistent database, keys may or may not exist sinc
 
 For example it's very possible that __peer A creates a document like so:__
 
-```swift title=Peer A insertion
-try! ditto.store["cars"].insert([
+```swift title=Peer A 
+try! ditto.store["cars"].upsert([
   "_id": "123abc",
   "name": "Honda",
   "mileage": 4500,
@@ -168,8 +160,8 @@ try! ditto.store["cars"].insert([
 
 And __peer B creates a document without the mileage key:__
 
-```swift title=Peer B insertion
-try! ditto.store["cars"].insert([
+```swift title=Peer B 
+try! ditto.store["cars"].upsert([
   "_id": "123abc",
   "name": "Honda",
   "tags": ["a", "z", "g"]
