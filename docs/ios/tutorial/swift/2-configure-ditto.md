@@ -12,27 +12,7 @@ Each app created on the portal has a unique `appID` which can be seen on your ap
 
 For Ditto to fully use all the network transports like Bluetooth Low Energy, Local Area Network, Apple Wireless Direct, the app will need to ask the user for permissions. These permission prompts need to be in the __Info.plist__ file of your project.
 
-1. Locate the __Info.plist__ file
-2. Right click and click __Open As > Source Code__
-
-![Xcode open Info.plist as Source](./xcode-open-plist.png)
-
-3. Add the following XML lines at the bottom before the last `</dict>`
-
-```xml title=Info.plist
-<key>NSBluetoothAlwaysUsageDescription</key>
-<string>Uses Bluetooth to connect and sync with nearby devices</string>
-<key>NSBluetoothPeripheralUsageDescription</key>
-<string>Uses Bluetooth to connect and sync with nearby devices</string>
-<key>NSLocalNetworkUsageDescription</key>
-<string>Uses WiFi to connect and sync with nearby devices</string>
-<key>NSBonjourServices</key>
-<array>
-  <string>_http-alt._tcp.</string>
-</array>
-```
-
-For more information on these permissions [click here](/installation/ios#platform-permissions)
+Follow the instructions on the [iOS Installation page](/installation/ios#platform-permissions).
 
 ## 2-3 Add `ditto` to `TasksApp.swift`
 
