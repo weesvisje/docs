@@ -1,5 +1,5 @@
 ---
-title: 'Configuring Commands'
+title: '2 - Configuring Commands'
 ---
 
 Unlike many UI applications, Console or Command Line applications have limitations to user interactions. For example, console applications typically read text commands during a `while` loop as a standard design pattern. This section will outline the command line design and set up the loop to allow the user to give continual commands.

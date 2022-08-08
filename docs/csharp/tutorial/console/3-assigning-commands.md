@@ -1,5 +1,5 @@
 ---
-title: 'Assigning Commands'
+title: '3 - Assigning Commands'
 ---
 
 ## 3.1 Setting up the `while` loop.

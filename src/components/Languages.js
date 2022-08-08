@@ -6,7 +6,6 @@ import {
   AppleIcon,
   RustIcon,
   PiIcon,
-  XamarinIcon,
   Flutter,
   CPlusPlus
 } from '../assets/icons';
@@ -51,12 +50,6 @@ export default [
     id: 'cpp',
     name: 'C++',
     icon: CPlusPlus 
-  },
-  {
-    id: 'xamarin',
-    name: 'Xamarin',
-    icon: XamarinIcon,
-    disabled: true
   },
   {
     id: 'flutter',

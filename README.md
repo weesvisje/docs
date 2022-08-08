@@ -1,6 +1,5 @@
 # Ditto Documentation Website
 
-
 ## Installation
 
 ```console
@@ -22,16 +21,17 @@ Search is provided by [Algolia](https://algolia.com/). Every time a change is ma
 0. Ensure that your changes have been pushed and deployed to `https://docs.ditto.live`. The scraper runs on the live version of the website, so they need to be deployed before following the rest of these instructions.
 1. Install and run [Docker](https://docs.docker.com/get-docker/)
 2. Get added to the Ditto Algolia account.
-3. Copy the `.env.example` file. 
+3. Copy the `.env.example` file.
 
-```
+```command
 cp algolia/.env.example algolia/.env
 ```
+
 4. Add your Algolia [API Write Key](https://www.algolia.com/account/api-keys/all?applicationId=F25GUUSPFJ) in `.env`
 
 5. Run the Docker script to update the search indexes
 
-```
+```command
 npm run search-indexes
 ```
 

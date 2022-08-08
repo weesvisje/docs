@@ -1,5 +1,5 @@
 ---
-title: 'Setup'
+title: '1 - Setup'
 ---
 
 import Tabs from '@theme/Tabs';
