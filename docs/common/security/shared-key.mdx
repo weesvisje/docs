@@ -45,3 +45,9 @@ The SharedKey identity requires an [offline license token](../mesh-network/offli
 
 <SnippetGroup name='shared-key' />
 
+### How does Shared Key work?
+
+Communication is encrypted using TLS 1.3 and peer identities are verified using certificates. This is the same state-of-the-art technology used in web browsers. It applies to every communication mode from Bluetooth to WiFi.
+
+Each device issues a self-signed TLS certificate using the supplied private key. Peers then only trust peers whose certificates are signed by the same key. In other words it's regular TLS security except everybody is the CA.
+
