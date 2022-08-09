@@ -181,7 +181,6 @@ Our favorite library to help prevent runtime errors of mismatched keys and value
 You can install `BetterCodable` along `DittoSwift` by adding the dependency in your Podfile:
 
 ```ruby title="Podfile"
-pod 'DittoSwift', '>=1.0.14'
 pod 'BetterCodable'
 ```
 
