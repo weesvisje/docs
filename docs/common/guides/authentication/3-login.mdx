@@ -146,15 +146,16 @@ let numberOfCars = 0
   await init() // you need to call this at least once before using any of the Ditto API
 
   function startDitto () {
-    let token = await auth0.getAccessTokenSilently();
 
     const authHandler = {
       authenticationRequired: async function(authenticator) {
+        let token = await auth0.getAccessTokenSilently();
         await authenticator.loginWithToken(token, "my-auth");
         console.log("Login request completed.");
       },
       authenticationExpiringSoon: function(authenticator, secondsRemaining) {
         console.log(`Auth token expiring in ${secondsRemaining} seconds`)
+        let token = await auth0.getAccessTokenSilently();
         await authenticator.loginWithToken(token, "my-auth");
         console.log("Login request completed.");
       }
