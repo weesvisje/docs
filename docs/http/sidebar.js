@@ -26,6 +26,14 @@
               'common/datamodel/map',
             ]
           },
+          {
+            type: "category",
+            label: "Security",
+            items: [
+              'common/security/apikey',
+              'common/security/auth0',
+            ]
+          },
         {
           type: "category",
           label: "Integration Guides",
