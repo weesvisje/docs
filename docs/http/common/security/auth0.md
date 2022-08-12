@@ -3,7 +3,8 @@ title: 'OAuth'
 sidebar_position: 2
 ---
 
-OAuth can be implemented with this same mechanism. We have a [tutorial for integrating with Auth0 using this same API](/http/common/guides/authentication/intro/). The mechanism for OAuth will be almost identical.
+We have a [tutorial for integrating with Auth0 using this same API](/http/common/guides/authentication/intro/). The mechanism for OAuth will be almost identical.
+
 For a quick summary of how this works:
 
 - The client will do their initial authentication through OAuth and receive a JWT.
