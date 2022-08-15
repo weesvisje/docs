@@ -19,7 +19,7 @@ The database record for each API key should also include the permissions assigne
 
 
 - These records should be stored at rest in some type of datastore that belongs to the authentication webhook receiver. This could be anything. Postgres, SQLite, or even a secured immutable configuration file. It shouldn’t be stored in the Ditto application the webhook is managing authentication for.
-- [Now it is time to write an authentication webhook receiver. Documentation about how to do this can be found here.](/http/common/security/online-with-authentication/)
+- [Now it is time to write an authentication webhook receiver. Documentation about how to do this can be found here.](/javascript/common/security/online-with-authentication/)
 - When a client attempts to authenticate using this API key it will be provided to the webhook in the token property of the webhook request.
 - The webhook receiver will take this token and use the first X characters to look up the API key’s record.
 - Once the record is retrieved then the last Y characters of the provided API key can be hashed and compared to the stored hash.
