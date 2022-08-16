@@ -4,7 +4,7 @@ title: '1 - Setup'
 
 :::info
 Xamarin.iOS is currently supported on physical devices, however the iOS
-simulator is not supported yet. Xamarin.Android is support is coming soon.
+simulator is not supported yet. Xamarin. Android is support is coming soon.
 :::
 
 The following guide will show you how to build a task list application using Xamarin.
