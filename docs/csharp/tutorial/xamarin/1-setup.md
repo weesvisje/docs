@@ -31,6 +31,23 @@ Under `.NET Core Command Line` browse to or enter the following in the `Location
 
 In addition, you should have a decent familiarity with C# and UIKit.
 
+Finally, add the following lines to your `AppName.csproj` file:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    // 1.
+    // highlight-start
+    <PropertyGroup>
+        <RuntimeIdentifier>osx</RuntimeIdentifier>
+        <NuGetRuntimeIdentifier>osx</NuGetRuntimeIdentifier>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    </PropertyGroup>
+    // highlight-end
+    ....
+    
+```
+
 ## Windows
 
 Xamarin.Android development can be done entirely on a Windows box, but a Mac
