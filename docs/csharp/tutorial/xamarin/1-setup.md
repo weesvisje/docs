@@ -1,5 +1,5 @@
 ---
-title: '1 - Setup'
+title: "1 - Setup"
 ---
 
 :::info
@@ -65,13 +65,11 @@ Once you've installed the latest version of Xcode and Visual Studio, Open Visual
 Fill out the information on the form similar to the screenshot below. These are
 recommended values however they are not crucial to complete this tutorial:
 
-
 - App Name: `"Tasks"`
 - Organization Identifier: `"live.ditto"`. However, feel free to use your own value here.
 - Target: iOS 12.0
 
 ![](Project-Identifiers.png)
-
 
 And finally click "Continue" and select a directory to create the application.
 

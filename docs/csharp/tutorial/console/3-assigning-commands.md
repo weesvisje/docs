@@ -1,8 +1,8 @@
 ---
-title: '3 - Assigning Commands'
+title: "3 - Assigning Commands"
 ---
 
-## 3.1 Setting up the `while` loop.
+## 3.1 Setting up the `while` loop
 
 Our application will continually ask for commands that we setup in the last section. For a console application, this is generally a `while` loop.
 
@@ -19,7 +19,6 @@ ditto.Store["tasks"].Upsert(new Task(taskBody, false).ToDictionary());
 5. Check for a switch case for `--toggle`. We will parse out the string without `--toggle` and assume the user's input is a Task document's `_id`. We can then find the document by it's `_id` and call `.update`
 6. Check for a switch case for `--delete`. We will parse out the string without `--delete` and assume the user's input is a Task document's `_id`. We can then find the document by it's `_id` and call `.update`
 7. Finally we will add a command to look for `--list`, which will print out all the tasks that we've synced.
-
 
 ```csharp title="Program.cs"
 using System;
@@ -118,7 +117,7 @@ namespace Tasks
 
 ## 3.2 Final application
 
-Our application is complete! Our __Program.cs__ file should look like the following. Now you can run the example in your terminal, command line or right within the run command in Visual Studio.
+Our application is complete! Our **Program.cs** file should look like the following. Now you can run the example in your terminal, command line or right within the run command in Visual Studio.
 
 ```csharp title="Program.cs"
 using System;
@@ -142,7 +141,7 @@ namespace Tasks
             try
             {
                 ditto.SetLicenseToken("<REPlACE_ME>");
-                ditto.TryStartSync();
+                ditto.StartSync();
             }
             catch (DittoException ex)
             {
@@ -227,5 +226,4 @@ namespace Tasks
         }
     }
 }
-
 ```

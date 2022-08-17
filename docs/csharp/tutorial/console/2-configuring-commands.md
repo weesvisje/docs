@@ -1,5 +1,5 @@
 ---
-title: '2 - Configuring Commands'
+title: "2 - Configuring Commands"
 ---
 
 Unlike many UI applications, Console or Command Line applications have limitations to user interactions. For example, console applications typically read text commands during a `while` loop as a standard design pattern. This section will outline the command line design and set up the loop to allow the user to give continual commands.
@@ -31,7 +31,6 @@ namespace Tasks
         ditto = new Ditto(identity: DittoIdentity.Development(appName: "live.ditto.tasks"));
         // ... omitted for brevity
         // see `setup`
-
       }
 
       public static void ListCommands()
@@ -72,7 +71,6 @@ In the context of our console application, we need to:
 2. `.Observe` all the document in the tasks collection. Take care to store the `DittoLiveQuery` as a `static` variable as well.
 3. In the `.Observe` callback, convert all the `List<DittoDocument> docs` into `List<Task>` and assign them to both variables detailed in step 1 and 2.
 
-
 ```csharp title="Program.cs"
 using System;
 using DittoSDK;
@@ -99,7 +97,7 @@ namespace Tasks
             try
             {
                 ditto.SetLicenseToken("<REPlACE_ME>");
-                ditto.TryStartSync();
+                ditto.StartSync();
             }
             catch (DittoException ex)
             {
@@ -123,6 +121,7 @@ namespace Tasks
         public static void ListCommands() {
           // omitted for brevity
         }
+    }
 }
 
 ```

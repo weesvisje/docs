@@ -1,20 +1,20 @@
 ---
-title: 'Installation'
+title: "Installation"
 sidebar_position: 6
 pagination_next: common/concepts/overview
 ---
 
-import { Snippet } from '@site/src/components/SnippetGroup';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import { InstallCode } from "@site/src/components/Changelog.tsx"
+import { Snippet } from "@site/src/components/SnippetGroup";
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { InstallCode } from "@site/src/components/Changelog.tsx";
 
 ## Installation
 
 Currently, the C# SDK runs on iOS, macOS, Windows, and Linux. Peer to peer
 capabilites of the C# SDK vary by platform. All platforms can connect to other
 Ditto instances over a local LAN via WiFi. iOS and macOS can connect to each
-other over Bluetooth LE and P2P WiFi (AWDL). See below for [Xamarin support](#xamarin). 
+other over Bluetooth LE and P2P WiFi (AWDL). See below for [Xamarin support](#xamarin).
 
 The C# SDK is available as part of [NuGet](https://nuget.org). The common ways to install the SDK is with either the NuGet Package Manager, the .NET CLI, or by adding a reference to the CSProj XML file.
 
@@ -48,16 +48,15 @@ The C# SDK is available as part of [NuGet](https://nuget.org). The common ways t
 
 Now in your code you can call:
 
-<Snippet name='online-playground' language='csharp' />
+<Snippet name="online-playground" language="csharp" />
 
-
-<Snippet name='upsert' language='csharp' />
+<Snippet name="upsert" language="csharp" />
 
 ## Xamarin
 
 :::info
 Xamarin.iOS is currently supported on physical devices, however the iOS
-simulator is not supported yet. Xamarin. Android is support is coming soon.
+simulator is not supported yet. Xamarin.Android is support is coming soon.
 :::
 
 Follow the [Xamarin tutorial](/csharp/tutorial/xamarin/setup) to build your first Tasks application with Ditto.
