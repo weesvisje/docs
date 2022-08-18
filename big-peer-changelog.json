@@ -1,9 +1,54 @@
 {
   "DittoKit": {
     "latest": {
-      "description": "* Supports Ditto SDK through version 1.1.6\n* Parity between document and timeseries HTTP APIs\n* HTTP API calls that were GET with a body now also accept POST. They will accept both methods and will behave same no mater which method is used.",
+      "description": "* Fix bug where HTTP API upserts would not always be reflected in subsequent find requests. \n* Properly consider limit+offset+order_by for active queries",
+      "version": "0.29.0",
+      "date_released": "2022-08-18T20:27:41.606Z"
+    },
+    "0.29.0": {
+      "description": "* Fix bug where HTTP API upserts would not always be reflected in subsequent find requests. \n* Properly consider limit+offset+order_by for active queries",
+      "version": "0.29.0",
+      "date_released": "2022-08-18T20:27:41.606Z"
+    },
+    "0.28.0": {
+      "description": "* Minor bug fixes and performance improvements",
       "version": "0.20.0",
-      "date_released": "2022-05-12T08:08:47.875Z"
+      "date_released": "2022-08-14T08:08:47.875Z"
+    },
+    "0.27.0": {
+      "description": "* Supports Ditto SDK through version 2.0.x. See [the v2 Migration Guide](/http/common/v2/) for details.",
+      "version": "0.27.0",
+      "date_released": "2022-08-03T08:08:47.875Z"
+    },
+    "0.26.0": {
+      "description": "* Minor bug fixes and performance improvements",
+      "version": "0.20.0",
+      "date_released": "2022-08-01T08:08:47.875Z"
+    },
+    "0.25.0": {
+      "description": "* Minor bug fixes and performance improvements.\n * Add collection and document id to RequeryRequired requests as part of the live query webhook and CDC.",
+      "version": "0.20.0",
+      "date_released": "2022-07-23T08:08:47.875Z"
+    },
+    "0.24.0": {
+      "description": "* Minor bug fixes and performance improvements",
+      "version": "0.20.0",
+      "date_released": "2022-07-12T08:08:47.875Z"
+    },
+    "0.23.0": {
+      "description": "* Minor bug fixes and performance improvements",
+      "version": "0.23.0",
+      "date_released": "2022-06-24T08:08:47.875Z"
+    },
+    "0.22.0": {
+      "description": "* Minor bug fixes and performance improvements",
+      "version": "0.22.0",
+      "date_released": "2022-06-06T08:08:47.875Z"
+    },
+    "0.21.0": {
+      "description": "* Minor bug fixes and performance improvements",
+      "version": "0.21.0",
+      "date_released": "2022-05-26T08:08:47.875Z"
     },
     "0.20.0": {
       "description": "* Supports Ditto SDK through version 1.1.6\n* Parity between document and timeseries HTTP APIs\n* HTTP API calls that were GET with a body now also accept POST. They will accept both methods and will behave same no mater which method is used.",
