@@ -42,8 +42,15 @@ module.exports = {
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico/favicon.ico",
   organizationName: "getditto", // Usually your GitHub org/user name.
-  trailingSlash: undefined,
+  trailingSlash: false,
   projectName: "docs", // Usually your repo name.
+  scripts: [
+    {
+      src: '/js/fix-trailing-slash.js',
+      async: false,
+      defer: false,
+    },
+  ],
   plugins: [
     path.resolve(__dirname, "plugins/postcss-tailwindcss-loader"),
     [
