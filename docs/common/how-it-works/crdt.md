@@ -5,8 +5,6 @@ sidebar_position: 1
 
 # Ditto Delta State CRDT
 
-> This current page is undergoing extensive updates and edits. Please visit this page frequently for more up-to-date information. 
-
 Ditto's data types are based on CRDTs. CRDTs stand for Conflict Free Replicated Data Types.
 CRDTs can be updated concurrently by multiple users in a distributed system, without locking or
 consensus. Each user edits their own version of the data, and when the versions
