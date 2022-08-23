@@ -1,9 +1,14 @@
 {
   "DittoKit": {
     "latest": {
-      "description": "* Fix bug where HTTP API upserts would not always be reflected in subsequent find requests. \n* Properly consider limit+offset+order_by for active queries",
-      "version": "0.29.0",
-      "date_released": "2022-08-18T20:27:41.606Z"
+      "description": "Fix bug where Big Peer would sometimes panic if an SDK peer managed to create multiple Ditto instances with the same persistence directory. We are seeing this error more than we originally hoped. This change makes any occurrence non-fatal until we fix the root cause.  There will be another followup change that will re-enable alerting for this event.",
+      "version": "0.30.0",
+      "date_released": "2022-08-23T20:27:41.606Z"
+    },
+    "0.30.0": {
+      "description": " Fix bug where Big Peer would sometimes panic if an SDK peer managed to create multiple Ditto instances with the same persistence directory. We are seeing this error more than we originally hoped. This change makes any occurrence non-fatal until we fix the root cause.  There will be another followup change that will re-enable alerting for this event.",
+      "version": "0.30.0",
+      "date_released": "2022-08-23T20:27:41.606Z"
     },
     "0.29.0": {
       "description": "* Fix bug where HTTP API upserts would not always be reflected in subsequent find requests. \n* Properly consider limit+offset+order_by for active queries",
