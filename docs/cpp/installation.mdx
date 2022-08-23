@@ -9,6 +9,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { InstallCode } from "@site/src/components/Changelog.tsx"
 
+
 1. To start integrating Ditto into your app you need to download a copy of the libditto.a static library and the Ditto.h header. The following command will download and then unpack an archive containing the library and header. The URL in the following command will download a copy of the static library built to work on iOS:
 
 <InstallCode framework="cpp" variant="ios" />
@@ -56,7 +57,10 @@ g++ -std=c++17 ./src/main.cpp -I ./sdk -lditto -ldl -framework Security,CoreFoun
 </TabItem>
 <TabItem value="windows">
 
-> Coming soon.
+:::warning
+### Coming soon.
+C++ is not currently supported on Windows.
+:::
 
 </TabItem>
 </Tabs>

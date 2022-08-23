@@ -16,16 +16,6 @@ the Local Area Network, Bluetooth, and AWDL. However, if you supply a
 remember to enable peer to peer connnections with `EnableAllPeerToPeer()`.  
 :::
 
-## Observing Peers 
-
-There could be a situation where you need to know the device name, metadata,
-transport and connection type about other peers and devices in the mesh network.
-You can manually set the device name of those peers and the device name will
-propagate to all other connected peers. This function is used to gather the
-metadata needed to render the Ditto Presence Viewer. 
-
-<SnippetGroup name="device-name" />
-
 ## Connecting to a Remote Ditto Peer
 
 If you know the host and port of another remote Ditto peer and would like to connect to it, construct a `DittoTransportConfig` object and add the host and port to the `DittoTransportConfig.Connect.TcpServers` property as a `string`. The string format should be `host:port`, separated by a colon.
@@ -81,3 +71,13 @@ object.
 First, while configuring Ditto, assign a delegate or a callback to receive notifications.
 
 <SnippetGroup name="network-monitor-conditions" />
+
+## Observing Peers 
+
+There could be a situation where you need to know the device name, metadata,
+transport and connection type about other peers and devices in the mesh network.
+You can manually set the device name of those peers and the device name will
+propagate to all other connected peers. This function is used to gather the
+metadata needed to render the Ditto Presence Viewer. 
+
+<SnippetGroup name="device-name" />

@@ -74,7 +74,6 @@ module.exports = function (opts) {
         }]
       },
       opts.api,
-      "common/supported-platforms",
       "common/v2",
       "common/troubleshooting"
     ]

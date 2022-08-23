@@ -9,12 +9,22 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import { InstallCode } from "@site/src/components/Changelog.tsx";
 
-## Installation
+### Compatibility
 
 Currently, the C# SDK runs on iOS, macOS, Windows, and Linux. Peer to peer
 capabilites of the C# SDK vary by platform. All platforms can connect to other
 Ditto instances over a local LAN via WiFi. iOS and macOS can connect to each
-other over Bluetooth LE and P2P WiFi (AWDL). See below for [Xamarin support](#xamarin).
+other over Bluetooth LE and WiFi Direct (AWDL). See below for [Xamarin support](#xamarin).
+
+|  | LAN | WiFi Direct| Bluetooth |
+|---|---| ---|---|
+iOS | ✓ | ✓ | ✓| 
+macOS | ✓ | ✓ | ✓ |
+Windows | ✓ | x | x |
+Linux | ✓  | x | x |
+Android | x  | x | x |
+
+### Setup
 
 The C# SDK is available as part of [NuGet](https://nuget.org). The common ways to install the SDK is with either the NuGet Package Manager, the .NET CLI, or by adding a reference to the CSProj XML file.
 

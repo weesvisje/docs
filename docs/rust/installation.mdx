@@ -6,6 +6,25 @@ pagination_next: common/concepts/overview
 import { Snippet } from '@site/src/components/SnippetGroup';
 import { InstallCode } from "@site/src/components/Changelog.tsx";
 
+## Compatibility
+
+| LLVM Triple | Support Level |
+|---|---|
+| `x86_64-apple-darwin` | Full support |
+| `aarch64-apple-darwin` | Full support |
+| `x86_64_unknown-linux-gnu` | glibc > 2.18 |
+| `x86_64_unknown-linux-musl` | Tested, no official release |
+| `armv7-unknown-linux-gnueabihf` | Tested, no official release |
+| `arm-unknown-linux-gnueabihf` | Full support |
+
+|  | LAN | WiFi Direct | Bluetooth |
+|---|---| ---|---|
+macOS | ✓ | ✓ | ✓ |
+Windows | ✓ | x | ✓ |
+Linux | ✓ | x | ✓ |
+
+## Setup
+
 Create a new project with `cargo init --bin` and add the following to your `Cargo.toml` file.
 
 <InstallCode framework="rustsdk" />

@@ -25,7 +25,7 @@ And finally click "Finish" and wait for Android Studio to setup the project.
 
 ## 1-2 Install Ditto
 
-Android requires requesting permission to use Bluetooth Low Energy and P2P Wifi. 
+Android requires requesting permission to use Bluetooth Low Energy and WiFi Aware. 
 
 Follow the [Installation instructions for Android](../../installation).
 

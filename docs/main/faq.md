@@ -62,7 +62,7 @@ Ditto can be used in Airplane Mode. If Bluetooth or WiFi is manually toggled on 
 ### How fast is the sync?
 
 * WiFi: the full speed of your connection
-* P2P WiFi: similar to WiFi speeds
+* WiFi Direct: similar to WiFi speeds
 * Bluetooth LE: typically 4 kB/second (higher speeds currently in development)
 
 The Big Peer can handle 40k transactions per second (25k write txns + 15k reads) and the peer-to-peer sync over WiFi (LAN) can do 1 gigabyte of data in times as low as 8 seconds. For Bluetooth, if you’re using modern phones you have BLE L2CAP which will get in the order of 20 kilobytes per second. If you’re using a rather old phone (e.g. pre Android v8) then it will use BLE GATT which is a few kilobytes per second.
@@ -197,5 +197,5 @@ Ditto certificates are standard X.509 certificates. Each device has a keypair an
 
 ## __Wi-Fi__
 
-### Can Android and iOS devices sync with each other over P2P WiFi using Ditto?
+### Can Android and iOS devices sync with each other over WiFi Direct using Ditto?
 No. Android Wi-Fi Direct is, at least for now, only capable of syncing with other Android devices. Apple devices running iOS and macOS are capable of syncing over Apple Wireless Direct. These two transports are not compatible with each other. *However, other transports like Bluetooth Low Energy and Access Points will be able to sync with each other just fine.*

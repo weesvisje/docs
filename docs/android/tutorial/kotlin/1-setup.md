@@ -24,7 +24,7 @@ In newer version of Android Studio the Basic Activity template includes addition
 To install Ditto, we need to add it as a dependency in the `build.gradle` script for the app, as well as ensuring that we have the relevant Java
 -compatibility set.
 
-Android requires requesting permission to use Bluetooth Low Energy and P2P Wifi. Follow the [Installation instructions for Android](../../installation).
+Android requires requesting permission to use Bluetooth Low Energy and Wifi Direct. Follow the [Installation instructions for Android](../../installation).
 
 
 ## 1-3 Add Extensions 

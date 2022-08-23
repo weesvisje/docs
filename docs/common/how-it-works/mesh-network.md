@@ -25,7 +25,7 @@ Where possible Ditto will create a mesh using a mixture of transports. They offe
 
 Which transports are supported depends on what kind of device or SDK you are using. Some examples:
 
-* A mobile phone can use **Bluetooth LE**, **LAN**, **P2P WiFi**, or a **WebSocket** connection to a Big Peer server.
+* A mobile phone can use **Bluetooth LE**, **LAN**, **WiFi Direct**, or a **WebSocket** connection to a Big Peer server.
 * A web application running in a browser can use **WebSocket**.
 * A Raspberry Pi can use **Bluetooth LE**, **LAN**, or **WebSocket**.
 
