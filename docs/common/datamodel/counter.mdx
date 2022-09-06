@@ -67,17 +67,9 @@ with default data. This means the flight attendant can start collecting
 information from scratch even while offline and if they have no connections to
 other devices.
 
-`MainViewController.swift` 
-```swift
-flightIds.forEach {
-  try! collection.upsert([
-      "_id": $0,
-      "name": "Flight ABC123",
-      "orderedCount": DittoCounter(),
-      "totalAvailable": 300
-  ], writeStrategy: .insertDefaultIfAbsent)
-}
-```
+<SnippetGroup
+  name='counter-upsert' 
+/>
 
 When we call `DittoCounter()`, the counter `orderedCount` is initialized to 0.
 `totalAvailable` is a [Register](../datamodel/register) value that doesn't change unless we update it
@@ -86,15 +78,9 @@ later.
 Then, we render the seat list. We increment the counter when a user clicks
 the Plus button:
 
-`SeatFormViewController.swift`
-
-```swift
-.onPlusDidClick {
-    seatDocument.update { doc in
-        doc?["orderedCount"].counter?.increment(by: 1)
-    }
-}
-```
+<SnippetGroup
+  name='counter-update' 
+/>
 
 We can also show when we've run out of the item when `orderedCount` is greater than
 or equal to `totalAvailable`.
@@ -106,13 +92,9 @@ If we need to `upsert` the document at a later date, we do not include the count
 This follows our rule that the counter field should only be modified within an
 `update` clause.
 
-```swift
-collection.upsert([
-    "_id": docID,
-    "name": "Flight ABC123",
-    "totalAvailable": 400
-])
-```
+<SnippetGroup
+  name='upsert' 
+/>
  
 ### Resetting counter values
 
@@ -130,40 +112,6 @@ removing the counter from the document first. If another device increments the
 counter at the same time that another device removes the counter, you may
 encounter unexpected behavior. Proceed with caution.
 
-
-```swift
-let docID = try! ditto.store["drinks"].upsert([
-    usedCount: DittoCounter(),
-])
-
-ditto.store["drinks"].findByID(docID).update { mutableDoc in
-    mutableDoc?["usedCount"].counter?.increment(by: 11)
-}
-
-print(ditto.store["drinks"].findByID(docID)) // {usedCount: 11}
-
-ditto.store["drinks"].findByID(docID).update { mutableDoc in
-    mutableDoc?["usedCount"].counter?.increment(by: 10)
-}
-
-print(ditto.store["drinks"].findByID(docID)) // {usedCount: 21}
-
-ditto.store["drinks"].findByID(docID).update { mutableDoc in
-    mutableDoc?["usedCount"].remove()
-}
-
-let docID = try! ditto.store["drinks"].findById(docID).upsert([
-    usedCount: DittoCounter(),
-])
-
-print(ditto.store["drinks"].findByID(docID)) // {usedCount: 0}
-
-ditto.store["drinks"].findByID(docID).update { mutableDoc in
-    mutableDoc?["usedCount"].counter?.increment(by: 1)
-}
-
-print(ditto.store["drinks"].findByID(docID)) // {usedCount: 1}
-```
 
 ## How it works
 
