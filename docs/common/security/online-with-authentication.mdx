@@ -119,7 +119,7 @@ import { init, Ditto } from "@dittolive/ditto"
   }
 
   const ditto = new Ditto(identity, '/persistence/file/path')
-  ditto.tryStartSync()
+  ditto.startSync()
 })()
 ```
 
@@ -143,7 +143,7 @@ let identity = DittoIdentity.onlineWithAuthentication(
 )
 
 let ditto = Ditto(identity: identity)
-try! ditto.tryStartSync()
+try! ditto.startSync()
 ```
 
 </TabItem>
@@ -168,7 +168,7 @@ DITIdentity *identity = [[DITIdentity alloc] initOnlineWithAuthenticationWithApp
                                                             authenticationDelegate:[[AuthDelegate alloc] init];
 DITDitto *ditto = [[DITDitto alloc] initWithIdentity:identity];
 NSError *error = nil;
-[ditto tryStartSync:&error];
+[ditto startSync:&error];
 ```
 
 </TabItem>
@@ -196,7 +196,7 @@ val identity = DittoIdentity.OnlineWithAuthentication(
 )
 val ditto = Ditto(androidDependencies, identity)
 try {
-  ditto.tryStartSync()
+  ditto.startSync()
 } catch(e: DittoError) {
   Log.e("Ditto error", e.message!!)
 }
@@ -228,7 +228,7 @@ DittoIdentity identity = new DittoIdentity.OnlineWithAuthentication(
 Ditto ditto = new Ditto(androidDependencies);
 
 try {
-  ditto.tryStartSync();
+  ditto.startSync();
 } catch(DittoError e) {
   Log.e("Ditto Error", e.getMessage())
 }
@@ -258,7 +258,7 @@ var identity = DittoIdentity.OnlineWithAuthentication(
 try
 {
     var ditto = new Ditto(identity);
-    ditto.TryStartSync();
+    ditto.StartSync();
 }
 catch (DittoException ex)
 {
