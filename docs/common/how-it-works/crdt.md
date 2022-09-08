@@ -120,7 +120,7 @@ To help differentiate Causal Consistency from stronger consistency models, imagi
     Alice: "Wonderful!"
 
 Causal Consistency allows that the two concurrent messages "Great news!" from
-Sue and "Wonderful!" from Alice appear in any order. Both of the following results are valid with Causal Consistency.:
+Sue and "Wonderful!" from Alice appear in any order. Both of the following results are valid with Causal Consistency:
 
     Bob: "I lost my cat"
     Bob: "I found him! What a relief!"
