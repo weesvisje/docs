@@ -62,8 +62,7 @@ Version Vector: {
 | Type        | Description                                                                | Merge Semantics                |
 | ----------- | -----------                                                                | ---                            |
 | [Register](../datamodel/register)    | A single primitive value (Number, String, Boolean, Binary File)            | Last (temporal) Write Wins     |
-| [Counter](../datamodel/counter)     | A special number capable of preserving incrementing and decrementing semantics | The sum of all site's counters |
-| [Replicated Growable Array](../datamodel/array)       | An ordered sequence of any of the other types                              | Remove wins, updates merge     |
+| [Counter](../datamodel/counter)     | A special number capable of preserving incrementing and decrementing semantics | The sum of all site's counters 
 | [Map](../datamodel/map)         | A dictionary of name->value mappings where name is a string and value is any of the other types | Remove wins, updates merge     |
 
 ## Documents 
