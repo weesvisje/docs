@@ -45,7 +45,7 @@ namespace Tasks
             * Omitted for brevity
             */
 
-            liveQuery = ditto.Store["tasks"].FindAll().Observe((docs, _event) => {
+            liveQuery = ditto.Store["tasks"].Find("!isDeleted").Observe((docs, _event) => {
                 tasks = docs.ConvertAll(d => new Task(d));
             });
 
@@ -88,7 +88,10 @@ namespace Tasks
                         string _idToDelete = s.Replace("--delete ", "");
                         ditto.Store["tasks"]
                             .FindById(new DittoDocumentID(_idToDelete))
-                            .Remove();
+                            .Update((mutableDoc) => {
+                                if (mutableDoc == null) return;
+                                mutableDoc["isDeleted"].Set(true);
+                            });
                         break;
                     case { } when command.StartsWith("--list"):
                         tasks.ForEach(task =>
@@ -154,7 +157,7 @@ namespace Tasks
 
             Console.WriteLine("Welcome to Ditto's Task App");
 
-            liveQuery = ditto.Store["tasks"].FindAll().Observe((docs, _event) => {
+            liveQuery = ditto.Store["tasks"].Find("!isDeleted").Observe((docs, _event) => {
                 tasks = docs.ConvertAll(d => new Task(d));
             });
 
@@ -186,7 +189,10 @@ namespace Tasks
                         string _idToDelete = s.Replace("--delete ", "");
                         ditto.Store["tasks"]
                             .FindById(new DittoDocumentID(_idToDelete))
-                            .Remove();
+                            .Update((mutableDoc) => {
+                                if (mutableDoc == null) return;
+                                mutableDoc["isDeleted"].Set(true);
+                            });;
                         break;
                     case { } when command.StartsWith("--list"):
                         tasks.ForEach(task =>

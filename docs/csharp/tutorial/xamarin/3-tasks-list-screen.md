@@ -63,7 +63,7 @@ namespace Tasks
         // Sets up Live Query for syncing
         public void setupTaskList()
         {
-            liveQuery = ditto.Store["tasks"].FindAll().Observe((docs, _event) =>
+            liveQuery = ditto.Store["tasks"].Find("!isDeleted").Observe((docs, _event) =>
             {
                 tasks = docs.ConvertAll(d => new Task(d));
                 tasksTableSource.updateTasks(tasks);
@@ -164,7 +164,7 @@ public override void ViewDidLoad()
 // Sets up Live Query for syncing
 public void setupTaskList()
 {
-    liveQuery = ditto.Store["tasks"].FindAll().Observe((docs, _event) =>
+    liveQuery = ditto.Store["tasks"].Find("!isDeleted").Observe((docs, _event) =>
     {
         tasks = docs.ConvertAll(d => new Task(d));
 
@@ -213,7 +213,8 @@ public void addTask(string text)
     var dict = new Dictionary<string, object>
     {
         {"body", text},
-        {"isCompleted", false}
+        {"isCompleted", false},
+        {"isDeleted", false}
     };
 
     // Adds the new task to the ditto collection
