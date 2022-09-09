@@ -92,7 +92,7 @@ let ditto
     }
 
     ditto = new Ditto(identity, '/persistence/file/path')
-    ditto.tryStartSync()
+    ditto.startSync()
   }
 
   async function login () {
@@ -118,7 +118,7 @@ Once we start the ditto instance, we can create a `liveQuery` and create a
 button that adds items to a collection:
 
 ```js
-let liveQuery = ditto.store.collection('cars').findAll().observe((cars) => {
+let liveQuery = ditto.store.collection('cars').find("name == 'Toyota'").observe((cars) => {
   numberOfCars = cars.length
 })
 
@@ -168,9 +168,9 @@ let numberOfCars = 0
     }
 
     ditto = new Ditto(identity, '/persistence/file/path')
-    ditto.tryStartSync()
+    ditto.startSync()
 
-    let liveQuery = ditto.store.collection('cars').findAll().observe((cars) => {
+    let liveQuery = ditto.store.collection('cars').find("name == 'Toyota'").observe((cars) => {
       numberOfCars = cars.length
     })
 
@@ -286,13 +286,13 @@ class ProfileViewModel: ObservableObject {
             )
 
             let ditto = Ditto(identity: identity)
-            try! ditto.tryStartSync()
+            try! ditto.startSync()
             // highlight-end
 
             // 3. Create a liveQuery 
             // highlight-start
             self.ditto = ditto
-            let liveQuery = ditto.store.collection("cars").findAll().observe { docs, event in
+            let liveQuery = ditto.store.collection("cars").find("name == 'Toyota'").observe { docs, event in
                 self.docs = docs
             }
             // highlight-end

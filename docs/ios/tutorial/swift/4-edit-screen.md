@@ -58,7 +58,8 @@ class EditScreenViewModel: ObservableObject {
             // the user is attempting to upsert
             try! ditto.store["tasks"].upsert([
                 "body": body,
-                "isCompleted": isCompleted
+                "isCompleted": isCompleted,
+                "isDeleted": false
             ])
         }
     }
@@ -68,7 +69,9 @@ class EditScreenViewModel: ObservableObject {
     // highlight-start
     func delete() {
         guard let _id = _id else { return }
-        ditto.store["tasks"].findByID(_id).remove()
+        ditto.store["tasks"].findByID(_id).update { doc in
+            doc?["isDeleted"].set(true)
+        }
     }
     // highlight-end
 }

@@ -52,9 +52,9 @@ val docs = TasksApplication.ditto!!.store["tasks].findAll().exec()
 
 ## 2-3 Start Ditto Sync
 
-When Android studio created the project, it should have created a file called __MainActivity.kt__. In this file, we will take the singleton `TasksApplication.ditto!!` and begin to start the sync process with `tryStartSync()`
+When Android studio created the project, it should have created a file called __MainActivity.kt__. In this file, we will take the singleton `TasksApplication.ditto!!` and begin to start the sync process with `startSync()`
 
-The app will show a `Toast` error if `tryStartSync` encounters a mistake. Don't worry if an error occurs or if you omit this step, Ditto will continue to work as a local database. However, it's advised that you fix the errors to see the app sync across multiple devices.
+The app will show a `Toast` error if `startSync` encounters a mistake. Don't worry if an error occurs or if you omit this step, Ditto will continue to work as a local database. However, it's advised that you fix the errors to see the app sync across multiple devices.
 
 ```kotlin title="MainActivity" {5-18}
 class MainActivity : ComponentActivity() {
@@ -147,8 +147,8 @@ So now in our application if we want a `List<Task>` we write the following code:
 
 ```kotlin
 val tasks: List<Task> = TasksApplication
-  .ditto!!.store["tasks]
-  .findAll()
+  .ditto!!.store["tasks"]
+  .find("!isDeleted")
   .exec().map { it -> Task(it) }
 ```
 

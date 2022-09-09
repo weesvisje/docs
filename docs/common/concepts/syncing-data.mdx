@@ -20,9 +20,9 @@ system and then synchronize with the mesh network based on that query.
 
 ## Sync
 
-To enable Ditto to sync data, you'll need to call `ditto.tryStartSync()`. 
+To enable Ditto to sync data, you'll need to call `ditto.startSync()`. 
 
-Preferably, you should call `tryStartSync()` early on in your application's life cycle like in your `AppDelegate.application(_:didFinishLaunchingWithOptions:)` or `Application.onCreate` methods. Your application only needs to call this function once.
+Preferably, you should call `startSync()` early on in your application's life cycle like in your `AppDelegate.application(_:didFinishLaunchingWithOptions:)` or `Application.onCreate` methods. Your application only needs to call this function once.
 
 <SnippetGroup
   name='sync-basic' 
@@ -40,7 +40,7 @@ running queries, store them in an object.
 <SnippetGroup name="sync-observe" />
 
 
-* Call `.observe` after `ditto.tryStartSync()` to synchronize and download real-time data from other peers.
+* Call `.observe` after `ditto.startSync()` to synchronize and download real-time data from other peers.
 * The callback will immediately run for documents that fit the query.
 * The callback will get called with both local and remote changes that fit the query. 
 * The callback will rerun for each sync or write transaction.
@@ -81,7 +81,7 @@ Instead of `.observe`, call `.observeLocal` like so:
 
 <SnippetGroup name="sync-observe-local" />
 
-Note: if your Ditto instance has not called `tryStartSync`, there will be no difference between `.observe` and `.observeLocal`.
+Note: if your Ditto instance has not called `startSync`, there will be no difference between `.observe` and `.observeLocal`.
 
 
 ## Observing Peers 

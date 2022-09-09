@@ -145,7 +145,7 @@ const ditto = new Ditto(identity, 'ditto')
 const config = new TransportConfig()
 config.connect.websocketURLs.push('ws://127.0.0.1:45001')
 ditto.setTransportConfig(config)
-ditto.tryStartSync()
+ditto.startSync()
 ```
 
 
@@ -235,7 +235,7 @@ const config = new TransportConfig()
 config.connect.websocketURLs.push('wss://127.0.0.1:45001')
 //highlight-end
 ditto.setTransportConfig(config)
-ditto.tryStartSync()
+ditto.startSync()
 ```
 
 #### 4. Trust the certificate

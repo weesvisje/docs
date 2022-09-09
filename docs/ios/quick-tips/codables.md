@@ -24,9 +24,9 @@ struct Car: Codable {
 Both `DittoDocument` and `DittoMutableDocument` types can be decoded to a `Codable` type using the: `typed(as: Codable.self).value`. This method _can throw an error_ if decoding failed for some reason. 
 
 ```swift
-let documents: [DittoDocument] = ditto.store["cars"].findAll().exec()
+let documents: [DittoDocument] = ditto.store["cars"].find("color == 'red'").exec()
 do {
-  let cars: [Car] = try collection.findAll().exec().map({ try $0.typed(as: Car.self).value })
+  let cars: [Car] = try collection.find("color == 'red'").exec().map({ try $0.typed(as: Car.self).value })
 } catch(let err) {
   print(err.localizedDescription)
 }

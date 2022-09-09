@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
 
         val ditto = TasksApplication.ditto
         try {
-            ditto!!.tryStartSync()
+            ditto!!.startSync()
         } catch (e: DittoError) {
             Toast.makeText(
                 this@MainActivity,

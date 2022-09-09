@@ -37,7 +37,7 @@ class TaskTableViewController: UITableViewController {
         ditto = Ditto(identity: .onlinePlayground(appID: "YOUR_APP_ID_HERE", token: "YOUR_TOKEN_HERE"))
 
         // This starts Ditto's background synchronization
-        ditto.tryStartSync()
+        ditto.startSync()
 
         // Create some helper variables for easy access
         store = ditto.store
@@ -53,7 +53,7 @@ class TaskTableViewController: UITableViewController {
     func setupTaskList() {
         // Query for all tasks
         // Observe changes with a live-query and update the UITableView
-        liveQuery = collection.findAll().observe { [weak self] docs, event in
+        liveQuery = collection.find("!isDeleted").observe { [weak self] docs, event in
             guard let `self` = self else { return }
             switch event {
             case .update(let changes):
@@ -99,7 +99,7 @@ class TaskTableViewController: UITableViewController {
 }
 ```
 
-Let's breakdown what this code does. First, we create the variables needed and then initialize them in `viewDidLoad()` . To enable background synchronization, we need to call `tryStartSync()` which allows you to control when synchronization occurs. For this application we want it to run the entire time the app is in use.
+Let's breakdown what this code does. First, we create the variables needed and then initialize them in `viewDidLoad()` . To enable background synchronization, we need to call `startSync()` which allows you to control when synchronization occurs. For this application we want it to run the entire time the app is in use.
 
 ```swift
 // These hold references to Ditto for easy access
@@ -118,7 +118,7 @@ override func viewDidLoad() {
     ditto = Ditto(identity: .onlinePlayground(appID: "YOUR_APP_ID_HERE", token: "YOUR_TOKEN_HERE"))
 
     // This starts Ditto's background synchronization
-    ditto.tryStartSync()
+    ditto.startSync()
 
     // Create some helper variables for easy access
     store = ditto.store
@@ -138,7 +138,7 @@ Note, that we are using the `observe` API in Ditto. This API performs two functi
 
 ```swift
 func setupTaskList() {
-    liveQuery = collection.findAll().observe { [weak self] docs, event in
+    liveQuery = collection.find("!isDeleted").observe { [weak self] docs, event in
         guard let `self` = self else { return }
         switch event {
         case .update(let changes):

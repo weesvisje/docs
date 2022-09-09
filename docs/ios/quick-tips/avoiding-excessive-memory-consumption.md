@@ -22,7 +22,7 @@ typical example:
 
 ```swift
 // BAD:
-self.liveQuery = ditto.store.collection("A").findAll().observe { [weak self] documents, event in
+self.liveQuery = ditto.store.collection("A").find("store_id == 'abc123'").observe { [weak self] documents, event in
     self?.documentProcessingQueue.async {
         print("[INFO] Processing \(documents.count) changed documents...")
         // Inspect the changed documents, update UI state, etc.
@@ -50,7 +50,7 @@ Here is a much safer and more efficient way to implement the example above:
 
 ```swift
 // BETTER:
-self.liveQuery = ditto.store.collection("A").findAll().observeWithNextSignal { [weak self] documents, event, signalNext in
+self.liveQuery = ditto.store.collection("A").find("store_id == 'abc123'").observeWithNextSignal { [weak self] documents, event, signalNext in
     self?.documentProcessingQueue.async {
         print("[INFO] Processing \(documents.count) changed documents...")
         // Inspect the changed documents, update UI state, etc.
@@ -68,7 +68,7 @@ the documents.
 
 ```swift
 // CONVENIENT:
-self.liveQuery = ditto.store.collection("A").findAll().observe(deliverOn: self.documentProcessingQueue) { [weak self] documents, event in
+self.liveQuery = ditto.store.collection("A").find("store_id == 'abc123'").observe(deliverOn: self.documentProcessingQueue) { [weak self] documents, event in
         print("[INFO] Processing \(documents.count) changed documents...")
         // Inspect the changed documents, update UI state, etc.
 
@@ -87,7 +87,7 @@ used:
 
 ```swift
 // VERSATILE:
-self.liveQuery = ditto.store.collection("A").findAll().observeWithNextSignal(deliverOn: self.liveQueryQueue) { [weak self] documents, event, signalNext in
+self.liveQuery = ditto.store.collection("A").find("store_id == 'abc123'").observeWithNextSignal(deliverOn: self.liveQueryQueue) { [weak self] documents, event, signalNext in
     // Whenever we have to use asynchronous API that will hold on to the
     // documents, Ditto won't know when it's safe to deliver the next batch of
     // changes, so we have to tell it explicitly by calling `signalNext()`.    

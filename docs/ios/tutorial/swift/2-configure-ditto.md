@@ -20,8 +20,8 @@ When Xcode generated your project, there should be a file called __TasksApp.swif
 
 1. First import Ditto with `import DittoSwift`
 2. Construct an instance of Ditto with an online playground identity using the APP ID of the app that you just created on the portal. We are using an `.onlinePlayground` setup, which should suffice for this tutorial. However, you should never deploy this to a production environment like the Apple App Store.
-3. We will call `tryStartSync` as soon as the app's `ContentView` appears. This method can throw an error in the event that the license token is invalid or expired. Add two `@State` variables to capture if `ditto.tryStartSync` throws an error. One variable will be `@State var isPresentingAlert = false` and the other is a `@State var errorMessage = ""`.
-4. Add an `.onAppear` function and give it a license token. Look for `"YOUR_APP_ID_HERE"` and insert your valid license token. You can get a license token from our [Big Peer portal](https://portal.ditto.live). If the `tryStartSync()` fails, we will set `isPresentingAlert = true` and set the `errorMessage` to the error's `.localizedDescription`.
+3. We will call `startSync` as soon as the app's `ContentView` appears. This method can throw an error in the event that the license token is invalid or expired. Add two `@State` variables to capture if `ditto.startSync` throws an error. One variable will be `@State var isPresentingAlert = false` and the other is a `@State var errorMessage = ""`.
+4. Add an `.onAppear` function and give it a license token. Look for `"YOUR_APP_ID_HERE"` and insert your valid license token. You can get a license token from our [Big Peer portal](https://portal.ditto.live). If the `startSync()` fails, we will set `isPresentingAlert = true` and set the `errorMessage` to the error's `.localizedDescription`.
 5. We will then present a `.alert` if `isPresentingAlert` is true. Notice that we will pass a `@State` variable as a binding type, which is why we denoted `$isPresentingAlert` prefixed with a `$`. To learn more about SwiftUI's `Binding` types like `@State` [click here.](https://developer.apple.com/documentation/swiftui/state-and-data-flow)
 
 ```swift title=TasksApp.swift
@@ -51,7 +51,7 @@ struct TasksApp: App {
                 // highlight-start
                 .onAppear(perform: {
                     do {
-                        try ditto.tryStartSync()
+                        try ditto.startSync()
                     } catch (let err){
                         isPresentingAlert = true
                         errorMessage = err.localizedDescription
@@ -140,7 +140,7 @@ This data class takes a `DittoDocument` and safely parses out the values into na
 So now in our application if we want an array of `Tasks`, `[Task]`, we can write the following code:
 
 ```swift
-let tasks: [Task] = ditto.store["tasks"].findAll().exec().map({ Task(document: $0) })
+let tasks: [Task] = ditto.store["tasks"].find("!isDeleted").exec().map({ Task(document: $0) })
 ```
 
 Once we set up our user interface, you'll notice that reading these values becomes a bit easier with this added structure.

@@ -111,7 +111,7 @@ No. Ditto does not support more than one app using the database at the same time
 
 ### Can I explicitly control the start and end of synchronization?
 
-Yes. The Ditto SDK provides `tryStartSync()` and `stopSync()` methods that will enable and disable network sync.
+Yes. The Ditto SDK provides `startSync()` and `stopSync()` methods that will enable and disable network sync.
 
 ### Will the app sync in the background?
 

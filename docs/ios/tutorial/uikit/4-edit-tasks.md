@@ -37,12 +37,12 @@ override func tableView(_ tableView: UITableView, commit editingStyle: UITableVi
         // Retrieve the task at the row swiped
         let task = tasks[indexPath.row]
         // Delete the task from Ditto
-        collection.findByID(task.id).remove()
+        ditto.store["tasks"].findByID(_id).update { doc in
+            doc?["isDeleted"].set(true)
+        }
     }
 }
 ```
-
-This action makes use of Ditto's `remove()` API which will delete it.
 
 ## 4-3 Build and Run!
 

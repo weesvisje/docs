@@ -6,7 +6,7 @@ sidebar_position: 2
 The Ditto `.observe` callback will fire for any changes to the underlying query. These changes can happen from your own device or a replication. There are two parameters for the callback handler, the current snaphot of documents and an _event_ which gives a bit more information about how snapshots evolve after subsequent calls. 
 
 ```swift
-let liveQuery = myCollection.findAll().observe { [weak self] documents, event in
+let liveQuery = myCollection.find("store_id == 'abc123'").observe { [weak self] documents, event in
     print("current snapshot of documents", documents)
     print("event information", event)
 }
@@ -28,7 +28,7 @@ class ViewController: UIViewController: {
         super.viewDidLoad();
         tableView.dataSource = self
         
-        liveQuery = collection.findAll().observe { [weak self] docs, event in
+        liveQuery = collection.find("store_id == 'abc123'").observe { [weak self] docs, event in
             guard let `self` = self else { return }
             switch event {
             case .update(let changes):

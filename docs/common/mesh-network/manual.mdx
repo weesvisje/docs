@@ -7,7 +7,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SnippetGroup from '@site/src/components/SnippetGroup';
 
-There are instances where you may want to configure additional connections configurations for the current Ditto instance. This section will teach you how to configure your Ditto instance to listen for connections on a port explicitly and to connect to remote instances via a host (IP) and port. To do this, _before_ you call `tryStartSync()`, construct a `DittoTransportConfig` value and set `ditto.SetTransportConfig`.
+There are instances where you may want to configure additional connections configurations for the current Ditto instance. This section will teach you how to configure your Ditto instance to listen for connections on a port explicitly and to connect to remote instances via a host (IP) and port. To do this, _before_ you call `startSync()`, construct a `DittoTransportConfig` value and set `ditto.SetTransportConfig`.
 
 :::info
 Ditto will automatically attempt to connect to other ditto instances on

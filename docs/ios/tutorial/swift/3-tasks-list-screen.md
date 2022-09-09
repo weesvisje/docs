@@ -114,7 +114,7 @@ class TasksListScreenViewModel: ObservableObject {
     init(ditto: Ditto) {
         self.ditto = ditto
         self.liveQuery = ditto.store["tasks"]
-            .findAll()
+            .find("!isDeleted")
             .observe(eventHandler: {  docs, _ in
                 self.tasks = docs.map({ Task(document: $0) })
             })

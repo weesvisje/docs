@@ -10,7 +10,7 @@ your business logic with end-to-end unit tests that involve multiple Ditto peers
 A typical test lifecycle is:
 
 1. Create two instances of Ditto with the same identity and different directories.
-2. Call `tryStartSync()` on both instances.
+2. Call `startSync()` on both instances.
 3. Listen for changes to data using `observe()` and write tests as a response to the `observe()` function.
 4. Clean up Ditto directories between tests and stop any open synchronization
 threads using `stopSync()`.
@@ -75,7 +75,7 @@ func topLevelDittoDir() -> URL {
 ### Create your test 
 
 1. Initialize two ditto instances with different directories.
-2. Call `tryStartSync()` on both instances.
+2. Call `startSync()` on both instances.
 
 ```swift
 import XCTest
@@ -90,8 +90,8 @@ final class SwiftUITests: XCTestCase {
     override func setUp() {
         self.ditto1 = DittoInstance(appID: "test-app")
         self.ditto2 = DittoInstance(appID: "test-app")
-        try! self.ditto1.ditto?.tryStartSync()
-        try! self.ditto2.ditto?.tryStartSync()
+        try! self.ditto1.ditto?.startSync()
+        try! self.ditto2.ditto?.startSync()
     }
     
     func testExample() throws {

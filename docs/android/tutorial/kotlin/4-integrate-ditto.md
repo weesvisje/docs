@@ -46,7 +46,9 @@ override fun onCreate(savedInstanceState: Bundle?) {
             // Retrieve the task at the row swiped
             val task = adapter.tasks()[viewHolder.adapterPosition]
             // Delete the task from Ditto
-            ditto.store.collection("tasks").findByID(task.id).remove()
+            ditto.store.collection("tasks").findByID(task.id).update { doc ->
+               doc!!["isDeleted"].set(true)
+            }
         }
     }
 
@@ -77,7 +79,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
 ```
 
-The important things to note is that you need an access license to use Ditto. If you do not have one yet, reach out and we can supply one. To enable background synchronization, we need to call `tryStartSync()` which allows you to control when synchronization occurs. For this application we want it to run the entire time the app is in use.
+The important things to note is that you need an access license to use Ditto. If you do not have one yet, reach out and we can supply one. To enable background synchronization, we need to call `startSync()` which allows you to control when synchronization occurs. For this application we want it to run the entire time the app is in use.
 
 ## 4-3 Setup Live Query
 
@@ -91,7 +93,7 @@ fun setupTaskList() {
     this.collection = this.ditto!!.store.collection("tasks")
 
     // We use observe to create a live query with a subscription to sync this query with other devices
-    this.liveQuery = collection!!.findAll().observe { docs, event ->
+    this.liveQuery = collection!!.find("!isDeleted").observe { docs, event ->
         val adapter = (this.viewAdapter as TasksAdapter)
         when (event) {
             is DittoLiveQueryEvent.Update -> {
