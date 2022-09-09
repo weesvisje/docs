@@ -243,10 +243,10 @@ export default function Changelog() {
             <TabContents title="JavaScript" sdkInfos={frameworks["js"]} />
           </TabItem>
           <TabItem value="swift">
-            <TabContents title="DittoSwift" sdkInfos={frameworks["cocoa"]} />
+            <TabContents title="DittoSwift" sdkInfos={frameworks["cocoa"].filter(value => value.framework == 'DittoSwift')} />
           </TabItem>
           <TabItem value="objc">
-            <TabContents title="DittoObjC" sdkInfos={frameworks["cocoa"]} />
+            <TabContents title="DittoObjC" sdkInfos={frameworks["cocoa"].filter(value => value.framework === 'DittoObjC')} />
           </TabItem>
           <TabItem value="java">
             <TabContents
