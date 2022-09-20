@@ -870,7 +870,7 @@ Response:
 }
 ```
 
-For more examples, see the corresponding sections in the Concepts section for [querying](./common/concepts/querying), [update](./common/concepts/update), and [remove](./common/concepts/remove).
+For more examples, see the corresponding sections in the Concepts section for [querying](./common/concepts/querying), [writing](./common/concepts/writing), and [remove](./common/concepts/remove).
 
 ## Distinct Values
 

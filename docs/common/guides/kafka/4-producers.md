@@ -4,7 +4,7 @@ title: '4 - Producing events'
  
 ## Producing events
 
-Currently, Ditto only supports consuming events from the Kafka endpoint topic  `user-consumable-APPID`.  If you want to produce changes to the ditto database as a result of a consumable event, use the [Ditto SDK](../../concepts/upsert). We recommend that you use the HTTP API to react to document changes.
+Currently, Ditto only supports consuming events from the Kafka endpoint topic  `user-consumable-APPID`.  If you want to produce changes to the ditto database as a result of a consumable event, use the [Ditto SDK](../../concepts/writing). We recommend that you use the HTTP API to react to document changes.
 
 ## RequeryRequired
 ​

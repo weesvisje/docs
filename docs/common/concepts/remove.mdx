@@ -1,22 +1,37 @@
 ---
-title: 'Remove'
-sidebar_position: 5
+title: 'Removing'
+sidebar_position: 6
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SnippetGroup from '@site/src/components/SnippetGroup';
 
-## Removing Documents
-
-Removes will delete or remove one or more documents from the collection. Calling remove __will sync removals to the local device and to other devices as well__. 
-
+Removes will delete or remove one or more documents from the collection. Calling
+remove __will sync removals to the local device and to other devices as well__. 
 
 :::danger
+Removing documents will remove documents from the local device _and other
+peers_. Your application code should consider `remove`  calls to be destructive.
+In other words, if you call remove on document, your application should consider
+this document _gone_ throughout your system. You can not add a document with the
+same `_id` at a later time.
+::::
 
-Removing documents will remove documents from the local device _and other peers_. Your application code should consider `remove`  calls to be destructive. In other words, if you call remove on document, your application should consider this document _gone_ throughout your system.
+### Remove by _id
 
-__Alternatively:__ consider using a "soft-delete" pattern in your application for most use cases. For example, use a field like `isArchived: true` and query for documents to represent a "soft-delete". 
+Removing by document _id is permaent. You can not add a document with the
+same `_id` at a later time.
+
+<SnippetGroup
+  name='remove-id' 
+/>
+
+### Archiving documents
+
+Consider using a "soft-delete" pattern in your application for most use cases.
+For example, use a field like `isArchived: true` and query for documents to
+represent a "soft-delete". 
 
 ```json
 {
@@ -31,7 +46,7 @@ And query non-archived documents like so:
 ```js
 let liveQuery = ditto
   .store.collection('cars')
-  .find('isArchived == $args.isArchived', { isArchived: false }).observe((documents) => {
+  .find('!isArchived').observe((documents) => {
     console.log('these are the unarchived documents', documents)
   })
 ```
@@ -44,22 +59,3 @@ ditto.store.collection('cars').update((mutableDoc) => {
 })
 ```
 
-:::
- 
-
-### Removing by `_id`
-
-<SnippetGroup
-  name='remove-id' 
-/>
-
-
-### Removing by query
-
-You can also remove several documents with a query string. This example will
-remove all documents in the collection that match the given query string.
-
-
-<SnippetGroup
-  name='remove-query' 
-/>

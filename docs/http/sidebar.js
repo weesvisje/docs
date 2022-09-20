@@ -10,9 +10,8 @@
           collapsed: false,
           items: [
             'common/concepts/documents',
-            'common/concepts/update',
-            'common/concepts/upsert',
             'common/concepts/querying',
+            'common/concepts/writing',
             'common/concepts/remove',
             "timeseries",
           ]

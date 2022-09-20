@@ -16,6 +16,24 @@ the Local Area Network, Bluetooth, and AWDL. However, if you supply a
 remember to enable peer to peer connnections with `EnableAllPeerToPeer()`.  
 :::
 
+## Observing Peers 
+
+Ditto always monitors the mesh network and can report the device names of peers
+it is connected to. You can manually set the device name of those peers and
+observe those peers in the network.
+
+<SnippetGroup name="device-name" />
+
+Because ditto is a pull-based sync system, each device observes changes that
+other devices have made. If you want to observe changes made by a particular
+device, include the device name as a field in the document and query for that field in
+your [ditto live query](../concepts/querying)
+
+```
+"status == 'open' && edited_by == 'deviceC'"
+```
+
+
 ## Connecting to a Remote Ditto Peer
 
 If you know the host and port of another remote Ditto peer and would like to connect to it, construct a `DittoTransportConfig` object and add the host and port to the `DittoTransportConfig.Connect.TcpServers` property as a `string`. The string format should be `host:port`, separated by a colon.
