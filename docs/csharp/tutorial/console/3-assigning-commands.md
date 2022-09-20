@@ -48,6 +48,8 @@ namespace Tasks
             liveQuery = ditto.Store["tasks"].Find("!isDeleted").Observe((docs, _event) => {
                 tasks = docs.ConvertAll(d => new Task(d));
             });
+            
+            ditto.Store["tasks"].Find("isDeleted == true").Evict();
 
             ListCommands();
 
