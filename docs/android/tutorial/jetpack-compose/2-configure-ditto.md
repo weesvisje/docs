@@ -81,6 +81,8 @@ class MainActivity : ComponentActivity() {
       setContent {
           // ...
       }
+      
+      ditto!!.store["tasks"].find("isDeleted == true").evict()
     }
 
     fun checkPermissions() {
