@@ -177,6 +177,8 @@ func setupTaskList() {
         default: break
         }
     }
+    
+    collection.find("isDeleted == true").evict()
 }
 ```
 
