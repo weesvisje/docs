@@ -74,6 +74,8 @@ namespace Tasks
                 });
 
             });
+            
+            ditto.Store["tasks"].Find("isDeleted == true").Evict();
         }
 
         // Creates a new task
