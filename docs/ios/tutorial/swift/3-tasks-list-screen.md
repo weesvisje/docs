@@ -88,9 +88,10 @@ In SwiftUI we create a view model by inheriting the `ObservableObject`. The `Obs
 3. Create two `@Published` variables for `tasks` and i`sPresentingEditScreen`. `@Published` variables are special variables of an `ObservableObject`. If these variables change, SwiftUI will update the view accordingly. Any variables that are _not_ decorated with `@Published` can change but will be ignored by SwiftUI.
 4. We also add a normal variable, `private(set) var taskToEdit: Task? = nil`. When a user is attempting to _edit_ a task, we need to tell the view model which task the user would like to edit. This does not need to trigger a view reload, so it's a simple variable.
 5. Here's where the magic happens. As soon as the `TasksListScreenViewModel` is initialized, we need to `.observe` all the tasks by creating a live query. To prevent the `liveQuery` from being prematurely deallocated, we store it as a variable. In the observe callback, we convert all the documents into `Task` objects and set it to the `@Published tasks` variable. Every time to `.observe` fires, SwiftUI will pick up the changes and tell the view to render the list of tasks.
-6. Add a function called `toggle()`. When a user clicks on a task's image icon, we need to trigger reversing the `isCompleted` state. In the function body we add a standard call to find the task by it's `_id` and attempt to mutate the `isCompleted` property.
-7. Add a function called `clickedBody`. When the user taps the `TaskRow`'s `Text` field, we need to store that task and change the `isPresentingEditScreen` to true. This will give us enough information to present a `.sheet` in the `TasksListScreenViewModel` to feed to the `EditScreen`
-8. In the previous setup of the `TasksListScreen`, we added a `navigationBarItem` with a plus icon. When the user clicks this button we need to tell the view model that it should show the `EditScreen`. So we've set the `isPresentingEditScreen` property to `true`. However, because we are attempting to _create_ a `Task`, we need to set the `taskToEdit` to `nil` because we don't yet have a task.
+6. We will add an eviction call to the initializer that will remove any deleted documents from the collection
+7. Add a function called `toggle()`. When a user clicks on a task's image icon, we need to trigger reversing the `isCompleted` state. In the function body we add a standard call to find the task by it's `_id` and attempt to mutate the `isCompleted` property.
+8. Add a function called `clickedBody`. When the user taps the `TaskRow`'s `Text` field, we need to store that task and change the `isPresentingEditScreen` to true. This will give us enough information to present a `.sheet` in the `TasksListScreenViewModel` to feed to the `EditScreen`
+9. In the previous setup of the `TasksListScreen`, we added a `navigationBarItem` with a plus icon. When the user clicks this button we need to tell the view model that it should show the `EditScreen`. So we've set the `isPresentingEditScreen` property to `true`. However, because we are attempting to _create_ a `Task`, we need to set the `taskToEdit` to `nil` because we don't yet have a task.
 
 
 ```swift title="TasksListScreenViewModel.swift"
@@ -118,10 +119,13 @@ class TasksListScreenViewModel: ObservableObject {
             .observe(eventHandler: {  docs, _ in
                 self.tasks = docs.map({ Task(document: $0) })
             })
+        
+        //6.
+        ditto.store["tasks"].find("isDeleted == true").evict()
     }
     // highlight-end
 
-    // 6.
+    // 7.
     // highlight-start
     func toggle(task: Task) {
         self.ditto.store["tasks"].findByID(task._id)
@@ -132,7 +136,7 @@ class TasksListScreenViewModel: ObservableObject {
     }
     // highlight-end
 
-    // 7.
+    // 8.
     // highlight-start
     func clickedBody(task: Task) {
         taskToEdit = task
@@ -140,7 +144,7 @@ class TasksListScreenViewModel: ObservableObject {
     }
     // highlight-end
 
-    // 8.
+    // 9.
     // highlight-start
     func clickedPlus() {
         taskToEdit = nil
