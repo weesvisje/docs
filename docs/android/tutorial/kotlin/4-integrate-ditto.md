@@ -112,6 +112,8 @@ fun setupTaskList() {
             }
         }
     }
+    
+    ditto!!.store.collection("tasks").find("isDeleted == true").evict()
 }
 ```
 
