@@ -105,7 +105,7 @@ Updating an existing document is different for three different
   name='update' 
 />
 
-### Batching multiple updates in a single transaction
+## Batching multiple updates in a single transaction
 
 A write transaction allows a device to perform multiple operations within a
 single database call, that will be syncronized at the same time to other
@@ -113,7 +113,7 @@ devices. You can perform insert, update, remove or evict operations on multiple
 collections more efficiently using this method.
 
 :::warning
-You cannot combine delete and update in the same write transaction.
+You cannot combine `remove()` and `upsert()` on the same document in the same write transaction. This is because you cannot update a document that has been removed.
 :::
 
 <SnippetGroup name="write-transaction" />
