@@ -28,13 +28,13 @@ To refer to keys within the document's property tree, Ditto uses dot notation th
 }
 ```
 
-If you wanted to query for the `lastName` property nested in `name` with the following document contents
+If you wanted to query for the `last` property nested in `name`, you will need to do the following:
 
 ```js
 find("name.last == 'Turing'")
 ```
 
-Keys in the query syntax by default must be alphanumeric or include underscore (a-zA-Z0-9_). In addition, the key must start with an alpha characters first (a-zA-Z_). If your key uses another character, such as a hyphen, you must use a __brack syntax__. To query for th `"street-line"` property underneath `"work"`, you will need to do the following: 
+Keys in the query syntax by default must be alphanumeric or include underscore (a-zA-Z0-9_). In addition, the key must start with an alpha characters first (a-zA-Z_). If your key uses another character, such as a hyphen, you must use a __brack syntax__. To query for the `"street-line"` property underneath `"work"`, you will need to do the following: 
 
 ```js
 find("work['street-line'] == '678 Johnson Street'")
@@ -85,7 +85,7 @@ find("age > $args.age", { age: 18})
 
 Use `&&` for a logical __and__ Predicate; similar to SQLite's AND
 ```js
-// finds documents that have a theme property equal to "Dark" and a name property equaly to "Light"
+// finds documents that have a theme property equal to "Dark" and a name property equally to "Light"
 find("theme == 'Dark' && name == 'Light'")
 ```
 
@@ -102,7 +102,7 @@ Use `!` for a logical __not__ predicate; similar to SQL NOT statements
 find("!(name == 'Hamilton' || name == 'Morten')")
 ```
 
-Use `contains(array, value)` to check an if an array contains a value. 
+Use `contains(array, value)` to check if an array contains a value. 
 
 ```js
 // finds documents who have a `connectionType` property and checks if it equals any of the values in a defined array
@@ -156,7 +156,7 @@ The following example will sort on documents that have a mileage property
 
 ## Limit 
 
-There are times where you need to limit the number of results that a query. Call `limit` before the query is executed to trim the number of results. This is best used with `sort`.
+There are times where you need to limit the number of results that a query returns. Call `limit` before the query is executed to trim the number of results. This is best used with `sort`.
 
 <SnippetGroup
   name='query-limit' 
