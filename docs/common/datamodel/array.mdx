@@ -1,0 +1,117 @@
+---
+title: 'Array'
+sidebar_position: 6
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SnippetGroup from '@site/src/components/SnippetGroup';
+
+Arrays are an ordered list of values. Arrays can contain all primitive
+values. You cannot embed other CRDT types inside of an Array. In fact, the
+Array itself is a register, which makes the behavior different than a typical Array.
+
+:::warning
+### Use a Map instead
+Ditto is a distributed database. Distributed databases work really well with
+stable identifiers. Arrays are really challenging to use, because items are referenced
+by their index. Indexes can change, which means indexes are not stable
+identifiers. Two peers can see different values for the same index.
+:::
+
+
+Instead of an array, we recommend that you use a Map where:
+
+* the **key** is a unique string, and
+* the **value** is an object 
+
+```
+{
+    "_id": "abc123",
+    "friends": {
+        "abc123": { "id": "abc123", "name": "John" },
+        "def456": { "id": "def456", "name": "Susan" }
+    }
+}
+```
+
+## Problem
+
+If two devices have an instance of an array, and edit those arrays concurrently,
+their changes may not merge.
+
+For example, assume Device A and B both have the following document at T=1:
+
+```jsonp
+{
+    "_id": "abc123",
+    "friends": [ "John", "Jacob", "Susan", "Alex" ]
+}
+```
+
+When Device A and B disconnect from each other, they both update the list of friends:
+
+
+Device A removes the item at index 1 at T=3:
+
+```
+{
+    "_id": "abc123",
+    "friends": [ "John", "Susan", "Alex" ]
+}
+```
+
+Device B removes the item at index 2 and adds a new item at T=2:
+
+```jsonp
+{
+    "_id": "abc123",
+    "friends": [ "John", "Jacob", "Alex", "Rebecca" ]
+}
+```
+
+Because the array is a last-write-wins register, Device A's version of the array
+will "win." When they syncronize, both Device A and B will see:
+
+```jsonp
+{
+    "_id": "abc123",
+    "friends": [ "John", "Susan", "Alex" ]
+}
+```
+
+Device B's changes will be lost.
+
+## Solution: Use a Map as a Set
+
+You can model a list of strings as a Map with the same behavior as a Set. Ditto
+doesn't have the Set datatype yet. While we are working on releasing it, you can
+implement similar behavior by using a Map type.
+
+Given the previous example document:
+
+```jsonp
+{
+    "_id": "abc123",
+    "friends": [ "John", "Jacob", "Susan", "Alex" ]
+}
+```
+
+We can convert this from an array to a Map where:
+
+* the **key** is a unique string, and
+* the **value** is an object 
+
+<SnippetGroup name="array-to-map" />
+
+This could would result in a document that looks like this:
+
+```
+{
+    "_id": "abc123",
+    "friends": {
+        "abc123": { "id": "abc123", "name": "John" },
+        "def456": { "id": "def456", "name": "Susan" }
+    }
+}
+```
