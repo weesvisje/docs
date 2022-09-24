@@ -4,6 +4,7 @@
  module.exports = {
     docs: [
         "installation",
+        "api",
         {
           type: "category",
           label: "Getting Started",
@@ -49,8 +50,6 @@
             dirName: 'common/how-it-works'
           }]
         },
-        "api",
-        "how-it-works",
         "common/v2",
     ]
 }

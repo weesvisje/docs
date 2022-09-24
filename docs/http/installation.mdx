@@ -10,7 +10,9 @@ The Ditto HTTP API follows a RESTful pattern and is organized into several resou
 
 ## Endpoint
 
-The Ditto HTTP API provides a programmatic interface for interactions with Ditto-powered Apps which expose an HTTP Server Interface. A primary use case for the HTTP API is external systems which integrate with `cloud.ditto.live`.
+The Ditto HTTP API provides a programmatic interface for interactions with
+Ditto-powered Apps which expose an HTTP Server Interface. A primary use case for
+the HTTP API is external systems which integrate with `cloud.ditto.live`.
 
 The canonical root URL for the HTTP API is `https://{app_id}.cloud.ditto.live/api/v2/`. The standard port 443 is used.
 
@@ -18,11 +20,56 @@ The canonical root URL for the HTTP API is `https://{app_id}.cloud.ditto.live/ap
 curl https://{app_id}.cloud.ditto.live/api/v2
 ```
 
-For simple examples for using the HTTP API for document storage, see the corresponding sections in the Concepts section for [querying](./common/concepts/querying), [writing](./common/concepts/writing), and [remove](./common/concepts/remove). 
+For simple examples for using the HTTP API for document storage, see the
+corresponding sections in the Concepts section for
+[querying](./common/concepts/querying), [writing](./common/concepts/writing),
+and [remove](./common/concepts/remove). 
 
-Ditto Big Peer also provides HTTP APIs for querying timeseries data. See the [timeseries section](./timeseries) for more information.
+Ditto Big Peer also provides HTTP APIs for querying timeseries data. See the
+[timeseries section](./timeseries) for more information.
 
-In addition to these examples, we also have JSON schema documents that help describe the request bodies and responses. They can be helpful if you have any questions on what any field means or what the server might return.
+In addition to these examples, we also have JSON schema documents that help
+describe the request bodies and responses. They can be helpful if you have any
+questions on what any field means or what the server might return.
+
+## Transactions
+
+If successful, the response to POST or DELETE requests will include a
+Transaction ID, which can be used on subsequent GET requests. This type of
+insertion is non-blocking and so is very performant.
+
+Each HTTP API write request represents a distinct transaction which may be one
+or many operations (e.g., upsert or remove). Because Ditto is also a distributed
+system, `Transaction ID`s are used to represent the order in which transactions
+should be applied. Each write request returns it's associated `Transaction ID`. 
+
+Find requests can optionally specify a Transaction ID, which will instruct the
+server to wait until the given transaction is applied before executing the
+query. The newly inserted events may still be replicating through the Ditto mesh
+between the time of the write and the time of the find request. 
+
+In each API Request a `Transaction ID` may optionally be provided in an HTTP
+HEADER called `X-DITTO-TXN-ID` with an integer value, which represents this
+request should be applied to the "version" of the data _at least_ as recent as
+this value. If we don't supply this header, the default behavior is to use the
+most recent version common to all Ditto nodes. Note also that if the Ditto node
+servicing the Request can't supply the version of the data requested, an error
+will be returned.
+
+For example, you write data using the HTTP API and get back Transaction 17. If
+you want to ensure that the values included in Transaction included in our
+subsequent query, we would include the header `X-DITTO-TXN-ID: 17` in our
+request. 
+
+<!-- Current implementation requires an Actor ID however in the future only the Site ID will be needed. -->
+
+## Remove Wins
+
+Ditto uses "remove-wins" semantics, so in some situations the client may want to
+force Ditto to first read its current data and ensure another peer hasn't issued
+a concurrent DELETE request before attempting an insertion with a POST request.
+To do this, the client provides the HTTP HEADER `X-DITTO-ENSURE-INSERT: true`.
+
 
 ## Errors
 
@@ -40,7 +87,11 @@ The JWT encodes the identity of the client, the target application, and the perm
 
 ## Generating an X-DITTO-CLIENT-ID
 
-An `X-DITTO-CLIENT-ID` is required whenever issuing POST requests to the HTTP API. You should generate one for each client, as this ID represents a client in the Ditto mesh. Generating a new ID for each request, rather than one for the HTTP client, could cause performance issues. When possible generate this ID and cache it for the duration of the client.
+An `X-DITTO-CLIENT-ID` is required whenever issuing POST requests to the HTTP
+API. You should generate one for each client, as this ID represents a client in
+the Ditto mesh. Generating a new ID for each request could cause performance
+issues. When possible generate this ID and cache it for the duration of the
+client.
 
 ```python
 >>> import base64
