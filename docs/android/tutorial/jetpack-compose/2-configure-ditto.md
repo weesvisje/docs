@@ -47,7 +47,7 @@ class TasksApplication: Application() {
 Now you will be able to access this Ditto anywhere in your application like so:
 
 ```kotlin
-val docs = TasksApplication.ditto!!.store["tasks].findAll().exec()
+val docs = TasksApplication.ditto!!.store["tasks"].find("!isDeleted").exec()
 ```
 
 ## 2-3 Start Ditto Sync
