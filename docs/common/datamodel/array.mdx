@@ -82,11 +82,11 @@ will "win." When they syncronize, both Device A and B will see:
 
 Device B's changes will be lost.
 
-## Solution: Use a Map as a Set
+## Solution: Use a Map 
 
 You can model a list of strings as a Map with the same behavior as a Set. Ditto
 doesn't have the Set datatype yet. While we are working on releasing it, you can
-implement similar behavior by using a Map type.
+implement that behavior using a Map.
 
 Given the previous example document:
 
@@ -97,14 +97,18 @@ Given the previous example document:
 }
 ```
 
-We can convert this from an array to a Map where:
+We can convert our existing array to a Map where:
 
 * the **key** is a unique string, and
 * the **value** is an object 
 
+### Example
+
+Here is sample code that converts an existing Ditto document with an array to a Map. 
+
 <SnippetGroup name="array-to-map" />
 
-This could would result in a document that looks like this:
+This code would result in a document that looks like this:
 
 ```
 {
