@@ -14,24 +14,24 @@ remove __will sync removals to the local device and to other devices as well__.
 Removing documents will remove documents from the local device _and other
 peers_. Your application code should consider `remove`  calls to be destructive.
 In other words, if you call remove on document, your application should consider
-this document _gone_ throughout your system. You can not add a document with the
-same `_id` at a later time.
+this document _gone_ throughout your system.
 ::::
 
 ### Remove by _id
 
-Removing by document _id is permaent. You can not add a document with the
+Removing by document _id is permanent. You can not create a new document with the
 same `_id` at a later time.
 
 <SnippetGroup
   name='remove-id' 
 />
 
-### Archiving documents
+### Soft-delete documents
 
-Consider using a "soft-delete" pattern in your application for most use cases.
-For example, use a field like `isArchived: true` and query for documents to
-represent a "soft-delete". 
+Consider using a "soft-delete" pattern in your application. You should use a
+field like `isArchived: true` instead of calling `remove()`. You can query and
+syncronize only the documents that not been marked archived. Using a soft-delete
+pattern, documents can be synced or updated again if necessary. 
 
 ```json
 {
@@ -51,7 +51,7 @@ let liveQuery = ditto
   })
 ```
 
-You can easily un-archive these documents by calling update on that field like so:
+You can easily un-archive these documents by calling update on that field:
 
 ```js
 ditto.store.collection('cars').update((mutableDoc) => {
@@ -59,3 +59,13 @@ ditto.store.collection('cars').update((mutableDoc) => {
 })
 ```
 
+
+### Evicting documents
+
+Once you archive a document, you can delete it from the local device to free up
+disk space. This operation is different than remove in that it only removes one
+of more documents from the local on-disk storage.
+
+<SnippetGroup
+  name='evict' 
+/>
