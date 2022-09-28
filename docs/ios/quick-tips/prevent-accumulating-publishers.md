@@ -160,7 +160,7 @@ Let's review what we did (see the code comments for the correlated bullet number
 1. We observe the carrier, but only if the values change by using `removeDuplicates()`. This means if the carrier value goes from `AS` to `AS`, it is fired only once. But if the value goes from `AS` to `LH` it's fired twice. It will compare the new and the old value and emit once the values are different. 
 2. Once we get the `carrier`, we `.map` it to a `liveQueryPublisher` while feeding in the query arguments. Note that this `.map` isn't returning documents, but a `Publisher`. This key is difference is important in step 3. 
 3. The next operator is the most critical, we add a `switchToLatest()`. This operator will switch the chain of operators to the latest publisher (from the last `.map`). _Any previous publisher will be disposed or canceled!_. This is the operator that does all the work! 
-4. We can now `.map` the `docs` results of the `liveQueryPublisher` and decode them to our `Flight` codable. 
+4. We can now `.map` the `docs` results of the `liveQueryPublisher` and decode them to `Flight`. 
 5. Instead of using `.sink`, we `.assign` the `flights: [Flight]` to the `self.flights` variable. 
 6. Finally, we store the entire chain of commands as _a single publisher in a single `Set<AnyCancellable>()`_! 
 
