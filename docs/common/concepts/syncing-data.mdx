@@ -130,7 +130,7 @@ document. Each document has a `createdAt` timestamp.
 We want to only hold data on the device that was created in the past 48 hours.
 Anything older than 48 hours should be removed locally from the device. However,
 we don't want to remove this data from the entire mesh network, because we may
-want to do analytics on it, with the Cloud Big Peer.
+want to do analytics on it later using the Big Peer. So, we do not use remove() because that deletes data from the entire network, including the Cloud. We use `evict()` to remove data from the local device because it is not relevant anymore.
 
 If the app is used on 2,000 flights per day, you would see a maximum of
 4,000 documents locally on the device. If each document is 5Kb, the device could
