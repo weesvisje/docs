@@ -20,10 +20,7 @@ unexpectedly in production.
 ## When do I version my documents?
 
 Changing your schema is inevitable. To ensure reliability over time, you
-should create your own schema versioning pattern for each Ditto document. Many
-developers use typed structs, Codable (Swift) or TypeScript (JavaScript) to
-ensure that all documents are added and retrieved from their database in a
-predictable fashion. You can use these types to detect older or incompatible versions before rendering them in your UI.
+should create your own schema versioning pattern for each Ditto document.
 
 ### Same-version compatibility
 
@@ -66,10 +63,7 @@ the type of an existing field. In other words, developers should only ever add
 new fields, and never remove or modify old fields. You can ensure this by
 creating a controller that encapsulates Ditto and is used across your
 application(s) to validate the field values and their associated types before
-upserting those values into the database. In Swift, it is common to use
-[Codable](https://developer.apple.com/documentation/swift/codable), and in
-JavaScript it is common to use [JSONSchema](https://json-schema.org/). The
-choice is up to you.  
+upserting those values into the database.
 
 ### Backward-compatibility
 

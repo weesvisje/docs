@@ -1,5 +1,5 @@
 ---
-title: 'Syncing Data'
+title: 'Syncing'
 sidebar_position: 5
 ---
 
@@ -106,7 +106,7 @@ devices.**
 ### 1: Time-based syncing
 
 One common design pattern is to only syncronize data that was written within the
-past 48 hours. At the end of that 48 hours, documents older than 48 hours are evicted and a
+past 24 hours. At the end of that 24 hours, documents older than 24 hours are evicted and a
 new query is created.
 
 Let's look through a typical example for syncing data: four flight attendants walk
@@ -127,27 +127,23 @@ document. Each document has a `createdAt` timestamp.
 }
 ```
 
-We want to only hold data on the device that was created in the past 48 hours.
-Anything older than 48 hours should be removed locally from the device. However,
+We want to only hold data on the device that was created in the past 24 hours.
+Anything older than 24 hours should be removed locally from the device. However,
 we don't want to remove this data from the entire mesh network, because we may
-want to do analytics on it, with the Cloud Big Peer.
-
-If the app is used on 2,000 flights per day, you would see a maximum of
-4,000 documents locally on the device. If each document is 5Kb, the device could
-replicate up to ~20 megabytes to the local database. 
+want to do analytics on it later using the Big Peer. So, we do not use remove() because that deletes data from the entire network, including the Cloud. We use `evict()` to remove data from the local device because it is not relevant anymore.
 
 ```swift
 ditto.store.collection("flights").find("createdAt > $args.yesterday", args: [
-  "yesterday": Date().adding(hr: -48),
+  "yesterday": yesterday(),
 ]).subscribe()
 ```
 
 Once a day, the device evicts the data locally to free up storage, and
-restarts the query with a new date.
+restarts the query with a new date. Notice that the query for eviction is exactly the opposite as the query for subscription. These queries should not overlap.
 
 ```swift
-ditto.store.collection("flights").find("createdAt < $args.yesterday", args: [
-  "yesterday": Date().adding(hr: -48),
+ditto.store.collection("flights").find("createdAt <= $args.yesterday", args: [
+  "yesterday": yesterday(),
 ]).evict()
 ```
 
@@ -160,8 +156,8 @@ OPEN -> IN PROGRESS -> COMPLETE -> FILLED
 |
 -> CANCELLED
 
-When the application starts, the device in the kitchen only wants to syncronize orders that not
-filled and not cancelled, and evict all orders that are cancelled or filled.
+When the application starts, the device only wants to syncronize orders that are not
+filled or cancelled, and evict any orders that have been completed.
 
 ```swift
 self.query =  self.ditto.collection("orders")
