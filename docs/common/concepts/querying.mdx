@@ -142,6 +142,24 @@ Queries also parse ISO-8601 date strings as comparable dates
 find("created_at >= $args.date", { date: "2022-04-29T00:55:31.859Z"})
 ```
 
+### Booleans
+
+Use when your property is of type Boolean
+
+```js
+//finds documents which have an 'isDeleted' boolean propety set to `true`
+find("isDeleted")
+//Or
+find("isDeleted == true")
+```
+
+```js
+//finds documents which have an 'isDeleted' boolean propety set to `false`
+find("!isDeleted")
+//Or
+find("isDeleted == false")
+```
+
 ## Sort
 
 Before executing a query, you can specify to sort on a specific property. Call `sort` before a query is executed by specifying a specific property and a sort direction. 
