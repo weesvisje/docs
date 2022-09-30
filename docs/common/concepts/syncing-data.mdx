@@ -160,8 +160,8 @@ OPEN -> IN PROGRESS -> COMPLETE -> FILLED
 |
 -> CANCELLED
 
-When the application starts, the device in the kitchen only wants to syncronize orders that not
-filled and not cancelled, and evict all orders that are cancelled or filled.
+When the application starts, the device only wants to syncronize orders that are not
+filled or cancelled, and evict any orders that have been completed.
 
 ```swift
 self.query =  self.ditto.collection("orders")
