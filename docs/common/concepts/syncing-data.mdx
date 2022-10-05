@@ -30,9 +30,9 @@ all devices in the chain must be observing the same data, as shown below:
 
 ## Sync
 
-To enable Ditto to sync data, you'll need to call `ditto.startSync()`. 
+Ditto is a pull-based sync system, which means each device needs to explicitly tell other peers what data to sync and when to sync it.
 
-Preferably, you should call `startSync()` early on in your application's life cycle like in your `AppDelegate.application(_:didFinishLaunchingWithOptions:)` or `Application.onCreate` methods. Your application only needs to call this function once.
+Preferably, you should tell ditto to start syncronizing early on in your application's life cycle like in your `AppDelegate.application(_:didFinishLaunchingWithOptions:)` or `Application.onCreate` method. Your application only needs to call this function once.
 
 <SnippetGroup
   name='sync-basic' 
