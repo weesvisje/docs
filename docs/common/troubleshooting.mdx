@@ -38,7 +38,7 @@ Ensure that you are only creating a fixed number of live queries. Each live quer
 
 ### Online Playground 
 
-#### Is your playground token copied correctly? 
+#### Did you copy your playground token and App ID correctly? 
 
 1. Login to the [Portal](https://portal.ditto.live) 
 1. Go to your App.
@@ -53,6 +53,35 @@ Ensure that you are only creating a fixed number of live queries. Each live quer
 
 If your app need full offline access without ever connecting to the Internet, please
 request an [offline license token](./mesh-network/offline-license).
+
+#### Do you have a firewall or proxy enabled that is blocking Ditto's connection to the Big Peer?
+
+Verify that you can reach the following endpoints. You should see the output exactly as written below:
+
+```
+> nc -v MY_APP_ID.cloud.ditto.live 443
+Connection to MY_APP_ID.cloud.ditto.live port 443 [tcp/https] succeeded!
+^C
+```
+
+```
+> curl -i https://MY_APP_ID.cloud.ditto.live/_ditto/auth/login
+HTTP/1.1 405 Method Not Allowed
+Date: Fri, 30 Sep 2022 02:03:36 GMT
+Content-Type: text/plain; charset=utf-8
+Content-Length: 23
+Connection: keep-alive
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: GET, PUT, POST, DELETE, PATCH, OPTIONS
+Access-Control-Allow-Headers: X-DITTO-ENSURE-INSERT,X-HYDRA-ENSURE-INSERT,X-DITTO-CLIENT-ID,X-HYDRA-CLIENT-ID,Accept,Referer,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Forwarded-For
+Access-Control-Max-Age: 1728000
+
+HTTP method not allowed% 
+```
+
+If this test passes, next check to see if WebSockets are blocked on your machine. Some corporate networks, firewalls, or proxies block the HTTP upgrade packet that tells the WebSocket server to keep the connection alive. Check with your
+IT administrator to see if your computer is configured to block WebSocket connections.
 
 ### Online with Authentication
 
