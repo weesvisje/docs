@@ -127,10 +127,27 @@ document. Each document has a `createdAt` timestamp.
 }
 ```
 
-We want to only hold data on the device that was created in the past 24 hours.
+We want to only store data on the device that was created in the past 24 hours.
 Anything older than 24 hours should be removed locally from the device. However,
 we don't want to remove this data from the entire mesh network, because we may
-want to do analytics on it later using the Big Peer. So, we do not use remove() because that deletes data from the entire network, including the Cloud. We use `evict()` to remove data from the local device because it is not relevant anymore.
+want to do analytics on it later using the Big Peer. So, we do not use remove()
+because that deletes data from the entire network, including the Cloud. We use
+`evict()` to remove data from the local device because it is not relevant
+anymore.
+
+```swift
+ditto.store.collection("flights").find("createdAt <= $args.yesterday", args: [
+  "yesterday": yesterday(),
+]).evict()
+```
+
+One way to implement eviction would be to create a global interval. For example,
+every 4 hours check to see if there is any data on the local machine that is
+irrelevant. If so, evict it.
+
+Devices should periodically restart the query with a new date. Notice that the
+query for eviction is exactly the opposite as the query for subscription. These
+queries should not overlap.
 
 ```swift
 ditto.store.collection("flights").find("createdAt > $args.yesterday", args: [
@@ -138,14 +155,6 @@ ditto.store.collection("flights").find("createdAt > $args.yesterday", args: [
 ]).subscribe()
 ```
 
-Once a day, the device evicts the data locally to free up storage, and
-restarts the query with a new date. Notice that the query for eviction is exactly the opposite as the query for subscription. These queries should not overlap.
-
-```swift
-ditto.store.collection("flights").find("createdAt <= $args.yesterday", args: [
-  "yesterday": yesterday(),
-]).evict()
-```
 
 ### 2. Stateful syncing
 
