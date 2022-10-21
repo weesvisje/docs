@@ -13,6 +13,7 @@ Next, fill out the options with the product name: "Tasks", choose Kotlin, and se
 ![Create Project 2](./img/create_project2.png)
 
 In newer version of Android Studio the Basic Activity template includes additional files that are not need for this tutorial. To continue, remove the following if they exist:
+
 * FirstFragment.kt
 * SecondFragment.kt
 * fragment_first.xml
@@ -26,8 +27,7 @@ To install Ditto, we need to add it as a dependency in the `build.gradle` script
 
 Android requires requesting permission to use Bluetooth Low Energy and Wifi Direct. Follow the [Installation instructions for Android](../../installation).
 
-
-## 1-3 Add Extensions 
+## 1-3 Add Extensions
 
 For the UI in this example, we are still using Kotlin synthetics, which are no
 longer bundled automatically. We need to add `kotlin-android-extensions` in the
@@ -37,16 +37,6 @@ the `plugins` section of `build.gradle` to enable.
 plugins {
     // ...
     id 'kotlin-android-extensions'
-}
-
-
-android {
-    // ...
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 }
 ```
 

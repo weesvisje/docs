@@ -1,5 +1,5 @@
 ---
-title: '1 - Setup'
+title: "1 - Setup"
 ---
 
 The following guide will show you how to build a Task list application with [Android Jetpack Compose](https://developer.android.com/jetpack/getting-started). The Jetpack Compose is a modern set of libraries to build Android apps with a declarative UI with Kotlin code and without writing any XML.
@@ -8,16 +8,16 @@ Before getting started, you will need the latest version of [Android Studio Arct
 
 ## 1-1 Create the App
 
-Once you've had [Android Studio Arctic Fox](https://developer.android.com/studio) installed, Click __File > New Project__ and
+Once you've had [Android Studio Arctic Fox](https://developer.android.com/studio) installed, Click **File > New Project** and
 
 ![](./new-project.png)
 
 Fill out the information on the form similar to the screenshot below. These are recommended values however they are not crucial to complete this tutorial:
 
-* Name: `"Tasks"`
-* Package Name: `"live.ditto.tasks"`
-* Save location: choose a directory
-* Minimum SDK: `"API 25: Android 7.1.1 (Nougat)"`
+- Name: `"Tasks"`
+- Package Name: `"live.ditto.tasks"`
+- Save location: choose a directory
+- Minimum SDK: `"API 23: Android 6 (Marshmallow)"`
 
 And finally click "Finish" and wait for Android Studio to setup the project.
 
@@ -25,13 +25,13 @@ And finally click "Finish" and wait for Android Studio to setup the project.
 
 ## 1-2 Install Ditto
 
-Android requires requesting permission to use Bluetooth Low Energy and WiFi Aware. 
+Android requires requesting permission to use Bluetooth Low Energy and WiFi Aware.
 
 Follow the [Installation instructions for Android](../../installation).
 
 ## 1-3 Add Jetpack Compose dependencies
 
-In your application's Module __build.gradle__ file add the additional dependencies.
+In your application's Module **build.gradle** file add the additional dependencies.
 
 ```groovy title=build.gradle
 dependencies {
@@ -53,7 +53,7 @@ dependencies {
 
 We will need a couple of additional icons to show the tasks' completed, incompleted states. We will reference these vector resources in our code later. You will need to add 3 icons
 
-1. Right click on the __res > drawable__ package and add a new __Vector Asset__
+1. Right click on the **res > drawable** package and add a new **Vector Asset**
 
 ![Add Vector Icons Menu](./add-icon-add.png)
 
@@ -71,6 +71,6 @@ We will need a couple of additional icons to show the tasks' completed, incomple
 
 You should have have 3 additional drawables with the following names:
 
-* `ic_baseline_add_24.xml`
-* `ic_baseline_brightness_1_24.xml`
-* `ic_outline_panorama_fish_eye_24.xml`
+- `ic_baseline_add_24.xml`
+- `ic_baseline_brightness_1_24.xml`
+- `ic_outline_panorama_fish_eye_24.xml`

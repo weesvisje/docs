@@ -1,29 +1,30 @@
 ---
-title: 'Installation'
+title: "Installation"
 sidebar_position: 1
 pagination_next: common/concepts/overview
 ---
 
-import { Snippet } from '@site/src/components/SnippetGroup';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import { InstallCode } from "@site/src/components/Changelog.tsx"
+import { Snippet } from "@site/src/components/SnippetGroup";
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import { InstallCode } from "@site/src/components/Changelog.tsx";
 
 ### Compatibility
 
 :::info
-Supported in Android 7.1 and above. For desktop apps, please contact us at [support@ditto.live](mailto:support@ditto.live).
+Supported on Android 6 (`minSdk` = 23) and above with `compileSdk` >= 31.
+For Java an desktop apps, please contact us at [support@ditto.live](mailto:support@ditto.live).
 :::
 
-|  | LAN | WiFi Direct | Bluetooth | WebSockets |
-|---|---| ---|--- | ---|
-Android | ✓ | ✓ | ✓| ✓ |
-Desktop | x | x | x | x |
+|                 | LAN        | P2P WiFi | Bluetooth  | WebSockets |
+| --------------- | ---------- | -------- | ---------- | ---------- |
+| Android         | ✓          | ✓        | ✓          | ✓          |
+| Java on Desktop | Contact us | x        | Contact us | x          |
 
 ### Setup
 
-1. Ensure your device has Android 7.1 or higher
-2. Ensure that `mavenCentral()` is in the project-level __build.gradle__ file like so:
+1. Ensure your device has Android 6 or higher
+2. Ensure that `mavenCentral()` is in the project-level **build.gradle** file like so:
 
 ```
 buildscript {
@@ -38,34 +39,39 @@ buildscript {
 <InstallCode framework="android" />
 
 4. Configure your manifest with the following permissions. Ditto's required
-permissions have changed since Android 12. Refer to [Android Platform
-Permissions](#android-platform-permissions) for
-details.
-
+   permissions have changed since Android 13. Refer to [Android Platform
+   Permissions](#android-platform-permissions) for details.
 
 ```xml
-    <uses-permission android:name="android.permission.BLUETOOTH"
-        android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
-        android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
-        android:usesPermissionFlags="neverForLocation" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+<uses-permission android:name="android.permission.BLUETOOTH"
+    android:maxSdkVersion="30" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+    android:maxSdkVersion="30" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"
+    tools:targetApi="s" />
+<uses-permission android:name="android.permission.BLUETOOTH_CONNECT"
+    tools:targetApi="s" />
+<uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+    android:usesPermissionFlags="neverForLocation"
+    tools:targetApi="s" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
+    android:maxSdkVersion="32" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"
+    android:maxSdkVersion="30" />
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+<uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+<uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"
+    android:usesPermissionFlags="neverForLocation"
+    tools:targetApi="tiramisu" />
 ```
+
 5. Access the [portal](https://portal.ditto.live) to create a new app. Apps created on the portal will automatically sync data between them and also to the Ditto Big Peer. Each app created on the portal has a unique `appID` which can be seen on your app's settings page once the app has been created. This ID is used in subsequent sections to configure your Ditto instance.
 
 6. Create your Ditto instance as below. We recommend placing this in your Application.onCreate method:
-
 
 <Tabs
   groupId="programming-language"
@@ -77,53 +83,66 @@ details.
 }>
 <TabItem value="kotlin">
 
-<Snippet name='online-playground' language='kotlin' />
+<Snippet name="online-playground" language="kotlin" />
 
 </TabItem>
 <TabItem value="java">
 
-<Snippet name='online-playground' language='java' />
+<Snippet name="online-playground" language="java" />
 
 </TabItem>
 </Tabs>
 
-
-
 ### Android Platform Permissions
 
-The Android operating system restricts access to some functionality for the sake of user control and privacy. Therefore, to unlock the full capabilities of Ditto, it is essential to configure your app so that it requests all the permissions that it needs.
+The Android operating system restricts access to some functionality for the sake
+of user control and privacy. Therefore, to unlock the full capabilities of Ditto,
+it is essential to configure your app so that it requests all the permissions that it needs.
 
 First you must add the following permissions to your app's `AndroidManifest.xml` file.
 
 Then at runtime your app must prompt the user to request certain permissions.
 
-#### Modern Manifest (API Level > 30)
+#### Android Manifest Permissions
 
 ```xml title=AndroidManifest.xml
 <uses-permission android:name="android.permission.BLUETOOTH"
     android:maxSdkVersion="30" />
 <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
     android:maxSdkVersion="30" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"
+    tools:targetApi="s" />
+<uses-permission android:name="android.permission.BLUETOOTH_CONNECT"
+    tools:targetApi="s" />
 <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
-    android:usesPermissionFlags="neverForLocation" />
-<uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
-<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    android:usesPermissionFlags="neverForLocation"
+    tools:targetApi="s" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
+    android:maxSdkVersion="32" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"
+    android:maxSdkVersion="30" />
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+<uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+<uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"
+    android:usesPermissionFlags="neverForLocation"
+    tools:targetApi="tiramisu" />
 ```
 
-Since the Ditto SDK does not use BLE to locate the user physically it assumes you are using the `neverForLocation` flag on `BLUETOOTH_SCAN`. On Android 12, this means that `ACCESS_FINE_LOCATION` is no longer required. If you wish to use `ACCESS_FINE_LOCATION` on an app targeting API level 31+, you must check for and request this permission on your own. Refer to the [Android Documentation](https://developer.android.com/guide/topics/connectivity/bluetooth/permissions) for details.
+Since the Ditto SDK does not use BLE to locate the user physically it assumes you
+are using the `neverForLocation` flag on `BLUETOOTH_SCAN`.
+On Android 12, this means that `ACCESS_FINE_LOCATION` is no longer required.
+If you wish to use `ACCESS_FINE_LOCATION` on an app targeting API level 31+, you
+must check for and request this permission on your own. Refer to the
+[Android Documentation](https://developer.android.com/guide/topics/connectivity/bluetooth/permissions)
+for details.
 
 #### Legacy Manifest (API Level <= 30)
 
-The following manifest is sufficient for apps that are not yet targeting Android 12.
+The following manifest is sufficient for apps that are not yet targeting Android 12 (API 31).
 
 ```xml title=AndroidManifest.xml
 <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -138,12 +157,14 @@ The following manifest is sufficient for apps that are not yet targeting Android
 <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
 ```
 
-In these older Android versions, `ACCESS_FINE_LOCATION` is mandatory and Ditto will check that it is present.
+In these older Android versions, `ACCESS_FINE_LOCATION` is mandatory and Ditto
+will check that it is present.
 
 #### Runtime Permissions
 
-Your apps must ensure all required permissions for sync have been requested from the user. The Android Ditto SDK provides a `DittoSyncPermissions` helper which makes this easy. For example, a fragment can use a method like this:
-
+Your apps must ensure all required permissions for sync have been requested from
+the user. The Android Ditto SDK provides a `DittoSyncPermissions` helper which
+makes this easy. For example, a fragment can use a method like this:
 
 <Tabs
   groupId="android-permissions"
@@ -169,7 +190,8 @@ fun checkPermissions() {
 }
 ```
 
-Alternatively, `requireActivity()` is a way to force the code to only work on a Fragment that has a Context.
+Alternatively, `requireActivity()` is a way to force the code to only work on a
+Fragment that has a Context.
 
 ```kotlin
 fun checkPermissions() {
@@ -184,9 +206,9 @@ fun checkPermissions() {
 </TabItem>
 <TabItem value="java">
 
-On Android, parts of Bluetooth LE and WiFi Direct require location permission.
-Ditto will operate without it but synchronization may be impossible in certain
-scenarios.
+On older versions of Android, parts of Bluetooth LE and WiFi Aware require
+location permission. Ditto will operate without it but synchronization may be
+impossible in certain scenarios.
 
 ```java
 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -199,14 +221,14 @@ if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCA
 </TabItem>
 </Tabs>
 
-For more information about requesting permissions in a user-friendly way refer to Android's documentation: [Request App Permissions](https://developer.android.com/training/permissions/requesting).
+For more information about requesting permissions in a user-friendly way refer to
+Android's documentation: [Request App Permissions](https://developer.android.com/training/permissions/requesting).
 
 On Android there may be a noticeable delay between when the user grants location
 access and when Ditto notices the new permission. For this reason it is
 recommended to call `refreshPermissions()` whenever a relevant permission might
 have changed. This will force an immediate check. If a permission has become
 available your app can begin syncing as quickly as possible.
-
 
 ```kotlin
 override fun onRequestPermissionsResult(

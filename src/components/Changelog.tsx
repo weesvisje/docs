@@ -320,15 +320,6 @@ export function InstallCode({
         // ...
         implementation "live.ditto:ditto:${latest.version}"
       }
-
-      android {
-        // ...
-
-        compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_8
-            targetCompatibility JavaVersion.VERSION_1_8
-        }
-      }
       `;
     case "dotnet":
       if (variant === "package-manager") {
