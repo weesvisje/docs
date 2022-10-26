@@ -7,7 +7,7 @@ title: '3 - Responding to events'
 In this section we will listen to Kafka events and pipe them into a script on the commandline. 
 
 :::info
-To stream events from our app starting at the beginning of time, replace `--group $TOPIC` with `--offset 0 --partition 0`. This could stream a significant number of events to your consumer for applications with a large amount of data.
+To stream events from your app starting at the beginning of time, replace `--group $TOPIC` with `--offset 0 --partition 0`. This could stream a significant number of events to your consumer for applications with a large amount of data.
 :::
 
 ```bash

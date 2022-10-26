@@ -30,8 +30,8 @@ same `_id` at a later time.
 
 Consider using a "soft-delete" pattern in your application. You should use a
 field like `isArchived: true` instead of calling `remove()`. You can query and
-syncronize only the documents that not been marked archived. Using a soft-delete
-pattern, documents can be synced or updated again if necessary. 
+synchronize only the documents that not been marked archived. Using a
+soft-delete pattern, documents can be synced or updated again if necessary. 
 
 ```json
 {

@@ -9,7 +9,7 @@ import SnippetGroup from '@site/src/components/SnippetGroup';
 
 Ditto is a distributed database that optimizes for availability, which means
 that you can always write to your local database even if you are disconnected
-from the internet. Writes from all peers will syncronize and Ditto will resolve
+from the internet. Writes from all peers will synchronize and Ditto will resolve
 any conflicts.
 
 ## Upserting 
@@ -17,7 +17,7 @@ any conflicts.
  Ditto doesn't have a concept of "inserting" data, only "upserting" data. This
  means that each each device must assume that their operations are *upserts* on
  documents that may already exist on some other device in the network. This is because it is
- possible that the current device just hasn't syncronized that document yet.
+ possible that the current device just hasn't synchronized that document yet.
 
 ### Creating a document
 
@@ -84,7 +84,7 @@ In the above example, both Device A and B want to preserve the change by Device 
 
 ## Updating existing documents
 
-Updating an existing document is different for three different 
+Updating an existing document is different depending on the type being updated
 
 [Register](../datamodel/register)
 
@@ -108,7 +108,7 @@ Updating an existing document is different for three different
 ## Batching multiple updates in a single transaction
 
 A write transaction allows a device to perform multiple operations within a
-single database call, that will be syncronized at the same time to other
+single database call, that will be synchronized at the same time to other
 devices. You can perform insert, update, remove or evict operations on multiple
 collections more efficiently using this method.
 

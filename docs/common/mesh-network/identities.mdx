@@ -55,7 +55,7 @@ with other peers.
 
 ### Parts of a Ditto Identity
 
-* `AppId` - Uniquely Identifies a Ditto-based App. It establishes a top-level "namespace" within which all Ditto Identities, collections of documents, timeseries events, and permissions live. It is a part of all Identity types. It may be either a string or, more typically, a UUID v4 lowercased and hyphenated. The Ditto Big Peer provisions `UUIDv4` strings that be used to sync with it's servers in the Cloud.
+* `AppId` - Uniquely Identifies a Ditto-based App. It establishes a top-level "namespace" within which all Ditto Identities, collections of documents, timeseries events, and permissions live. It is a part of all Identity types. It may be either a string or, more typically, a UUID v4 lowercased and hyphenated. The Ditto Big Peer provisions `UUIDv4` strings that be used to sync with its servers in the Cloud.
 * `CustomAuthUrl` - The URL of an Auth Provider which can validate credentials and issue Auth Tokens and x509 certificates. The default values is `https://<app-id>.cloud.ditto.live/`. A `CustomAuthUrl` is only required when another, possibly self-hosted, Auth Provider is preferred. `OfflinePlayground`, `SharedKey`, and `Manual` Identities don't require any AuthURL.
 * `EnableCloudSync` - Whether Ditto should attempt to sync with `wss://<app-id>.cloud.ditto.live`. Only used by `OnlineWithAuthentication` and `OnlinePlayground` Identities. If you're hosting your own Ditto Big Peer, this should be set to `false` and a custom SyncUrl provided to the Ditto `TransportConfig`
 * `WorkingDir` (DittoRoot) - A location where Ditto can cache Auth Tokens, x509 certificates, and other auth-related data. Typically the same as the working directory containing Ditto's local data store.

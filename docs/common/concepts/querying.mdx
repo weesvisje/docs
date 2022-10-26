@@ -63,7 +63,7 @@ The Ditto query language is very similar to what you'd write in most `if` statem
 find("title == $args.title", { title: 'Harry Potter' })
 
 // finds documents which that are not of the title Lord of the Rings
-find("title != $args.title", { title: 'Lord of the rings' })
+find("title != $args.title", { title: 'Lord of the Rings' })
 ```
 
 ### Comparisons - Greater Or Less Than `>=`, `>`, `<`, `<=`
@@ -122,7 +122,7 @@ find("starts_with(title, 'Lord')")
 Use `ends_with(property, test)` to test if a property with a string value __ends__ with a test string
 
 ```js
-// finds documents with a title property that ends with "Lord"
+// finds documents with a title property that ends with "Rings"
 find("ends_with(title, 'Rings')")
 ```
 
