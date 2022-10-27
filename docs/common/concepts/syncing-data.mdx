@@ -46,25 +46,27 @@ receiving updates when local or remote changes are made to
 documents that match the given query. 
 
 The returned Subscription object must be kept in scope for as long as
-you want to keep receiving updates. Subscribe is different than `observe`
-because a callback is not required. This can be more memory efficient. This function is useful if you're just interested in subscribing to changes on a query to have a local offline copy of the data, but do not want to operate on the results.
+you want to keep receiving updates. This function is useful if you're 
+interested in subscribing to changes on a query to have a local offline copy of
+the data.
 
 <SnippetGroup name="subscribe" />
 
+* Call `.subscribe` after `ditto.startSync()` to synchronize and download real-time data from other peers.
+* To manually stop the `liveQuery`, set it either to `null`, drop the variable, or call `liveQuery.stop()`.
+* The callback will immediately run for documents that fit the query.
+
 ### Observe
 
-Create a query with `.observe` to get notified when data changes. The returned LiveQuery object must be kept in scope for as long as
-you want to keep receiving updates. [Learn more about how to create queries](./querying)
+Create a query to get notified when the database gets new changes. The returned
+LiveQuery object must be kept in scope for as long as you want to keep receiving
+updates. [Learn more about how to create queries](./querying)
 
-<SnippetGroup name="sync-observe" />
+<SnippetGroup name="sync-observe-local" />
 
-* Call `.observe` after `ditto.startSync()` to synchronize and download real-time data from other peers.
-* The callback will immediately run for documents that fit the query.
-* The callback will get called with both local and remote changes that fit the query. 
-* The callback will rerun for each sync or write transaction.
-* You can create as many `LiveQuery` objects as you want.
-* To manually stop the `liveQuery`, set it either to `null`, drop the variable, or call `liveQuery.stop()`
-
+* Call `.observeLocal` after `subscribe()` to observe real-time data from your local store.
+* The callback will get called with all local changes that fit the query. 
+* The callback will get called for each sync or write transaction.
 
 ### Sync only relevant documents
 
@@ -77,7 +79,7 @@ only synchronize all orders that have been created in the past 24 hours.
 ```swift
 ditto.store.collection("orders").find("createdAt > $args.yesterday", args: [
   "yesterday": Date().adding(hr:-24),
-]).observe({ cars, event in
+]).observeLocal({ cars, event in
      // do something
 })
 ```

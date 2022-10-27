@@ -21,6 +21,7 @@ namespace Tasks
     {
         // These hold references to Ditto for easy access
         private DittoLiveQuery liveQuery;
+        private DittoSubscription subscription;
         private Ditto ditto
         {
             get
@@ -63,7 +64,8 @@ namespace Tasks
         // Sets up Live Query for syncing
         public void setupTaskList()
         {
-            liveQuery = ditto.Store["tasks"].Find("!isDeleted").Observe((docs, _event) =>
+            subscription = ditto.Store["tasks"].Find("!isDeleted").Subscribe()
+            liveQuery = ditto.Store["tasks"].Find("!isDeleted").ObserveLocal((docs, _event) =>
             {
                 tasks = docs.ConvertAll(d => new Task(d));
                 tasksTableSource.updateTasks(tasks);
@@ -166,7 +168,7 @@ public override void ViewDidLoad()
 // Sets up Live Query for syncing
 public void setupTaskList()
 {
-    liveQuery = ditto.Store["tasks"].Find("!isDeleted").Observe((docs, _event) =>
+    liveQuery = ditto.Store["tasks"].Find("!isDeleted").ObserveLocal((docs, _event) =>
     {
         tasks = docs.ConvertAll(d => new Task(d));
 

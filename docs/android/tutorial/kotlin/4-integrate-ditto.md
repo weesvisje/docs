@@ -39,6 +39,10 @@ override fun onCreate(savedInstanceState: Bundle?) {
     // This starts Ditto's background synchronization
     ditto.startSync()
 
+    // We will create a long-running live query to keep the database up-to-date
+    this.collection = this.ditto!!.store.collection("tasks")
+    this.subscription = this.collection!!.find("!isDeleted").subscribe()
+
     // Add swipe to delete
     val swipeHandler = object : SwipeToDeleteCallback(this) {
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -85,15 +89,12 @@ The important things to note is that you need an access license to use Ditto. If
 
 Finally, we then use Ditto's key API to observe changes to the database by creating a live-query in the `setupTaskList()` function. This allows us to set the initial state of the `RecyclerView` after the query is immediately run and then subsequently get callbacks for any new data changes that occur locally or that were synced from other devices:
 
-Note, that we are using the `observe` API in Ditto. This API performs two functions. First, it sets up a local observer for data changes in the database that match the query and second it creates a subscription for the same query that will be used to request this data from other devices. For simplicity, we are using this combined API, but you can also call them independently. To learn more, see the <a href="/concepts/syncing-data">Observing Changes</a> section in the documentation.
+Note, that we are using the `observeLocal` API in Ditto. This sets up a local observer for data changes in the database that match the query. You also need to create a subscription for the same query that will be used to request this data from other devices. To learn more, see the <a href="/concepts/syncing-data">Observing Changes</a> section in the documentation.
 
 ```kotlin
 fun setupTaskList() {
-    // We will create a long-running live query to keep UI up-to-date
-    this.collection = this.ditto!!.store.collection("tasks")
-
-    // We use observe to create a live query with a subscription to sync this query with other devices
-    this.liveQuery = collection!!.find("!isDeleted").observe { docs, event ->
+    // We use observeLocal to create a live query with a subscription to sync this query with other devices
+    this.liveQuery = collection!!.find("!isDeleted").observeLocal { docs, event ->
         val adapter = (this.viewAdapter as TasksAdapter)
         when (event) {
             is DittoLiveQueryEvent.Update -> {

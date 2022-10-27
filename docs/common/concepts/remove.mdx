@@ -46,7 +46,7 @@ And query non-archived documents like so:
 ```js
 let liveQuery = ditto
   .store.collection('cars')
-  .find('!isArchived').observe((documents) => {
+  .find('!isArchived').observeLocal((documents) => {
     console.log('these are the unarchived documents', documents)
   })
 ```

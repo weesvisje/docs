@@ -50,7 +50,7 @@ Here is a much safer and more efficient way to implement the example above:
 
 ```swift
 // BETTER:
-self.liveQuery = ditto.store.collection("A").find("store_id == 'abc123'").observeWithNextSignal { [weak self] documents, event, signalNext in
+self.liveQuery = ditto.store.collection("A").find("store_id == 'abc123'").observeLocalWithNextSignal { [weak self] documents, event, signalNext in
     self?.documentProcessingQueue.async {
         print("[INFO] Processing \(documents.count) changed documents...")
         // Inspect the changed documents, update UI state, etc.
@@ -68,7 +68,7 @@ the documents.
 
 ```swift
 // CONVENIENT:
-self.liveQuery = ditto.store.collection("A").find("store_id == 'abc123'").observe(deliverOn: self.documentProcessingQueue) { [weak self] documents, event in
+self.liveQuery = ditto.store.collection("A").find("store_id == 'abc123'").observeLocal(deliverOn: self.documentProcessingQueue) { [weak self] documents, event in
         print("[INFO] Processing \(documents.count) changed documents...")
         // Inspect the changed documents, update UI state, etc.
 
@@ -87,7 +87,7 @@ used:
 
 ```swift
 // VERSATILE:
-self.liveQuery = ditto.store.collection("A").find("store_id == 'abc123'").observeWithNextSignal(deliverOn: self.liveQueryQueue) { [weak self] documents, event, signalNext in
+self.liveQuery = ditto.store.collection("A").find("store_id == 'abc123'").observeLocalWithNextSignal(deliverOn: self.liveQueryQueue) { [weak self] documents, event, signalNext in
     // Whenever we have to use asynchronous API that will hold on to the
     // documents, Ditto won't know when it's safe to deliver the next batch of
     // changes, so we have to tell it explicitly by calling `signalNext()`.    
@@ -103,10 +103,10 @@ All of this boils down to the following rule of thumb:
 
 --------------------------------------------------------------------------------
 
-Use `observe(deliverOn:)` *only* if the received `documents` including the
+Use `observeLocal(deliverOn:)` *only* if the received `documents` including the
 `event` are processed and can be released within that callback without
 dispatching onto other queues or using any async APIs. Otherwise, use
-`observeWithNextSignal(deliverOn:)` and call the `DittoSignalNext` block after
+`observeLocalWithNextSignal(deliverOn:)` and call the `DittoSignalNext` block after
 the received documents are fully processed and can be released.
 
 --------------------------------------------------------------------------------
@@ -123,22 +123,22 @@ receive the next batch. This rule of thumb can help with that.
 The four variants shown in this article are as follows:
 
 ```swift
-- observe(handler:)
-- observe(deliverOn:handler:)
-- observeWithNextSignal(handler:)
-- observeWithNextSignal(deliverOn:handler:)
+- observeLocal(handler:)
+- observeLocal(deliverOn:handler:)
+- observeLocalWithNextSignal(handler:)
+- observeLocalWithNextSignal(deliverOn:handler:)
 ````
 
 The former three are convenience methods and are implemented in terms of the
 latter:
 
 ```swift
-.observe() { documents, event in
+.observeLocal() { documents, event in
     // Process documents.
 }
 
 // Equivalent to and implemented as:
-.observeWithNextSignal(deliverOn: .main) { documents, event, signalNext in
+.observeLocalWithNextSignal(deliverOn: .main) { documents, event, signalNext in
     // Process documents.
     signalNext()
 }
@@ -146,29 +146,26 @@ latter:
 ```
 
 ```swift
-.observe(deliverOn: .someQueue) { documents, event, in
+.observeLocal(deliverOn: .someQueue) { documents, event, in
     // Process documents.
 }
 
 // Equivalent to and implemented as:
-.observeWithNextSignal(deliverOn: .someQueue) { documents, event, signalNext in
+.observeLocalWithNextSignal(deliverOn: .someQueue) { documents, event, signalNext in
     // Process documents.
     signalNext()
 }
 ```
 
 ```swift
-.observeWithNextSignal() { documents, event, signalNext in
+.observeLocalWithNextSignal() { documents, event, signalNext in
     // Process documents.
     signalNext()
 }
 
 // Equivalent to and implemented as:
-.observeWithNextSignal(deliverOn: .main) { documents, event, signalNext in
+.observeLocalWithNextSignal(deliverOn: .main) { documents, event, signalNext in
     // Process documents.
     signalNext()
 }
 ```
-
-Same is true for the `observeLocalXXX` variants. Please refer to our API
-reference for details.

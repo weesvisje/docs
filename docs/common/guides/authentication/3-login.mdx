@@ -118,13 +118,15 @@ Once we start the ditto instance, we can create a `liveQuery` and create a
 button that adds items to a collection:
 
 ```js
-let liveQuery = ditto.store.collection('cars').find("name == 'Toyota'").observe((cars) => {
+let subscription = ditto.store.collection('cars').find("state == 'FOR_SALE'").subscribe()
+let liveQuery = ditto.store.collection('cars').find("name == 'Toyota'").observeLocal((cars) => {
   numberOfCars = cars.length
 })
 
 function addItem () {
   ditto.store.collection('cars').upsert({
-    "name": 'Toyota'
+    "name": 'Toyota',
+    "state": 'FOR_SALE'
   })
 }
 ```
@@ -169,14 +171,16 @@ let numberOfCars = 0
 
     ditto = new Ditto(identity, '/persistence/file/path')
     ditto.startSync()
+    let subscription = ditto.store.collection('cars').find("state == 'FOR_SALE'").subscribe()
 
-    let liveQuery = ditto.store.collection('cars').find("name == 'Toyota'").observe((cars) => {
+    let liveQuery = ditto.store.collection('cars').find("name == 'Toyota'").observeLocal((cars) => {
       numberOfCars = cars.length
     })
 
     function addItem () {
       ditto.store.collection('cars').upsert({
-        "name": 'Toyota'
+        "name": 'Toyota',
+        "state": 'FOR_SALE'
       })
     }
   }
@@ -292,7 +296,8 @@ class ProfileViewModel: ObservableObject {
             // 3. Create a liveQuery 
             // highlight-start
             self.ditto = ditto
-            let liveQuery = ditto.store.collection("cars").find("name == 'Toyota'").observe { docs, event in
+            let subscription = ditto.store.collection("cars").find("state == 'FOR_SALE'").subscribe()
+            let liveQuery = ditto.store.collection("cars").find("name == 'Toyota'").observeLocal { docs, event in
                 self.docs = docs
             }
             // highlight-end
