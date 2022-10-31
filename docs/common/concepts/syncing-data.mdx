@@ -54,7 +54,6 @@ the data.
 
 * Call `.subscribe` after `ditto.startSync()` to synchronize and download real-time data from other peers.
 * To manually stop the `liveQuery`, set it either to `null`, drop the variable, or call `liveQuery.stop()`.
-* The callback will immediately run for documents that fit the query.
 
 ### Observe
 
@@ -64,7 +63,8 @@ updates. [Learn more about how to create queries](./querying)
 
 <SnippetGroup name="sync-observe-local" />
 
-* Call `.observeLocal` after `subscribe()` to observe real-time data from your local store.
+* Call `.observeLocal` to observe real-time data from your local database.
+* The callback will immediately run for documents that fit the query.
 * The callback will get called with all local changes that fit the query. 
 * The callback will get called for each sync or write transaction.
 
