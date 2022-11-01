@@ -174,7 +174,7 @@ filled or cancelled, and evict any orders that have been completed.
 self.query =  self.ditto.collection("orders")
   .find("status != 'FILLED' && status != 'CANCELLED'")
   .subscribe()
-self.ditto.collection("orders").find("status == FILLED || status == CANCELLED").evict()
+self.ditto.collection("orders").find("status == 'FILLED' || status == 'CANCELLED'").evict()
 ```
 
 Once an order has been completed, document as “FILLED”. Live queries will fire and update the front-page.

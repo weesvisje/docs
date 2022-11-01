@@ -24,7 +24,7 @@ For reference:
 Even with the Small Peer's wireless mesh networking capabilities, some pair of devices may not be able to
 exchange data. Maybe the devices are miles apart, or they are never online at the same time. That is where Big Peer fits in. The Big Peer is a database that Small Peer devices can sync with to propagate changes across disconnected meshes, and even back to the enterprise. So often databases are used as channels, which is also one of Big Peer's purposes.
 
-There exist many distributed databases, but Big Peer is specifically designed for Ditto: It stores Ditto's CRDTs by default; it can store and merge Ditto [CRDT](/how-it-works/crdt) Diffs; it "speaks" Ditto's mesh replication protocol, meaning it appears as just another peer to Ditto mesh devices; and it provides causally consistent transactions.
+There exist many distributed databases, but Big Peer is specifically designed for Ditto: It stores Ditto's CRDTs by default; it can store and merge Ditto [CRDT](../how-it-works/crdt) Diffs; it "speaks" Ditto's mesh replication protocol, meaning it appears as just another peer to Ditto mesh devices; and it provides causally consistent transactions.
 
 ## How Does It Work?
 
