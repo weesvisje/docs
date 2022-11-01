@@ -60,8 +60,8 @@ namespace Tasks
 As we insert, update, and delete our tasks, we will update the Tasks collection. To sync changes coming from other devices, we will need create a Live Query by calling `.Observe`. Remember Ditto will only sync with devices by calling `.Observe` on queries. The `.Observe` method will return a `DittoLiveQuery` object. As long as the `DittoLiveQuery` object stays in scope and is not garbage collected, the Live Query will fire for any changes to the `tasks` collection. Remember, the `.Observe` callback will fire for both _local changes_ and _remote changes_.
 
 ```csharp
-DittoLiveQuery liveQuery = ditto.Store["tasks"].Find("!isDeleted").Observe((docs, _event) => {
-  // this will fire for all remote and local changes.
+DittoLiveQuery liveQuery = ditto.Store["tasks"].Find("!isDeleted").ObserveLocal((docs, _event) => {
+  // this will fire for all changes syncronized to the store.
 });
 ```
 
@@ -88,6 +88,7 @@ namespace Tasks
         // 2.
         // highlight-next-line
         static DittoLiveQuery liveQuery;
+        static DittoSubscription subscription;
 
 
         public static void Main(params string[] args)
@@ -112,7 +113,8 @@ namespace Tasks
 
             // 3.
             // highlight-start
-            liveQuery = ditto.Store["tasks"].Find("!isDeleted").Observe((docs, _event) => {
+            subscription = ditto.Store["tasks"].Find("!isDeleted").Subscribe()
+            liveQuery = ditto.Store["tasks"].Find("!isDeleted").ObserveLocal((docs, _event) => {
                 tasks = docs.ConvertAll(document => new Task(document));
             });
             // highlight-end

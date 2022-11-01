@@ -111,12 +111,14 @@ class TasksListScreenViewModel: ObservableObject {
     // 5.
     // highlight-start
     var liveQuery: DittoLiveQuery?
+    var subscription: DittoSubscription?
 
     init(ditto: Ditto) {
         self.ditto = ditto
+        self.subscription = ditto.store["tasks"].find("!isDeleted").subscribe()
         self.liveQuery = ditto.store["tasks"]
             .find("!isDeleted")
-            .observe(eventHandler: {  docs, _ in
+            .observeLocal(eventHandler: {  docs, _ in
                 self.tasks = docs.map({ Task(document: $0) })
             })
         

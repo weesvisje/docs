@@ -32,7 +32,7 @@ all devices in the chain must be observing the same data, as shown below:
 
 Ditto is a pull-based sync system, which means each device needs to explicitly tell other peers what data to sync and when to sync it.
 
-Preferably, you should tell ditto to start syncronizing early on in your application's life cycle like in your `AppDelegate.application(_:didFinishLaunchingWithOptions:)` or `Application.onCreate` method. Your application only needs to call this function once.
+Preferably, you should tell ditto to start synchronizing early on in your application's life cycle like in your `AppDelegate.application(_:didFinishLaunchingWithOptions:)` or `Application.onCreate` method. Your application only needs to call this function once.
 
 <SnippetGroup
   name='sync-basic' 
@@ -46,25 +46,27 @@ receiving updates when local or remote changes are made to
 documents that match the given query. 
 
 The returned Subscription object must be kept in scope for as long as
-you want to keep receiving updates. Subscribe is different than `observe`
-because a callback is not required. This can be more memory efficient. This function is useful if you're just interested in subscribing to changes on a query to have a local offline copy of the data, but do not want to operate on the results.
+you want to keep receiving updates. This function is useful if you're 
+interested in subscribing to changes on a query to have a local offline copy of
+the data.
 
 <SnippetGroup name="subscribe" />
 
+* Call `.subscribe` after `ditto.startSync()` to synchronize and download real-time data from other peers.
+* To manually stop the `liveQuery`, set it either to `null`, drop the variable, or call `liveQuery.stop()`.
+
 ### Observe
 
-Create a query with `.observe` to get notified when data changes. The returned LiveQuery object must be kept in scope for as long as
-you want to keep receiving updates. [Learn more about how to create queries](./querying)
+Create a query to get notified when the database gets new changes. The returned
+LiveQuery object must be kept in scope for as long as you want to keep receiving
+updates. [Learn more about how to create queries](./querying)
 
-<SnippetGroup name="sync-observe" />
+<SnippetGroup name="sync-observe-local" />
 
-* Call `.observe` after `ditto.startSync()` to synchronize and download real-time data from other peers.
+* Call `.observeLocal` to observe real-time data from your local database.
 * The callback will immediately run for documents that fit the query.
-* The callback will get called with both local and remote changes that fit the query. 
-* The callback will rerun for each sync or write transaction.
-* You can create as many `LiveQuery` objects as you want.
-* To manually stop the `liveQuery`, set it either to `null`, drop the variable, or call `liveQuery.stop()`
-
+* The callback will get called with all local changes that fit the query. 
+* The callback will get called for each sync or write transaction.
 
 ### Sync only relevant documents
 
@@ -72,12 +74,12 @@ To reduce memory and disk usage over time, *ONLY* sync documents that are releva
 given time. There are various approaches to this problem, and it depends on your application.
 
 For example, if you are building a meal ordering application, you may want to
-only syncronize all orders that have been created in the past 24 hours. 
+only synchronize all orders that have been created in the past 24 hours. 
 
 ```swift
 ditto.store.collection("orders").find("createdAt > $args.yesterday", args: [
   "yesterday": Date().adding(hr:-24),
-]).observe({ cars, event in
+]).observeLocal({ cars, event in
      // do something
 })
 ```
@@ -93,7 +95,7 @@ When you subscribe to data that is relevant, you need to remove it from the
 local device once it is no longer relevant. You want to remove data from the
 local database _without_ deleting that data on other devices. 
 
-This operation is different than remove in that it only removes one of more
+This operation is different than remove in that it only removes one or more
 documents from the local storage and **does not sync the change to other
 devices.**
 
@@ -105,7 +107,7 @@ devices.**
 
 ### 1: Time-based syncing
 
-One common design pattern is to only syncronize data that was written within the
+One common design pattern is to only synchronize data that was written within the
 past 24 hours. At the end of that 24 hours, documents older than 24 hours are evicted and a
 new query is created.
 
@@ -132,7 +134,7 @@ Anything older than 24 hours should be removed locally from the device. However,
 we don't want to remove this data from the entire mesh network, because we may
 want to do analytics on it later using the Big Peer. So, we do not use remove()
 because that deletes data from the entire network, including the Cloud. We use
-`evict()` to remove data from the local device because it is not relevant
+`evict()` to remove data from the local device because the data is not relevant
 anymore.
 
 ```swift
@@ -165,7 +167,7 @@ OPEN -> IN PROGRESS -> COMPLETE -> FILLED
 |
 -> CANCELLED
 
-When the application starts, the device only wants to syncronize orders that are not
+When the application starts, the device only wants to synchronize orders that are not
 filled or cancelled, and evict any orders that have been completed.
 
 ```swift

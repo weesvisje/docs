@@ -15,7 +15,8 @@ significant amount of time before connecting back with other devices.
 If the shape of your documents are significantly different on that device, there
 could be documents that do not conform with your new application code.
 Synchronizing with this "couch device" could cause other devices to crash
-unexpectedly in production.
+unexpectedly in production if precautions aren't taken in your application
+schema.
 
 ## When do I version my documents?
 
@@ -148,7 +149,7 @@ latest version.
 
 ```js
 const query = '_schemaVersion > 1'
-collection.find(query).observe(() => {
+collection.find(query).observeLocal(() => {
   // Notify user to update to latest application version.
   ditto.stopSync()
 })

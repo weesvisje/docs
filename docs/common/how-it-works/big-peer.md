@@ -22,7 +22,7 @@ For reference:
 ## Why Did You Make It?
 
 Even with the Small Peer's wireless mesh networking capabilities, some pair of devices may not be able to
-exchange data. Maybe they are miles apart, or they are never online at the same time. That is where Big Peer fits in. The Big Peer is a database that Small Peer devices can sync with to propagate changes across disconnected meshes, and even back to the enterprise. So often databases are used as channels, which is also one of Big Peer's purposes.
+exchange data. Maybe the devices are miles apart, or they are never online at the same time. That is where Big Peer fits in. The Big Peer is a database that Small Peer devices can sync with to propagate changes across disconnected meshes, and even back to the enterprise. So often databases are used as channels, which is also one of Big Peer's purposes.
 
 There exist many distributed databases, but Big Peer is specifically designed for Ditto: It stores Ditto's CRDTs by default; it can store and merge Ditto [CRDT](../how-it-works/crdt) Diffs; it "speaks" Ditto's mesh replication protocol, meaning it appears as just another peer to Ditto mesh devices; and it provides causally consistent transactions.
 
@@ -58,12 +58,12 @@ _merge_ the conflicting versions into a single meaningful value.
 
 This is also covered in [other documents](../how-it-works/mesh-network). All we need know
 here is that Small Peer devices replicate with Big Peer by sending
-CRDT Documents, and CRDT Diffs to Big Peer's Subscription Server API, and
+CRDT Documents and CRDT Diffs to Big Peer's Subscription Server API, and
 receive in return Documents and Diffs that they are subscribed to. A
 subscription is a query, for example "All red cars in the vehicles
 collection."
 
-Thanks to the Ditto replication protocol all Documents and Diffs that
+Thanks to the Ditto replication protocol, all Documents and Diffs that
 the client needs to send/receive to/from Big Peer appear to arrive
 atomically, as though in a transaction.
 
@@ -138,7 +138,7 @@ on terms and concepts follows.
 #### Replicas
 
 Replicas are independent copies of the same data, which provide fault tolerance
-and better performance. For example, if there exist 3 replicas and a disk fails, two
+and better performance. For example, if there exist three replicas and a disk fails, two
 copies remain. If one or two replicas are unreachable due to network conditions, you
 can still read from a reachable one. Replicas improve performance by providing more
 capacity to serve reads. If you have three replicas you can balance reads across
@@ -149,37 +149,37 @@ As an initial look at the UST, imagine a database on a single machine with a
 transaction log. Each transaction to be written goes onto the log and is given a
 sequence number. When the transaction is committed, the sequence number can
 represent the current version of the database. For example, when transaction
-with sequence number 1 is committed, the database is at version 1. When
-the 2nd transaction commits, the database is at version 2, and so on.
+with sequence number 1 is committed, the database is at Version 1. When
+the second transaction commits, the database is at Version 2, and so on.
 
 Let's walk through a replication example to understand how reads work. Say we have two replicas of our data, A and B. Replica
-A commits transaction 1, and then sends it to replica B, who also commits it.
-Now the database is at version 1, and both replicas will return the same answer.
-But what if transaction two doesn't make it to replica B? This can happen if
+A commits Transaction 1, and then sends it to Replica B, who also commits it.
+Now the database is at Version 1, and both replicas will return the same answer.
+But what if Transaction 2 doesn't make it to Replica B? This can happen if
 there is a brief network outage, or for some reason the message is delayed. So
-while message B is delayed, A has committed transactions 1 and 2, but the B only
-has committed transaction 1. Since Ditto is eventually consistent, it never
+while message B is delayed, A has committed transactions 1 and 2, but B only
+has committed Transaction 1. Since Ditto is eventually consistent, it never
 blocks reads or writes. This means that a client can read even while replicas
 are in an inconsistent state.
 
 If the system wishes to spread the read load equally, and a client reads from
 A, and after that reads from B, the client will see a non-consistent view of the
 world, where time goes backwards between the first read, and the second.
-However, we could decide that since only version 1 is committed on both replicas,
-then the version of the database could be thought of as version 1. This is the
+However, we could decide that since only Version 1 is committed on both replicas,
+then the version of the database could be thought of as Version 1. This is the
 highest transaction that is committed on both replicas: the universally stable
 timestamp (UST). By enforcing reads to conform to the UST, clients reading from
 either replica will get a consistent view of the data.
 
 #### Versions
 
-The above scenario in "replicas" suggests that we need to keep multiple versions
+The above scenario in "Replicas" suggests that we need to keep multiple versions
 of our data. If Transaction 1 changes documents A, B, and C, and Transaction 2
 changes documents A, C, and F, BUT only one replica has stored both
-Transactions, then the database is at version 1. We therefore need to have the
-data for A and C at Transaction 1 and 2, since if we want to provide a
+transactions, then the database is at Version 1. We therefore need to have the
+data for A and C at transactions 1 and 2, since if we want to provide a
 consistent view of the data (one that does not go back in time) then we can only
-serve reads as of version 1 at first, and then later as of version 2.
+serve reads as of Version 1 at first, and then later as of Version 2.
 
 Big Peer keeps as many versions of each data item as it needs in order to provide
 consistent reads. If this concerns you, skip ahead to garbage collection.
@@ -199,31 +199,31 @@ Big Peer.
 
 Now we have replicas of the data, and we partition the data. Each storage node
 in Big Peer is responsible for one replica of a data partition. If we want to split
-our data across three partitions, and have 2 replicas of each item, then we can
-deploy 6 servers, 2 in each partition.
+our data across three partitions, and have two replicas of each item, then we can
+deploy six servers, two in each partition.
 
-Returning to our example in Causal Consistency, imagine that the documents in
-the Menus Collection is stored in Partition 1, and the Orders
+Returning to our example in "Causally Consistent Transactions," imagine that
+the documents in the Menus Collection is stored in Partition 1, and the Orders
 Collection in Partition 2 and that the change to Menus and Orders occurs
-in the same transaction, Transaction One.
+in the same transaction, Transaction 1.
 
-This transaction contains documents that are stored in 2 different
-partitions, across a total of 4 locations (2 replicas, 2 partitions.)
+This transaction contains documents that are stored in two different
+partitions, across a total of four locations (two replicas, two partitions).
 
 In order to store the data for this transaction it needs to stored on
-all 4 servers. This is why the UST matters. If, by chance,
+all four servers. This is why the UST matters. If, by chance,
 Big Peer stores the Orders change document _before_ storing the
 Menus change document and allow reads to always get the latest
 value, we can break the consistency constraint, and reference a menu item that doesn't exist.
 
 A more complex example:
 
-If we have 4 transactions in flight, maybe all the servers have committed
-transaction one, half have committed transaction two, all have committed three,
-and only 2 servers have committed transaction four. If we want to have
+If we have four transactions in flight, maybe all the servers have committed
+Transaction 1, half have committed Transaction 2, all have committed
+Transaction 3, and only two servers have committed Transaction 4. If we want to have
 consistent read of the data, we have to read at the version that is stable at
-all servers: transaction one. Note: we can't say that Transaction Three is
-stable, since it follows Transaction Two, which is not yet stable. Causal
+all servers: Transaction 1. Note: we can't say that Transaction 3 is
+stable, since it follows Transaction 2, which is not yet stable. Causal
 Consistency is all about the order of updates.
 
 #### Non-Blocking Reads
@@ -233,7 +233,7 @@ become stable before reading. Instead, Big Peer is always able to return a
 version of the data for the UST. Reading in the past is still causally
 consistent, and it means that reads and writes proceed
 independently. It also means that something is always available to be
-read (given one replica per-partition is reachable.) A reasonable
+read (given one replica per-partition is reachable)—a reasonable
 trade-off.
 
 #### Read Your Own Writes
@@ -273,7 +273,7 @@ similar to how Small Peers can `observe` queries to react to data changes.
 ### Storage Nodes
 
 Big Peer is split into Storage Nodes and Subscription Servers. The Storage Nodes
-are the database nodes, they run RocksDb as a local storage engine. A storage
+are the database nodes, they run RocksDB as a local storage engine. A storage
 node consumes the transaction log, commits data to disk, and gossips with the
 other storage nodes.
 
@@ -282,25 +282,25 @@ other storage nodes.
 Each node gossips the highest transaction that it has committed. From
 this gossip any node can calculate what it considers to be the UST. If
 every server gossips its local MAXIMUM committed transaction, then the
-UST is the MINIMUM of those MAXIMUMS. For example, in a 3 node
+UST is the MINIMUM of those MAXIMUMS. For example, in a three-node
 cluster:
 
-- server 1 has committed Txn 10
-- server 2 has committed Txn 5
-- server 3 has committed Txn 7
+- Server 1 has committed Txn 10
+- Server 2 has committed Txn 5
+- Server 3 has committed Txn 7
 
 The UST is "5".
 
 NOTE: that each server can have a different _view_ of the UST, depending on how
 long it takes messages to be passed around. For example:
 
-- server 1 has committed Txn 10, and has heard from server 2 that it has
+- Server 1 has committed Txn 10, and has heard from Server 2 that it has
   committed Txn 4, and from Server 3 that it has committed Txn 6. Server 1
   thinks the UST is "4".
-- server 2 has committed Txn 5 and has heard from server 1 that it has committed
+- Server 2 has committed Txn 5 and has heard from Server 1 that it has committed
   Txn 7, and from Server 3 that it has committed Txn 6. Server thinks the UST is
   "5"
-- server 3 has committed Txn 7 and has heard from server 1 that it has committed
+- Server 3 has committed Txn 7 and has heard from Server 1 that it has committed
   Txn 9, and from Server 2 that it has committed Txn 3. Server thinks the UST is
   "3"
 
@@ -383,8 +383,7 @@ placed in a Big Peer cluster, and for that we use Random Slicing.
 
 [Random Slicing](ftp://ftp.cse.ucsc.edu/pub/darrell/miranda-tos14.pdf) has been written about brilliantly in [this
 article](https://www.infoq.com/articles/dynamo-riak-random-slicing/) by Scott Lystig-Fritchie, which motivates the WHY of Random
-Slicing as well as explaining the HOW. Here I'm going to briefly discuss
-Big Peer's implementation.
+Slicing as well as explaining the HOW. Here we will briefly discuss Big Peer's implementation.
 
 We made a decision to make this first version of Big Peer as simple as
 possible, and so we elected to keep our cluster shape and replica
@@ -405,9 +404,8 @@ map hot partitions to bigger nodes ("The Bieber problem": see the
 paper, or Scott's article for details.)
 
 As per the Random Slicing algorithm, we think of the keyspace as the range 0 to
-
-1. We take the _capacity_ of the cluster, and divide 1 by it. This determines
-   how much of the keyspace each partition owns.
+1\. We take the _capacity_ of the cluster, and divide 1 by it. This determines
+how much of the keyspace each partition owns.
 
 In our initial, naive, implementation the capacity is the number of partitions we
 wish to have. We enforce an equal number of replicas per-partition, and thus all
@@ -416,7 +414,7 @@ number is the number of partitions, and the second the number of replicas.
 Random Slicing allows in future to have heterogeneous nodes, assigning the
 capacity accordingly.
 
-In the case that we want 3 partitions of 2 replicas, we say each
+In the case that we want three partitions of two replicas, we say each
 partition takes 1/3 of the keyspace, or has 1/3 of the capacity.
 
 Hashing a DocumentId then gives us a number that falls into the 1st,
@@ -435,19 +433,19 @@ The graphic below illustrates how this looks.
 
 </ImageHolder>
 
-As the image shows, Partition Four is made up of slices from P1, P2, and P3,
+As the image shows, Partition 4 (P4) is made up of slices from P1, P2, and P3,
 these three slices we call Intervals. They represent, in this case, two disjoint
 ranges of the keyspace that P4 owns. A replica of P4 has two intervals, whereas
 P1 has a contiguous range and a single interval.
 
 Our Random Slicing implementation is currently limited in that resources must be
 added and removed in the cluster in units equal to the desired replication
-factor. If you want to add a node, and your desired replication factor is 2, you
-must add 2 nodes. This is not a limit inherent in Random Slicing, but a choice
-we made to speed up implementation. As Scott's article points out, Random Slicing
-matches your keyspace to your storage capacity, but that is it! It doesn't
-manage replica placement. More complex replica placement policies are coming,
-read Scott's article 😉
+factor. If you want to add a node, and your desired replication factor is two,
+you must add two nodes. This is not a limit inherent in Random Slicing, but a
+choice we made to speed up implementation. As Scott's article points out,
+Random Slicing matches your keyspace to your storage capacity, but that is it!
+It doesn't manage replica placement. More complex replica placement policies
+are coming, read Scott's article 😉
 
 In short, Random Slicing appears very simple, map capacity to the range
 0-1, and assign values to slices in that range. Cut-Shift is a great
@@ -459,9 +457,9 @@ Each storage node uses the Random Slicing partitioning information to
 decide if it needs to store documents from any given
 transaction. If the Random Slicing map says that Server One owns
 Documents in the first Partition, then for each transaction Server One will
-store Documents whose Ids hash to the first partition.
+store Documents whose IDs hash to the first partition.
 
-##### Interval Maps - Missed Transactions - Backfill
+#### Interval Maps - Missed Transactions - Backfill
 
 Each storage nodes keeps a local data structure, stored durably and
 atomically with the document data, that records what transactions the
@@ -473,12 +471,12 @@ keyspace that represents the first third of the keyspace, the server
 "splices" the observed transactions into the `IntervalMap` at that
 interval.
 
-Imagine Server One is responsible for Interval One, it receives transactions
+Imagine Server 1 is responsible for Interval 1, it receives transactions
 1..=100 from the log, it adds the data from those transactions to a local write
-transaction with RocksDb. Then it splices the information into the IntervalMap,
+transaction with RocksDB. Then it splices the information into the IntervalMap,
 that it has seen a block of transactions from 1..=100. We now say that the
-`base` for Interval One is `100`. Now the server stores this updated
-`IntervalMap` with the data in a write transaction to RocksDb.
+`base` for Interval 1 is `100`. Now the server stores this updated
+`IntervalMap` with the data in a write transaction to RocksDB.
 
 Next the server receives transaction `150..=200` from the log. Clearly the
 server can detect that it has somehow missed transaction `101..=149`. The server
@@ -490,15 +488,15 @@ Any server with any detached ranges can look in the Partition Map to see if it
 has any peer replicas, and ask _them_ for the detached range(s). This is an
 internal query in Big Peer. If a peer replica has some or all of the missing
 transaction data, it will send it to the requesting server, who will splice the
-results in the `IntervalMap`, and write the data to disk. This way a Server can
+results in the `IntervalMap`, and write the data to disk. This way a server can
 recover any data it missed, assuming at least one replica stored that data. We
 call this Backfill.
 
 Nodes gossip their `IntervalMaps`, this is how the UST is calculated, and how Backfill replicas can be chosen.
 
-Read on down to "Data Loss" if you want to know how the cluster continues to make
-progress and function in the disastrous case that all replicas miss a
-transaction.
+Read on down to "Missed/Lost Data" if you want to know how the cluster
+continues to make progress and function in the disastrous case that all
+replicas miss a transaction.
 
 The `IntervalMap`, gossip, Backfill, UST, Read Transactions, and the GC
 timestamp all come together to facilitate "transitions", which is how Big Peer can
@@ -515,9 +513,9 @@ Causally Consistent. Big Peer manages Transitions between configurations
 by leaning on those two primitives the UST and the GC Timestamp. The
 process is best explained with an example.
 
-Using the diagram from the Random Slicing section, a walkthrough of the transition from the 3 Partition original cluster to the target 4 partition cluster. In this case assume 2 Replicas per partition, which means adding 2 new servers to the cluster.
+Using the diagram from the Random Slicing section, a walkthrough of the transition from the three-partition original cluster to the target four-partition cluster. In this case assume two replicas per partition, which means adding two new servers to the cluster.
 
-There is a Current Config, that contains the intervals that make up the Partitions 1, 2, and 3 mapped to the replicas for those Partitions. The name `p1r1` refers to the first replica of partition 1, `p2r2` the second replica of partition 2, etc.
+There is a Current Config, that contains the intervals that make up the partitions 1, 2, and 3 mapped to the replicas for those partitions. The name `p1r1` refers to the first replica of Partition 1, `p2r2` the second replica of Partition 2, etc.
 
 In the Current Config there are nodes `p1r1`, `p1r2`, `p2r1`, `p2r2`, `p3r1`, `p3r2`. Two new nodes are started, (`p4r1`, `p4r2`). A new Cluster Configuration is generated from the Current Configuration. This runs the Cut-Shift algorithm and produces a Next Configuration, with the partition map and intervals as-per the diagram above.
 
@@ -537,7 +535,7 @@ In the section on UST we described a scalar value, the Transaction Timestamp. In
 
 This allows us to calculate a UST per-configuration. Before we began the transition the UST was `(1, 1000)`. The UST may never go backwards (that would break Causal Consistency). After starting the new servers and notifying nodes about the Next Config, the UST in the Current Config is `(1, 1000)` and in the Next Config is `(2, 0)`. During this period of transition the nodes in `p4` cannot be routed to for querying. Only nodes in the Current Config can coordinate queries, and these nodes decide what Configuration to use for Routing based on the USTs in each of the Current and Next Config. We call this the Routing Config. It is calculated. And like everything else in Big Peer, it progresses monotonically upwards.
 
-After the new nodes have Backfilled, and after some period of gossip, the UST in the Next Config arrives at a value that is `>=` the UST in the current config\* the servers in the Current Config will begin to Route queries using the Next Config. Recall that nodes gossip a GC timestamp that is based on active Read Transactions. A Read Transaction is identified by the Timestamp at which it began. For example `(1, 1000)` is a Read Transaction that began at UST 1000 in the Current Configuration. When all the replicas in the Current Configuration are Routing with the next configuration, (i.e. the Cluster GC timestamp is in the Next Configuration, `(2, 1300)` for example) the Transition is complete. Any of the nodes can store the Next Config into the Strongly Consistent metadata store as the Current Config. Each node is signaled, and eventually all will have a Current Config with `ConfigId 2`, and will forget metadata related to `ConfigId 1`. Furthermore, Garbage Collection will ensure that replicas drop data that they no longer own.
+After the new nodes have Backfilled, and after some period of gossip, the UST in the Next Config arrives at a value that is `>=` the UST in the current config\* so the servers in the Current Config will begin to Route queries using the Next Config. Recall that nodes gossip a GC timestamp that is based on active Read Transactions. A Read Transaction is identified by the Timestamp at which it began. For example `(1, 1000)` is a Read Transaction that began at UST 1000 in the Current Configuration. When all the replicas in the Current Configuration are Routing with the next configuration, (e.g., the Cluster GC timestamp is in the Next Configuration, `(2, 1300)`) the Transition is complete. Any of the nodes can store the Next Config into the Strongly Consistent metadata store as the Current Config. Each node is signaled, and eventually all will have a Current Config with `ConfigId 2`, and will forget metadata related to `ConfigId 1`. Furthermore, Garbage Collection will ensure that replicas drop data that they no longer own.
 
 Throughout the transition, writes are processed, queries are executed, and the normal monotonic progress of the Cluster's UST and GC timestamp ensure that the new nodes can begin to store data at once, and will be used for query capacity as soon as they support Causally Consistent view of the data.
 
@@ -587,11 +585,11 @@ Big Peer is approaching beta. Some customers are already putting production work
 
 ### CDC
 
-Completing the cycle of data in Big Peer is CDC ([Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture)). Work in progress where each transaction produces a Change Data Message containing the type of change (eg insert, delete, update) and the details of the change. CDC is a way for customer to react to data changes that occur from the mesh or elsewhere, or even to keep external legacy databases in sync with Big Peer.
+Completing the cycle of data in Big Peer is CDC ([Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture)). Work in progress where each transaction produces a Change Data Message containing the type of change (e.g., insert, delete, update) and the details of the change. CDC is a way for customer to react to data changes that occur from the mesh or elsewhere, or even to keep external legacy databases in sync with Big Peer.
 
 Data from CDC is available from Kafka. Developers can [register Kafka consumers](/guides/kafka/intro) where Big Peer will deliver data change events that match a defined query - similar to how Small Peers can `observe` queries to react to data changes.
 
-We also provide webhoooks will enable delivery of data within Big Peer into other systems or to build server-side logic that reacts to data change events - such as performing data aggregations that write back into Big Peer or to trigger an email to a user based off an event from a Small Peer. These data change events fit into "serverless" patterns and will work with any "functions-as-a-service" (FaaS) systems, such as AWS Lambda or others.
+We also provide webhooks to enable delivery of data within Big Peer into other systems or to build server-side logic that reacts to data change events - such as performing data aggregations that write back into Big Peer or triggering an email to a user based off an event from a Small Peer. These data change events fit into "serverless" patterns and will work with any "functions-as-a-service" (FaaS) systems, such as AWS Lambda or others.
 
 Care is being taken to ensure the delivery of these events are reliable. Endpoints will be able to persist a unique marker that corresponds to the event, and later restart events from that same marker onward so that events are not missed during periods of interruption.
 

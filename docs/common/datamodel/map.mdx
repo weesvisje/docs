@@ -10,7 +10,7 @@ import SnippetGroup from '@site/src/components/SnippetGroup';
 The map represents a JSON like object, and it is the basis of the Ditto Document.
 Whenever you create a document you are creating a CRDT Map at its root. We nest maps within
 maps to allow complex JSON like document structures. A map is made up of
-properties and values. The values can be registers, counter, arrays, or maps.
+properties and values. The values can be registers, counters, arrays, or maps.
 
 <SnippetGroup
   name='upsert-datatypes' 
@@ -54,7 +54,7 @@ Maps are queriable using the [`find`](../concepts/querying) API as part of the D
 
 An update to any field in a map is sent independent of other changes within a
 map. For example, if you want to update the mileage every three seconds, we don't want to also
-replicate changes to all of the other keys in the app. Using the Map type allows you to make changes to just a single key in the Map efficiently. 
+replicate changes to all of the other keys in the map. Using the Map type allows you to make changes to just a single key in the Map efficiently. 
 
 Say that Devices A and B have this document:
 
@@ -145,7 +145,7 @@ Whilst Site B creates:
 
 In this instance we cannot merge an array with an object. We chose not to let
 the "last updated type" win, as this could lead to a ping-pong of type changes
-between the devices. Instead we keep BOTH values for the the "address" property.
+between the devices. Instead we keep BOTH values for the "address" property.
 We render only the last updated type when we show JSON, but we also provide a
 way for the programmer to chose which type to render for a property, or to
 render ALL types for a property. This way we can manage type level conflict, and

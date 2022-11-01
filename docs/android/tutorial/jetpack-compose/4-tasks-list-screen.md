@@ -124,10 +124,10 @@ fun TaskListPreview() {
 
 ## 4-3 Create a `@Composable` `TasksListScreenViewModel`
 
-The entire screen's data will be completely controlled by a Jetpack Compose `ViewModel`. The use of `ViewModel` is a design pattern called [MVVM or Model View ViewModel](https://proandroiddev.com/architecture-in-jetpack-compose-mvp-mvvm-mvi-17d8170a13fd) which strives to separate all data manipulation (Model and ViewModel) and data presentation (UI or View) into distinct areas of concern. When it comes to Ditto, we recommend that you never include references to `ditto` in `@Composable` types. All interactions with `ditto` for `insert`, `update`, `find`, `remove` and `observe` should be within a `ViewModel`.
+The entire screen's data will be completely controlled by a Jetpack Compose `ViewModel`. The use of `ViewModel` is a design pattern called [MVVM or Model View ViewModel](https://proandroiddev.com/architecture-in-jetpack-compose-mvp-mvvm-mvi-17d8170a13fd) which strives to separate all data manipulation (Model and ViewModel) and data presentation (UI or View) into distinct areas of concern. When it comes to Ditto, we recommend that you never include references to `ditto` in `@Composable` types. All interactions with `ditto` for `insert`, `update`, `find`, `remove` and `observeLocal` should be within a `ViewModel`.
 
 1. Now create a new file called __TasksListScreenViewModel.kt__
-2. Add a property called `val tasks: MutableLiveData<List<Task>> = MutableLiveData(emptyList())`. This will house all of our tasks that the `TasksListScreen` can observe for changes. When any `MutableLiveData` type changes, Jetpack Compose will intelligently tell `@Composable` types to reload with the necessary changes.
+2. Add a property called `val tasks: MutableLiveData<List<Task>> = MutableLiveData(emptyList())`. This will house all of our tasks that the `TasksListScreen` can observeLocal for changes. When any `MutableLiveData` type changes, Jetpack Compose will intelligently tell `@Composable` types to reload with the necessary changes.
 3. Create a `liveQuery` by observing all the tasks documents. Remember our `Task` data class that we created? We will now map all the `DittoDocument` to a `List<Task>` and set them to the tasks.
 4. Ditto's `DittoLiveQuery` types should be disposed by calling `stop()` once the `ViewModel` is no longer necessary. For a simple application, this isn't necessary but it's always good practice once you start building more complex applications.
 
@@ -136,7 +136,7 @@ class TasksListScreenViewModel: ViewModel() {
     val tasks: MutableLiveData<List<Task>> = MutableLiveData(emptyList())
 
     val liveQuery = TasksApplication.ditto!!.store["tasks"]
-        .find("!isDeleted").observe { docs, _ ->
+        .find("!isDeleted").observeLocal { docs, _ ->
             tasks.postValue(docs.map { Task(it) })
         }
 

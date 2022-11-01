@@ -25,6 +25,7 @@ class TaskTableViewController: UITableViewController {
     var ditto: Ditto!
     var store: DittoStore!
     var liveQuery: DittoLiveQuery?
+    var subscription: DittoSubscription?
     var collection: DittoCollection!
 
     // This is the UITableView data source
@@ -45,6 +46,9 @@ class TaskTableViewController: UITableViewController {
         // Ditto stores data as collections of documents
         collection = store.collection("tasks")
 
+        // Subscribe to changes with a live-query 
+        subscription = collection.find("!isDeleted").subscribe()
+
         // This function will create a "live-query" that will update
         // our UITableView
         setupTaskList()
@@ -52,8 +56,8 @@ class TaskTableViewController: UITableViewController {
 
     func setupTaskList() {
         // Query for all tasks
-        // Observe changes with a live-query and update the UITableView
-        liveQuery = collection.find("!isDeleted").observe { [weak self] docs, event in
+        // Observe changes and update the UITableView when anything changes
+        liveQuery = collection.find("!isDeleted").observeLocal { [weak self] docs, event in
             guard let `self` = self else { return }
             switch event {
             case .update(let changes):
@@ -107,6 +111,7 @@ var ditto: Ditto!
 var store: DittoStore!
 var liveQuery: DittoLiveQuery?
 var collection: DittoCollection!
+var subscription: DittoSubscription?
 
 // This is the UITableView data source
 var tasks: [DittoDocument] = []
@@ -126,6 +131,10 @@ override func viewDidLoad() {
     // Ditto stores data as collections of documents
     collection = store.collection("tasks")
 
+    // Subscribe to changes with a live-query 
+    subscription = collection.find("!isDeleted").subscribe()
+
+
     // This function will create a "live-query" that will update
     // our UITableView
     setupTaskList()
@@ -138,7 +147,7 @@ Note, that we are using the `observe` API in Ditto. This API performs two functi
 
 ```swift
 func setupTaskList() {
-    liveQuery = collection.find("!isDeleted").observe { [weak self] docs, event in
+    liveQuery = collection.find("!isDeleted").observeLocal { [weak self] docs, event in
         guard let `self` = self else { return }
         switch event {
         case .update(let changes):
