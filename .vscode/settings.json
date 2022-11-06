@@ -6,5 +6,12 @@
       "strings": "on",
       "other": "on"
     }
-  }
+  },
+  "grammarly.selectors": [
+    {
+      "language": "mdx",
+      "scheme": "file",
+      "pattern": "docs/common/how-it-works/certificate-security.mdx"
+    }
+  ]
 }
