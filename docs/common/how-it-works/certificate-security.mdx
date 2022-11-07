@@ -119,7 +119,7 @@ An identity is a bundle of the device and app-specific information:
 
 Ditto identities and public keys are distributed in the standard X.509
 certificate format. They do not directly contain potentially sensitive data such as access rules,
-but these can be defined by an authentication webhook with the 
+but these can be defined by the app's authentication webhook with the 
 [OnlineWithAuthentication identity](../security/designing-permissions), or by the
 developer through the `Manual` identity.
  
@@ -139,46 +139,52 @@ control rules are enforced.
 ## Synchronizing with the Big Peer
 
 :::info
-The description below covers internal details of the Big Peer implementation,
-which is subject to change.  Ditto’s authentication module handles this
-implementation for you under the hood as part of the OnlineWithAuthentication
-identity. 
+The description below covers internal details of the Big Peer implementation.  Ditto’s authentication module handles this
+implementation for you under the hood as part of the `OnlineWithAuthentication` and `OnlinePlayground`
+identities. 
 :::
 
-When synchronizing with the Big Peer, certificates are distributed through the
-Ditto Portal. When a client attempts to authenticate, it will make an HTTPS request to the authentication server containing the following payload:
+### Overview
 
+Online Authentication can be used when a Ditto application is hosted on a Big Peer. The Big Peer hosts an HTTPS identity service, which handles login requests. In Online Authentication mode, a Small Peer must log in with credentials before it can communicate with any peers. The login flow populates the Small Peer with valid authentication material that identifies the user and defines their level of access. Once the Small Peer receives this data after a successful login, the transports which depend on it will start automatically.
+
+###  Step 1: Complete a Peer Key Challenge
+
+The peer’s public key will be included in the certificates returned by the identity service. The identity service needs proof that the authenticating Small Peer actually holds the corresponding private key.
+
+1. Small Peer downloads a challenge token from `/_ditto/auth/cert` - this is a time-limited JWT which the client treats as opaque data.
+2. Small Peer uses their Peer Key to sign it with the context `LoginKeyVerification`.
+
+### Step 2: Log in with Credentials
+
+When a client attempts to authenticate, it will make an HTTPS request to the identity service containing the following payload:
+
+- Signed challenge,
 - App ID,
-- the provider name, and
-- credentials to be sent to the auth webhook.
+- Provider name, and
+- Credentials to be forwarded to the app's [authentication webhook](../security/online-with-authentication).
 
-The authentication server will then go through the workflow documented
-[here](../security/online-with-authentication).  Once the authentication
-server has a response from the auth webhook, it will build and sign a JWT. The keys used to sign JWTs and certificates are managed
-separately.  Both are managed as part of our infrastructure and provided to our
-authentication server at startup.
+Once the identity service has a response from the auth webhook, it will build and sign a JWT. In addition to the information we would expect to find in a JWT (issuer, issued at, expiry, etc), we also include an encoded representation of the Ditto Identity.
+The Ditto Identity is built from the information provided by the app's authentication webhook response.
 
-In addition to the information we would expect to find in a JWT (issuer, issued at,
-expiry, etc), we also include an encoded representation of the Ditto Identity.
-The Ditto Identity is built from the information provided by auth webhook
-response.  The important values here are the App ID and permissions.
+### Step 3: Upgrade to an X.509 Certificate
 
 Once a peer has a JWT, it will want to use this to get a device certificate.  The
-peer will now make an HTTPS certificate request to the authentication server.
+peer will now make an HTTPS certificate request to the identity service.
 The “request certificate” endpoint requires a valid JWT.  The contents of the
 new certificate is closely tied to the JWT.  The certificate expiration time is the same as the JWT, and the ditto identity embedded in the
-certificate is pulled from the JWT.  The authentication server generates a
+certificate is pulled from the JWT.  The identity service generates a
 private key for the device.  It uses this private key to generate a CSR on
-behalf of the client and then the authentication server’s CA keys to sign it.
+behalf of the client and then the identity service’s CA keys to sign it.
 
-Once this information is prepared, the server is ready to respond to the request.
+Once this information is prepared, the identity service is ready to respond to the request.
 The response will include the client's generated certificate and private key, a list of CA certificates the client should trust, and a DateTime for
-expiration.  The client will persist the JWT, device private key, device
+expiration. The client will persist the JWT, device private key, device
 certificate, and CA certificates on disk and only update them when they get near
 expiration.
 
 When two peers authenticate with each other, they can use either
-the JWT or the device certificate via MTLS.  The decision depends on the client's
+the JWT or the device certificate via MTLS. The decision depends on the client's
 capabilities and connection type.
 
 **Why does X.509 return both a key and a certificate instead of locally generating a key and sending a CSR?**
@@ -195,5 +201,5 @@ The idea is that JWTs could be quite short-lived but the X.509 certs could be lo
 
 Additionally, browser peers have no use for X.509 certificates so they don’t request them.
 
-Of course, you could have a single request that lets you request some combination of identities at once. There is no reason this couldn’t be added to reduce latency.
+Of course, the Small Peer could have a single request that lets you request some combination of identities at once. There is no reason this couldn’t be added in the future to reduce latency.
 
