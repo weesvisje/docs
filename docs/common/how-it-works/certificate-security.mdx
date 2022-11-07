@@ -187,6 +187,8 @@ When two peers authenticate with each other, they can use either
 the JWT or the device certificate via MTLS. The decision depends on the client's
 capabilities and connection type.
 
+### Rationale
+
 **Why does X.509 return both a key and a certificate instead of locally generating a key and sending a CSR?**
 
 It would be possible to use a standard CSR flow. It was chosen to issue keys directly for a few reasons.
