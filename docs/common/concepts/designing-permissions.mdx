@@ -142,3 +142,29 @@ Here is a full example for a complex permissions query:
   }
 }
 ```
+
+## App-level Security
+
+The access rules contained in the identity are rigid, signed by the central
+certificate authority, and enforced by all participating devices. This offers
+the highest level of security. If a person is not allowed to access particular
+data, it will never be synced to their device.
+
+For apps with weaker security requirements, a developer may choose to relax the
+access rules inside the Ditto certificate, and instead restrict access in their application code.
+
+One advantage is that the developer has more flexibility to change the access
+rules dynamically since they are not encoded in signed certificates. Another
+advantage is that all devices in the mesh can participate in syncing the data,
+which may help it propagate faster. If certain data is only accessible to a few
+privileged devices which are not often in range of each other, it will take
+longer for them to sync.
+
+The disadvantage is that an unprivileged user does have a device containing
+privileged data. A technically savvy user or phone thief may be able to gain
+access to not only their regular data, but also the more privileged data that
+they were never intended to be able to view.
+
+Therefore relaxed access rules - app-level security - are only suitable for
+environments where there is a degree of trust that the devices won't end up
+unlocked in the wrong hands.
