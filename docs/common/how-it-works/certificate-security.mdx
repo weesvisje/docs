@@ -153,16 +153,16 @@ Online Authentication can be used when a Ditto application is hosted on a Big Pe
 The peer’s public key will be included in the certificates returned by the identity service. The identity service needs proof that the authenticating Small Peer actually holds the corresponding private key.
 
 1. Small Peer downloads a challenge token from `/_ditto/auth/cert` - this is a time-limited JWT which the client treats as opaque data.
-2. Small Peer uses their Peer Key to sign it with the context `LoginKeyVerification`.
+2. Small Peer uses their Peer Key to sign it.
 
 ### Step 2: Log in with Credentials
 
 When a client attempts to authenticate, it will make an HTTPS request to the identity service containing the following payload:
 
-- Signed challenge,
-- App ID,
-- Provider name, and
-- Credentials to be forwarded to the app's [authentication webhook](../security/online-with-authentication).
+- Signed challenge
+- App ID
+- Provider name
+- Credentials to be forwarded to the app's [authentication webhook](../security/online-with-authentication)
 
 Once the identity service has a response from the auth webhook, it will build and sign a JWT. In addition to the information we would expect to find in a JWT (issuer, issued at, expiry, etc), we also include an encoded representation of the Ditto Identity.
 The Ditto Identity is built from the information provided by the app's authentication webhook response.
