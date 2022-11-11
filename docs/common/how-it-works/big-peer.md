@@ -482,7 +482,7 @@ Next the server receives transaction `150..=200` from the log. Clearly the
 server can detect that it has somehow missed transaction `101..=149`. The server
 can still observe and record the data from these new transactions, and splice
 the information into the `IntervalMap`. The `IntervalMap` now has a `base` of
-`100` and a `detatched-range` of `150..=200`.
+`100` and a `detached-range` of `150..=200`.
 
 Any server with any detached ranges can look in the Partition Map to see if it
 has any peer replicas, and ask _them_ for the detached range(s). This is an
