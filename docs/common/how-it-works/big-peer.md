@@ -345,7 +345,7 @@ the query. At present, Big Peer shards data by Application AND Collection
 (however this can change in the future). The coordinator will assemble a
 list of partitions needed to answer the query, and pick one replica
 from each partition. It picks the replica based on a
-[fault-detector](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.581.8294&rep=rep1&type=pdf),
+[fault-detector](https://www.researchgate.net/profile/Benjamin-Satzger/publication/4339407_A_Lazy_Monitoring_Approach_for_Heartbeat-Style_Failure_Detectors/links/0912f50bcb4b32fc08000000/A-Lazy-Monitoring-Approach-for-Heartbeat-Style-Failure-Detectors.pdf),
 picking the replica least likely to be faulted. It sends the query to
 each replica, and merges and streams the results back to the caller.
 
@@ -381,7 +381,7 @@ placed in a Big Peer cluster, and for that we use Random Slicing.
 
 #### Random Slicing
 
-[Random Slicing](ftp://ftp.cse.ucsc.edu/pub/darrell/miranda-tos14.pdf) has been written about brilliantly in [this
+[Random Slicing](https://hpc.ac.upc.edu/PDFs/dir05/file004529.pdf) has been written about brilliantly in [this
 article](https://www.infoq.com/articles/dynamo-riak-random-slicing/) by Scott Lystig-Fritchie, which motivates the WHY of Random
 Slicing as well as explaining the HOW. Here, we will briefly discuss Big Peer's implementation.
 
