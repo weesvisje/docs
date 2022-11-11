@@ -266,7 +266,7 @@ log will do. At present, we use a single partition of a single topic,
 but we can partition the log by Application and still maintain the
 same consistency guarantees. When we do partition the log the properties are the
 same, the throughput increases, and the UST becomes
-a vector.  Developers can [register Kafka consumers](/guides/kafka/intro)
+a vector.  Developers can [register Kafka consumers](../guides/kafka/intro)
 where Big Peer will deliver data change events that match a defined query -
 similar to how Small Peers can `observe` queries to react to data changes.
 
