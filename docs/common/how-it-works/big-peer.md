@@ -6,7 +6,7 @@ export function ImageHolder(props) {
 return <div style={{padding: '2rem', margin: '2rem', borderRadius: '8px', background: 'white'}}>{props.children}</div>
 }
 
-Ditto's distributed database architecture is a composition of Small Peers and Big Peers. Small peers are predominantly used to synchronize data across web, mobile, desktop, and IoT apps where storage, RAM, and CPU resources are generally static and unchangable. For example, if you were to buy an iPhone with 256 Gigabytes of storage, you are pretty much stuck with this size unless you buy another iPhone.
+Ditto's distributed database architecture is a composition of Small Peers and Big Peers. Small peers are predominantly used to synchronize data across web, mobile, desktop, and IoT apps where storage, RAM, and CPU resources are generally static and unchangeable. For example, if you were to buy an iPhone with 256 Gigabytes of storage, you are pretty much stuck with this size unless you buy another iPhone.
 
 Conversely, Big Peers are database peers which live in the cloud and are capable of sharding or partitioning. When they sync with small peers, they look like any other peer. However, a Big Peer can be split across multiple virtual or physical nodes allowing for both horizontal and vertical scaling of resources as your application demands grow.
 
@@ -22,9 +22,9 @@ For reference:
 ## Why Did You Make It?
 
 Even with the Small Peer's wireless mesh networking capabilities, some pair of devices may not be able to
-exchange data. Maybe the devices are miles apart, or they are never online at the same time. That is where Big Peer fits in. The Big Peer is a database that Small Peer devices can sync with to propagate changes across disconnected meshes, and even back to the enterprise. So often databases are used as channels, which is also one of Big Peer's purposes.
+exchange data. Maybe the devices are miles apart, or they are never online at the same time. That is where Big Peer fits in. The Big Peer is a database that Small Peer devices can sync with to propagate changes across disconnected meshes, and even back to the enterprise. Often databases are used as channels, which is also one of Big Peer's purposes.
 
-There exist many distributed databases, but Big Peer is specifically designed for Ditto: It stores Ditto's CRDTs by default; it can store and merge Ditto [CRDT](../how-it-works/crdt) Diffs; it "speaks" Ditto's mesh replication protocol, meaning it appears as just another peer to Ditto mesh devices; and it provides causally consistent transactions.
+There exist many distributed databases, but Big Peer is specifically designed for Ditto: It stores Ditto's [CRDTs](../how-it-works/crdt) by default; it can store and merge Ditto CRDT Diffs; it "speaks" Ditto's mesh replication protocol, meaning it appears as just another peer to Ditto mesh devices; and it provides causally consistent transactions.
 
 ## How Does It Work?
 
@@ -49,7 +49,7 @@ The following drawing is a rough overview of the architecture.
 
 The core data type in Ditto is the CRDT. It is documented in detail
 [here](../how-it-works/crdt). Understanding some
-of how the CRDT works helps understand the concepts below. It is
+of how CRDTs work helps understand the concepts below. It is
 enough to know that if the same CRDT is modified by multiple Ditto
 mesh Small Peer devices concurrently there is a way to deterministically
 _merge_ the conflicting versions into a single meaningful value.
@@ -72,26 +72,26 @@ atomically, as though in a transaction.
 An application is the consistency boundary for Big Peer. An application
 is registered via the [Portal](https://portal.ditto.live/). An application is uniquely
 identified via association with a UUID. Queries, Subscriptions, and
-Transaction are all scoped by application. Within an application are
+Transactions are all scoped by application. Within an application are
 Collections. Theses are somewhat like tables, where associated
 Documents can be stored. Big Peer supports transactions within an Application, including across
 Collections.
 
 ### Causally Consistent Transactions
 
-Given the existence of the CAP theorem, that fundamental trade off in
+Given the existence of the CAP theorem, which posits a fundamental trade off in
 distributed systems between Consistency and Availability in a world of
 asynchronous networks, Causal Consistency is the strongest consistency model
 that can be achieved if a system is designed to continue to be Available in the
 CAP sense. You can read more
 [on Wikipedia](https://en.wikipedia.org/wiki/Causal_consistency).
 
-Causal Consistency is a model that is much simpler to work with, compared to
-eventual consistency. In eventual consistency it seems like _anything_ is
-allowed to happen. With Causal Consistency if one action happens before another,
-and can therefore potentially influence that other action, the actions must be
-ordered in the that way for everyone, ever after. If two actions are totally
-unrelated, they can be ordered any way the system chooses. By way of example:
+Causal Consistency is a model that is much simpler to work with when compared to
+Eventual Consistency. Under Eventual Consistency, it seems like _anything_ is
+allowed to happen. With Causal Consistency, if one action happens before another,
+and can therefore potentially influence that other action, then those two actions must
+be ordered that way for everyone. If two actions are totally unrelated, they can be
+ordered any way the system chooses. By way of example:
 
 Imagine that you have two collections: Menus and Orders. First, you add a new
 item to the menu, and then create an order that points to the new item. If these
@@ -102,15 +102,15 @@ created, regardless of the vagaries of networks, connections, and
 ordering of messages. Transactional Causal Consistency means that we
 can apply this constraint across any number of related changes, across
 multiple documents, in multiple collections, as long as they are within the same
-Application. This is a much simpler to understand model than eventual
-consistency, leading to fewer surprises.
+Application. This is a much simpler to understand model compared to Eventual
+Consistency, leading to fewer surprises.
 
 ### PaRiS - UST
 
 This section gets technical on _how_ Big Peer provides Causally Consistent
 Transactions, and other properties, like fault tolerance, and scalability.
 
-The key concept throughout, and the primitive on which Big Peer is built is that of
+The key concept throughout, and the primitive on which Big Peer is built, is that of
 the UST, the Universally Stable Timestamp. Along with some core architecture,
 the UST is inspired by the paper [PaRiS: Causally Consistent Transactions with
 Non-blocking Reads and Partial Replication](https://arxiv.org/abs/1902.09327).
@@ -122,14 +122,14 @@ past, and causally consistent transactions. The key ingredient is the UST.
 
 In PaRiS every write transaction is given a unique timestamp. All
 transactions that contain data for the same partitions will have a
-timestamp that is ordered causally, non-intersecting transactions can
+timestamp that is ordered causally. Non-intersecting transactions can
 have equal timestamps, as they have no causal relationship/order.
 
-The key concept is that Transactions are Ordered by Timestamp. Changes that have
-a Causal relationship express their order relationship through the order of
+The key concept is that Transactions are ordered by Timestamp. Changes that have
+a causal relationship express their order relationship through the order of
 transaction timestamps. Transactions with no causal relationship can be ordered
 in any way. In the example above, as the change to the Menu collection
-happens before the changes to Orders collection. The first would have a
+happens before the changes to the Orders collection. The first would have a
 lower transaction ID than the second (if not part of the _same_ transaction.)
 
 Before going into more details about Ditto's implementation, some clarification
@@ -146,7 +146,7 @@ all three, each doing a third of the work. Data replication strategies (i.e.,
 how data is replicated) have an effect on when you can read what.
 
 As an initial look at the UST, imagine a database on a single machine with a
-transaction log. Each transaction to be written goes onto the log and is given a
+transaction log. Each transaction to be written goes into the log and is given a
 sequence number. When the transaction is committed, the sequence number can
 represent the current version of the database. For example, when transaction
 with sequence number 1 is committed, the database is at Version 1. When
@@ -204,16 +204,16 @@ deploy six servers, two in each partition.
 
 Returning to our example in "Causally Consistent Transactions," imagine that
 the documents in the Menus Collection is stored in Partition 1, and the Orders
-Collection in Partition 2 and that the change to Menus and Orders occurs
+Collection in Partition 2, and that the change to Menus and Orders occurs
 in the same transaction, Transaction 1.
 
 This transaction contains documents that are stored in two different
 partitions, across a total of four locations (two replicas, two partitions).
 
-In order to store the data for this transaction it needs to stored on
+In order to store the data for this transaction it needs to be stored on
 all four servers. This is why the UST matters. If, by chance,
 Big Peer stores the Orders change document _before_ storing the
-Menus change document and allow reads to always get the latest
+Menus change document, and allow reads to always get the latest
 value, we can break the consistency constraint, and reference a menu item that doesn't exist.
 
 A more complex example:
@@ -228,7 +228,7 @@ Consistency is all about the order of updates.
 
 #### Non-Blocking Reads
 
-When reading from Big Peer you don't have to wait for the last write to
+When reading from Big Peer, you don't have to wait for the last write to
 become stable before reading. Instead, Big Peer is always able to return a
 version of the data for the UST. Reading in the past is still causally
 consistent, and it means that reads and writes proceed
@@ -242,18 +242,18 @@ In the PaRiS paper, the database clients must have a local cache of
 their own writes, so that they can always read their own writes. In
 Ditto, the Small Peer clients are fully fledged partial replicas of the
 database, and can _always_ read their own writes. For the HTTP API,
-writes return a Timestamp at which the write is visible. HTTP Read
+writes return a Timestamp at which the write is visible. A HTTP Read
 request can provide this timestamp to ensure Read-Your-Own-Writes
 semantics.
 
 ### The Log
 
 A core concept in Big Peer is the log. We use a transaction log to
-propagate updates to the database. In PaRiS a two-phase commit process
-is used to negotiate an [HLC](https://cse.buffalo.edu/tech-reports/2014-04.pdf) based sequence
-number for each transaction. In Big Peer we use the log to sequence
-transactions. The sequence number for a Transaction on the log becomes
-the transaction timestamp, and transaction timestamps are what the UST
+propagate updates to the database. In PaRiS, a two-phase commit process
+is used to negotiate an [HLC](https://cse.buffalo.edu/tech-reports/2014-04.pdf)-based sequence
+number for each transaction. In Big Peer, we use the log to sequence
+transactions. The sequence number for a Transaction in the log becomes
+the Transaction Timestamp, which is what the UST
 reflects. The Transaction Timestamps in Big Peer form a total sequence,
 from ZERO (initial empty database version) on up. Each storage node
 consumes from the log, and a transaction is stable when all nodes
@@ -261,12 +261,12 @@ have observed the transaction, those that own data in the
 transaction having written that data durably.
 
 At present our log is Kafka, as it suits our needs well. Though Kafka
-is at the heart of Big Peer it is not a core architectural feature: any
+is at the heart of Big Peer, it is not a core architectural feature: any
 log will do. At present, we use a single partition of a single topic,
 but we can partition the log by Application and still maintain the
 same consistency guarantees. When we do partition the log the properties are the
 same, the throughput increases, and the UST becomes
-a vector.  Developers can [register Kafka consumers](/guides/kafka/intro)
+a vector.  Developers can [register Kafka consumers](../guides/kafka/intro)
 where Big Peer will deliver data change events that match a defined query -
 similar to how Small Peers can `observe` queries to react to data changes.
 
@@ -280,7 +280,7 @@ other storage nodes.
 #### Gossip - UST
 
 Each node gossips the highest transaction that it has committed. From
-this gossip any node can calculate what it considers to be the UST. If
+this gossip, any node can calculate what it considers to be the UST. If
 every server gossips its local MAXIMUM committed transaction, then the
 UST is the MINIMUM of those MAXIMUMS. For example, in a three-node
 cluster:
@@ -291,7 +291,7 @@ cluster:
 
 The UST is "5".
 
-NOTE: that each server can have a different _view_ of the UST, depending on how
+NOTE: each server can have a different _view_ of the UST, depending on how
 long it takes messages to be passed around. For example:
 
 - Server 1 has committed Txn 10, and has heard from Server 2 that it has
@@ -326,7 +326,7 @@ Document versions below the GC Timestamp can be garbage
 collected. Garbage Collection is a periodic process that scans some
 segment of the database, and rolls up, or merges all the versions
 below the GC timestamp, re-writing them as a single value. Thanks to
-Ditto CRDTs this leads to deterministic outcome value for each
+Ditto CRDTs, this leads to a deterministic outcome value for each
 document at each version.
 
 Garbage Collection keeps the number of versions to a minimum, making
@@ -337,22 +337,22 @@ Read Transaction Timestamp across the cluster.
 
 #### Reading and Read Transactions
 
-Queries are handled by a coordinating node. Any node can coordinate a query, because every node has a local copy of the Partition Map, from the Cluster Configuration. So the coordinator can be chosen at random, or via some other load balancing heuristic.
+Queries are handled by a coordinating node. Any node can coordinate a query, because every node has a local copy of the Partition Map, from the Cluster Configuration. As such, the coordinator can be chosen at random, or via some other load balancing heuristic.
 
 The node will look at the
 query and decide which partitions contain the data needed to answer
 the query. At present, Big Peer shards data by Application AND Collection
-(however this can change in the future.) The coordinator will assemble a
+(however this can change in the future). The coordinator will assemble a
 list of partitions needed to answer the query, and pick one replica
 from each partition. It picks the replica based on a
-[fault-detector](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.581.8294&rep=rep1&type=pdf),
+[fault-detector](https://www.researchgate.net/profile/Benjamin-Satzger/publication/4339407_A_Lazy_Monitoring_Approach_for_Heartbeat-Style_Failure_Detectors/links/0912f50bcb4b32fc08000000/A-Lazy-Monitoring-Approach-for-Heartbeat-Style-Failure-Detectors.pdf),
 picking the replica least likely to be faulted. It sends the query to
 each replica, and merges and streams the results back to the caller.
 
-The Coordinator issues the query to each partition with a predetermined Timestamp.
-This timestamp is usually the UST at the Coordinator but can be any Timestamp between the cluster Garbage Collection Timestamp and the UST.
+The Coordinator issues the query to each partition with a predetermined timestamp.
+This timestamp is usually the UST at the Coordinator, but can be any timestamp between the cluster Garbage Collection Timestamp and the UST.
 
-When a node coordinates a Read Transaction it locally holds some metadata in memory of the UST at which the Read began. This data is used to calculate the Local Garbage Collection Timestamp that the node gossips. The Local GC timestamp is the maximum transaction below the minimum read transaction. The GC timestamp proceeds monotonically upwards, as does the UST. When the query is complete, the Read Transaction is removed from memory, and the GC timestamp can rise.
+When a node coordinates a Read Transaction, it locally holds some metadata in memory, indicating the value of the UST at the time the transaction began. This data is used to calculate the Local Garbage Collection Timestamp that the node gossips. The Local GC timestamp is the maximum transaction below the minimum read transaction. The GC timestamp proceeds monotonically upwards, as does the UST. When the query is complete, the Read Transaction is removed from memory, and the GC timestamp can rise.
 
 A node that is not currently performing a Read Transaction will still gossip its view of the UST as the GC timestamp. This way progress can always be made.
 
@@ -362,7 +362,7 @@ In a quiescent cluster with no reads, the GC timestamp will equal the UST, and t
 
 The details of the cluster: its size, shape, members, partitions,
 replicas etc. are all encapsulated in a Cluster Configuration. When
-there is a need to change a cluster we create a new Cluster
+there is a need to change a cluster, we create a new Cluster
 Configuration and instruct Big Peer to transition from the Current
 Configuration to the Next Configuration.
 
@@ -372,7 +372,7 @@ faulty nodes must be removed and replaced. Big Peer must support dynamic
 scaling without downtime, and it must do so while maintaining Causal
 Consistency, always accepting writes and serving reads.
 
-Ideally when a cluster is changed, there should be minimal data movement EG. if
+Ideally, when a cluster is changed, there should be minimal data movement. That is, if
 we grow the cluster, we want to only move the minimum amount of data necessary
 to the new nodes.
 
@@ -381,14 +381,14 @@ placed in a Big Peer cluster, and for that we use Random Slicing.
 
 #### Random Slicing
 
-[Random Slicing](ftp://ftp.cse.ucsc.edu/pub/darrell/miranda-tos14.pdf) has been written about brilliantly in [this
+[Random Slicing](https://hpc.ac.upc.edu/PDFs/dir05/file004529.pdf) has been written about brilliantly in [this
 article](https://www.infoq.com/articles/dynamo-riak-random-slicing/) by Scott Lystig-Fritchie, which motivates the WHY of Random
-Slicing as well as explaining the HOW. Here we will briefly discuss Big Peer's implementation.
+Slicing as well as explaining the HOW. Here, we will briefly discuss Big Peer's implementation.
 
 We made a decision to make this first version of Big Peer as simple as
 possible, and so we elected to keep our cluster shape and replica
 placement very simple (though it is extensible and will get richer as
-time allows or needs dictate.)
+time allows or needs dictate).
 
 Each document in Big Peer has a key, or document ID which is made up of a
 Namespace (The Application (AppId) and the
@@ -482,7 +482,7 @@ Next the server receives transaction `150..=200` from the log. Clearly the
 server can detect that it has somehow missed transaction `101..=149`. The server
 can still observe and record the data from these new transactions, and splice
 the information into the `IntervalMap`. The `IntervalMap` now has a `base` of
-`100` and a `detatched-range` of `150..=200`.
+`100` and a `detached-range` of `150..=200`.
 
 Any server with any detached ranges can look in the Partition Map to see if it
 has any peer replicas, and ask _them_ for the detached range(s). This is an
