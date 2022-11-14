@@ -89,7 +89,7 @@ The important things to note is that you need an access license to use Ditto. If
 
 Finally, we then use Ditto's key API to observe changes to the database by creating a live-query in the `setupTaskList()` function. This allows us to set the initial state of the `RecyclerView` after the query is immediately run and then subsequently get callbacks for any new data changes that occur locally or that were synced from other devices:
 
-Note, that we are using the `observeLocal` API in Ditto. This sets up a local observer for data changes in the database that match the query. You also need to create a subscription for the same query that will be used to request this data from other devices. To learn more, see the <a href="/concepts/syncing-data">Observing Changes</a> section in the documentation.
+Note, that we are using the `observeLocal` API in Ditto. This sets up a local observer for data changes in the database that match the query. You also need to create a subscription for the same query that will be used to request this data from other devices. To learn more, see the <a href="../../common/concepts/syncing-data">Observing Changes</a> section in the documentation.
 
 ```kotlin
 fun setupTaskList() {
