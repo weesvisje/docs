@@ -13,6 +13,48 @@ Ditto provides a robust query engine that supports different filter operations. 
   name='query-basic' 
 />
 
+## Using query variables with `$args` 
+
+Often, you will query with runtime variables. Instead of building or
+interpolating query strings, the query system will accept variables through an
+`$args` dictionary object. 
+
+<SnippetGroup
+  name='query-args' 
+/>
+
+
+### Find by `_id`
+
+Every document contains it's own unique `_id` property. This property can be set or randomly assigned. When updating a single document within a collection you will most often find that document by it's `_id` property.
+
+```js
+// finds the document with the specified _id
+findByID("1234")
+// OR
+find("_id == '1234'")
+```
+
+## Sort
+
+Before executing a query, you can specify to sort on a specific property. Call `sort` before a query is executed by specifying a specific property and a sort direction. 
+
+Note: Queries that do not specify a `sort` will assume to sort on the `_id` property.
+
+The following example will sort on documents that have a mileage property
+
+<SnippetGroup
+  name='query-sort' 
+/>
+
+## Limit 
+
+There are times where you need to limit the number of results that a query returns. Call `limit` before the query is executed to trim the number of results. This is best used with `sort`.
+
+<SnippetGroup
+  name='query-limit' 
+/>
+
 
 ## Navigating Document Properties
 
@@ -40,16 +82,6 @@ Keys in the query syntax by default must be alphanumeric or include underscore (
 "work['street-line'] == '678 Johnson Street'"
 ```
 
-## Using query variables with `$args` 
-
-Often, you will query with runtime variables. Instead of building or
-interpolating query strings, the query system will accept variables through an
-`$args` dictionary object. 
-
-<SnippetGroup
-  name='query-args' 
-/>
-
 
 ## Query Conditions
 
@@ -60,10 +92,10 @@ The Ditto query language is very similar to what you'd write in most `if` statem
 
 ```js
 // finds documents which have a title equal to Harry Potter.
-"title == $args.title", { title: 'Harry Potter' }
+"title == 'Harry Potter'"
 
 // finds documents which that are not of the title Lord of the Rings
-"title != $args.title", { title: 'Lord of the Rings' }
+"title != 'Lord of the Rings'"
 ```
 
 ### Comparisons - Greater Or Less Than `>=`, `>`, `<`, `<=`
@@ -71,13 +103,13 @@ The Ditto query language is very similar to what you'd write in most `if` statem
 
 ```js
 // finds documents where the age is less than or equal to 18
-"age <= $args.age", { age: 18}
+"age <= 18"
 // finds documents where the age is less than to 18
-"age < $args.age", { age: 18}
+"age < 18"
 // finds documents where the age is greater than or equal to 18
-"age >= $args.age", { age: 18}
+"age >= 18"
 // finds documents where the age is greater than to 18
-"age > $args.age", { age: 18}
+"age > 18"
 ```
 
 ### Compound - And `&&`, Or `||`, Not `!`, Contains `contains`
@@ -139,7 +171,7 @@ Use `regex(property, test)` to see if a property with a string value passes a [R
 Queries also parse ISO-8601 date strings as comparable dates
 
 ```js
-"created_at >= $args.date", { date: "2022-04-29T00:55:31.859Z"}
+"created_at >= '2022-04-29T00:55:31.859Z'"
 ```
 
 ### Booleans
@@ -159,34 +191,3 @@ Use when your property is of type Boolean
 //Or
 "isDeleted == false"
 ```
-
-### Find by `_id`
-
-Every document contains it's own unique `_id` property. This property can be set or randomly assigned. When updating a single document within a collection you will most often find that document by it's `_id` property.
-
-```js
-// finds the document with the specified _id
-findByID("1234")
-// OR
-find("_id == '1234'")
-```
-
-## Sort
-
-Before executing a query, you can specify to sort on a specific property. Call `sort` before a query is executed by specifying a specific property and a sort direction. 
-
-Note: Queries that do not specify a `sort` will assume to sort on the `_id` property.
-
-The following example will sort on documents that have a mileage property
-
-<SnippetGroup
-  name='query-sort' 
-/>
-
-## Limit 
-
-There are times where you need to limit the number of results that a query returns. Call `limit` before the query is executed to trim the number of results. This is best used with `sort`.
-
-<SnippetGroup
-  name='query-limit' 
-/>
