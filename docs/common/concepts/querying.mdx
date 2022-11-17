@@ -31,13 +31,13 @@ To refer to keys within the document's property tree, Ditto uses dot notation th
 If you wanted to query for the `last` property nested in `name`, you will need to do the following:
 
 ```js
-find("name.last == 'Turing'")
+"name.last == 'Turing'"
 ```
 
 Keys in the query syntax by default must be alphanumeric or include underscore (a-zA-Z0-9_). In addition, the key must start with an alpha characters first (a-zA-Z_). If your key uses another character, such as a hyphen, you must use a __brack syntax__. To query for the `"street-line"` property underneath `"work"`, you will need to do the following: 
 
 ```js
-find("work['street-line'] == '678 Johnson Street'")
+"work['street-line'] == '678 Johnson Street'"
 ```
 
 ## Using query variables with `$args` 
@@ -60,10 +60,10 @@ The Ditto query language is very similar to what you'd write in most `if` statem
 
 ```js
 // finds documents which have a title equal to Harry Potter.
-find("title == $args.title", { title: 'Harry Potter' })
+"title == $args.title", { title: 'Harry Potter' }
 
 // finds documents which that are not of the title Lord of the Rings
-find("title != $args.title", { title: 'Lord of the Rings' })
+"title != $args.title", { title: 'Lord of the Rings' }
 ```
 
 ### Comparisons - Greater Or Less Than `>=`, `>`, `<`, `<=`
@@ -71,13 +71,13 @@ find("title != $args.title", { title: 'Lord of the Rings' })
 
 ```js
 // finds documents where the age is less than or equal to 18
-find("age <= $args.age", { age: 18})
+"age <= $args.age", { age: 18}
 // finds documents where the age is less than to 18
-find("age < $args.age", { age: 18})
+"age < $args.age", { age: 18}
 // finds documents where the age is greater than or equal to 18
-find("age >= $args.age", { age: 18})
+"age >= $args.age", { age: 18}
 // finds documents where the age is greater than to 18
-find("age > $args.age", { age: 18})
+"age > $args.age", { age: 18}
 ```
 
 ### Compound - And `&&`, Or `||`, Not `!`, Contains `contains`
@@ -86,27 +86,27 @@ find("age > $args.age", { age: 18})
 Use `&&` for a logical __and__ Predicate; similar to SQLite's AND
 ```js
 // finds documents that have a theme property equal to "Dark" and a name property equally to "Light"
-find("theme == 'Dark' && name == 'Light'")
+"theme == 'Dark' && name == 'Light'"
 ```
 
 Use `||` for a logical __or__ predicate; similar to SQL OR statements
 ```js
 // finds documents that are "Tom" or "Arthur"
-find("name == 'Tom' || name == 'Arthur'")
+"name == 'Tom' || name == 'Arthur'"
 ```
 
 Use `!` for a logical __not__ predicate; similar to SQL NOT statements
 
 ```js
 // finds documents that are neither "Hamilton" nor "Morten"
-find("!(name == 'Hamilton' || name == 'Morten')")
+"!(name == 'Hamilton' || name == 'Morten')"
 ```
 
 Use `contains(array, value)` to check if an array contains a value. 
 
 ```js
 // finds documents who have a `connectionType` property and checks if it equals any of the values in a defined array
-find("contains(['bluetooth', 'wifidirect'], connectionType)")
+"contains(['bluetooth', 'wifidirect'], connectionType)"
 ```
 
 
@@ -116,21 +116,21 @@ Use `starts_with(property, test)` to test if a property with a string value __st
 
 ```js
 // finds documents with a title property that begins with "Lord"
-find("starts_with(title, 'Lord')")
+"starts_with(title, 'Lord')"
 ```
 
 Use `ends_with(property, test)` to test if a property with a string value __ends__ with a test string
 
 ```js
 // finds documents with a title property that ends with "Rings"
-find("ends_with(title, 'Rings')")
+"ends_with(title, 'Rings')"
 ```
 
 Use `regex(property, test)` to see if a property with a string value passes a [Regular Expression. Click here for a reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions). 
 
 ```js
 // finds documents which has a title property that only comprises of upper and lowercase letters, numbers, and underscores. 
-find("regex(title, '^([A-Za-z]|[0-9]|_)+$')")
+"regex(title, '^([A-Za-z]|[0-9]|_)+$')"
 
 // A title property of "abc129_24A" will pass
 // A title property of "abc129_24A  3" will not pass
@@ -139,7 +139,7 @@ find("regex(title, '^([A-Za-z]|[0-9]|_)+$')")
 Queries also parse ISO-8601 date strings as comparable dates
 
 ```js
-find("created_at >= $args.date", { date: "2022-04-29T00:55:31.859Z"})
+"created_at >= $args.date", { date: "2022-04-29T00:55:31.859Z"}
 ```
 
 ### Booleans
@@ -148,16 +148,16 @@ Use when your property is of type Boolean
 
 ```js
 //finds documents which have an 'isDeleted' boolean propety set to `true`
-find("isDeleted")
+"isDeleted"
 //Or
-find("isDeleted == true")
+"isDeleted == true"
 ```
 
 ```js
 //finds documents which have an 'isDeleted' boolean propety set to `false`
-find("!isDeleted")
+"!isDeleted"
 //Or
-find("isDeleted == false")
+"isDeleted == false"
 ```
 
 ### Find by `_id`
