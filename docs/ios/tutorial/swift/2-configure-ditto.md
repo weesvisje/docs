@@ -12,7 +12,7 @@ Each app created on the portal has a unique `appID` which can be seen on your ap
 
 For Ditto to fully use all the network transports like Bluetooth Low Energy, Local Area Network, Apple Wireless Direct, the app will need to ask the user for permissions. These permission prompts need to be in the __Info.plist__ file of your project.
 
-Follow the instructions on the [iOS Installation page](/installation/ios#platform-permissions).
+Follow the instructions on the [iOS Installation page](/ios/installation#platform-permissions).
 
 ## 2-3 Add `ditto` to `TasksApp.swift`
 
