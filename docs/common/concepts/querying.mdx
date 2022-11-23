@@ -176,18 +176,14 @@ Queries also parse ISO-8601 date strings as comparable dates
 
 ### Booleans
 
-Use when your property is of type Boolean
+Use when your property is of type Boolean, use `value == false` or `value == true` explicitly.
 
 ```js
 //finds documents which have an 'isDeleted' boolean propety set to `true`
-"isDeleted"
-//Or
 "isDeleted == true"
 ```
 
 ```js
 //finds documents which have an 'isDeleted' boolean propety set to `false`
-"!isDeleted"
-//Or
 "isDeleted == false"
 ```
