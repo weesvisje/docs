@@ -1,0 +1,17 @@
+#
+# .github/CODEOWNERS
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+
+/docs/http/ @kw7oe
+/docs/javascript/ @okdistribute
+/docs/csharp/ @phatblat
+/docs/raspberrypi/ @okdistribute
+/docs/android/ @abunur
+/docs/cpp/ @okdistribute
+/docs/rust/ @okdistribute
+/docs/ios/ @phatblat
+/docs/common/security/ @thombles
+/docs/common/ @okdistribute
+
+
