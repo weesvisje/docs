@@ -162,7 +162,7 @@ When a client attempts to authenticate, it will make an HTTPS request to the ide
 - Signed challenge
 - App ID
 - Provider name
-- Credentials to be forwarded to the app's [authentication webhook](../security/online-with-authentication)
+- Credentials to be forwarded to the app's [authentication webhook](../security/authentication/overview)
 
 Once the identity service has a response from the auth webhook, it will build and sign a JWT. In addition to the information we would expect to find in a JWT (issuer, issued at, expiry, etc), we also include an encoded representation of the Ditto Identity.
 The Ditto Identity is built from the information provided by the app's authentication webhook response.

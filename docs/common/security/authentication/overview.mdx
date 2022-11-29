@@ -1,25 +1,17 @@
 ---
-title: 'Online with Authentication'
-sidebar_position: 2
+title: 'Overview'
+sidebar_position: 1
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
+Ditto __does not come with an identity provider__. Using "Online With Authentication" requires that that you have your own identity provider already set up. Each app can use multiple identity providers. Identity providers can be:
+
 The "Online With Authentication" identity type is geared towards apps that will be deployed in real world settings. "Online With Authentication" identity types are: 
 
 * for apps that need to integrate with existing permissions
 * for apps that need to integrate with existing authentication systems
-
-:::info
-* The Ditto platform __does not come with an identity provider__. Using "Online With Authentication" requires that that you have your own identity provider already set up. Each app can use multiple identity providers. Identity providers can be:
-  * Your own service
-  * Facebook, Twitter, GitHub, etc...
-  * Okta, Auth0, Stytch, etc...
-
-:::
-
-For a more thorough walkthrough, see the [tutorial](../guides/authentication/intro).  
 
 ## How it works
 
@@ -49,29 +41,9 @@ sequenceDiagram
     end
 ```
 
-## Example of authentication with Facebook and an iOS app with Ditto
+## API
 
-Let's say you're using something like Facebook authentication to identity users in __Your App__.
-
-Typically, an iOS application would use the [Facebook SDK](https://developers.facebook.com/docs/ios/) to login and retrieve a Facebook 
-[access token](https://developers.facebook.com/docs/facebook-login/access-tokens/#ios). When the Facebook SDK logs in it'll retrieve this access token which you can pass to the Ditto flow. Ditto's Big Peer will forward it to an __Auth WebHook__ which is _an HTTP endpoint where you can write your own logic_. This Auth WebHook HTTP endpoint needs to respond with JSON that describe the user's identity and the permissions.
-
-```mermaid
-sequenceDiagram
-    Your App->>Facebook SDK: Send Credentials
-    Facebook SDK->>Your App: Return Facebook Access Token
-    Your App->>Ditto Big Peer: Send Facebook Access Token
-    Note over Ditto Big Peer,Auth Webhook: Ditto Big Peer simply forwards the Facebook Access Token from your app to a registered webhook
-    Ditto Big Peer->>Auth Webhook: Forwards Facebook Access Token 
-    Note over Auth Webhook,Ditto Big Peer: Your auth webhook logic is code that you write and can decide to give 
-    Auth Webhook->>Ditto Big Peer: Auth webhook validates and returns a formatted Ditto Auth Response
-    Ditto Big Peer->>Your App: Ditto Credentials
-    Your App->Ditto Big Peer: Ditto can begin sync with Ditto Big Peer
-```
-
-
-
-## Creating your client
+### Creating your client
 
 Create the ditto client with the `onlineWithAuthentication` identity. This
 identity requires an authentication handler `authHandler`.
@@ -363,7 +335,7 @@ ditto.try_start_sync()?;
 </TabItem>
 </Tabs>
 
-## Login
+### Login
 
 Login takes two parameters: the first is `token`. The token can be any string
 value. Most auth services use a [JWT (JSON Web Token)](https://jwt.io/), but you
@@ -468,7 +440,7 @@ authenticator->login_with_token("123", "my-auth", [](std::unique_ptr<DittoError>
 </TabItem>
 </Tabs>
 
-## Logout
+### Logout
 
 Logout will stop sync, shut down all replication sessions, and remove any cached
 authentication credentials. Note that this does not remove any data from the

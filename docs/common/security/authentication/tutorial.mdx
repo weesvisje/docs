@@ -1,12 +1,158 @@
 ---
-title: '3 - Login and Refresh'
+title: 'Tutorial'
 sidebar_position: 2
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-## Configure your Client App
+
+
+* __This section will require knowledge of writing server side HTTP endpoints and handlers.__ The server side sample code is written in JavaScript (NodeJS with an [Express](https://expressjs.com/)-like API), however you can use any framework or language of your choosing.
+
+* __We will use Auth0 in this tutorial.__ But you can use any third-party identity provider. Each app can use multiple identity providers. Identity providers can be: 
+
+* In this tutorial, you'll build a simple application so users can log in with a
+a third-party provider using [Auth0](https://auth0.com/). We assume that you
+have already completed the Auth0 tutorial on their documentation before starting
+this tutorial. 
+
+* For the full application code in JavaScript and Swift, see the [code samples on
+GitHub](https://github.com/getditto/samples/tree/master/authentication).
+
+
+## Server 
+
+The authentication webhook needs to handle an __HTTP POST__ request. Each client
+that will need to authenticate will send a payload to this webhook. The
+following section requires that you have knowledge of writing server side HTTP
+endpoints and responding with a JSON payload. Code samples of server side code
+are written with a NodeJS / Express syntax. You can use any language or
+framework on the server side. 
+
+### Incoming POST body
+
+When your client device wants to authenticate using your webhook, your server will
+receive an HTTP post with a JSON payload that looks like:
+
+```jsonc 
+{
+  "appID": "YOUR_APP_ID_HERE", // the appID
+  "provider": "my-auth", // this is the "Name" of the "Authentication Webhook"
+  "token": "eyJhbGciOiJI..." // this is what each device will send to authenticate
+}
+```
+
+Your can introspect these values by parsing out the request body:
+
+```js
+let express = require('express')
+let cors = require('cors')
+let body = require('body-parser')
+let app = express()
+
+app.use(cors())
+app.use(body.json())
+
+let app = express()
+
+app.post('/', (req, res) => {
+  const appID = req.body.appID
+  const provider = req.body.provider
+  const token = req.body.token
+})
+```
+
+Generally, you will want to check the token for some sort of validity. Let's
+assume you have some sort of library or logic to parse and validate the token is
+for a specific user. 
+
+You can also use the `userInfo` key in your JSON response to
+pass information back to client.
+
+```js
+app.post('/', async (req, res) => {
+  const token = req.body.token;
+  try {
+    const { userId } = await checkToken(token)
+    // payload = getDittoPermissions(userId)
+    res.json(payload)
+  } catch (err) {
+    res.json({
+      "authenticate": err,
+      "userInfo": err.message
+    }) 
+  }
+})
+```
+
+As a simple example, let's grant full `read` & `write` permissions to _all
+collections_ and _all documents_. 
+
+```js
+app.post('/', async (req, res) => {
+  const token = req.body.token;
+  try {
+    let payload = {
+      "authenticate": true,
+      "expirationSeconds": 28800,
+      "userID": "123abc",
+      "permissions": {
+        "read": {
+          "everything": true,
+          "queriesByCollection": {}
+        },
+        "write": {
+          "everything": true,
+          "queriesByCollection": {}
+        }
+      }
+    }
+    res.json(payload)
+  } catch (err) {
+    res.json({
+      "authenticate": err,
+      "userInfo": err.message
+    }) 
+  }
+})
+
+```
+
+For more information on how to design your app's permissions, see [Access Control
+Permissions](../../concepts/designing-permissions).
+
+### Deploy your server
+
+Now, the portal will attempt to reach this server. That means you must deploy it
+somewhere that this HTTP request is accessible. For testing, you
+can use a quick-deploy service such as [Glitch](https://glitch.com/).
+
+:::info
+Please be sure that this endpoint is not behind a firewall or VPN.  If you
+cannot get around this requirement [contact us](mailto:support@ditto.live). 
+:::
+
+```js
+app.listen(process.env.PORT, () => {
+  console.log('server listening on ', process.env.PORT)
+})
+```
+
+### Configure your Portal App
+
+To use an "Online With Authentication" identity, go to your app in the [portal](https://portal.ditto.live/) and find the __Authentication Mode & Webhook Settings__ section. Ensure that __"With Authentication"__ is selected like so:
+
+![Online With Authentication setting in Portal](./portal-with-authentication-setting.png)
+
+Below, a section called __Authentication Webhooks__ will be editable. Once your Authentication Webhook Endpoint(s) is deployed and ready, you can register it in the portal. Add a __Name__ and __URL__. 
+
+* The __Name__ is used the differentiate between multiple authentication. Most applications will have one authentication webhook, however the __Name__ parameter is still required. This name value is important for the next section.
+* The __URL__ parameter is the fully qualified URL of the webhook that you deployed in the section above. Please include the protocol (_https:// or http://_ though we highly discourage
+_http://_).
+
+
+## Client 
 
 To configure your client application, you must first add URL of the POST
 endpoint you created in the previous section.
@@ -19,6 +165,8 @@ The provider name given to the Ditto Client must match a provider name in the Po
 
 This tutorial assumes you've already configured your `auth0` client from the
 official [Auth0 documentation](https://auth0.com/docs/).
+
+### Login
 
 <Tabs
   groupId="programming-language"
@@ -129,69 +277,6 @@ function addItem () {
     "state": 'FOR_SALE'
   })
 }
-```
-
-The full JavaScript file is:
-
-```js
-import createAuth0Client from '@auth0/auth0-spa-js';
-// OR for React
-import { useAuth0 } from '@auth0/auth0-react';
-import { init, Ditto } from "@dittolive/ditto"
-
-// configure your auth0 client...
-
-let ditto
-let numberOfCars = 0
-
-(async () => {
-  await init() // you need to call this at least once before using any of the Ditto API
-
-  function startDitto () {
-
-    const authHandler = {
-      authenticationRequired: async function(authenticator) {
-        let token = await auth0.getAccessTokenSilently();
-        await authenticator.loginWithToken(token, "my-auth");
-        console.log("Login request completed.");
-      },
-      authenticationExpiringSoon: function(authenticator, secondsRemaining) {
-        console.log(`Auth token expiring in ${secondsRemaining} seconds`)
-        let token = await auth0.getAccessTokenSilently();
-        await authenticator.loginWithToken(token, "my-auth");
-        console.log("Login request completed.");
-      }
-    }
-
-    const identity = {
-      type: 'onlineWithAuthentication',
-      appID: 'REPLACE_ME_WITH_YOUR_APP_ID',
-      authHandler
-    }
-
-    ditto = new Ditto(identity, '/persistence/file/path')
-    ditto.startSync()
-    let subscription = ditto.store.collection('cars').find("state == 'FOR_SALE'").subscribe()
-
-    let liveQuery = ditto.store.collection('cars').find("name == 'Toyota'").observeLocal((cars) => {
-      numberOfCars = cars.length
-    })
-
-    function addItem () {
-      ditto.store.collection('cars').upsert({
-        "name": 'Toyota',
-        "state": 'FOR_SALE'
-      })
-    }
-  }
-
-  async function login () {
-    await auth0.loginWithRedirect({
-      redirect_uri: window.location.origin
-    });
-    startDitto()
-  }
-})()
 ```
 
 </TabItem>
@@ -361,4 +446,124 @@ struct ContentView: View {
 
 To make this usable for real-world applications, you can retreieve the user's
 profile details such as email, username, and full name. See the official Auth0
-documentation for your platform to add that functionality to your application.
+documentation for your platform to add that functionality to your application
+
+
+### Logout 
+
+First, we need some sort of way to monitor the state of the login flow. This
+allows us to display a Logout button when the user has already logged in.
+
+<Tabs
+  groupId="programming-language"
+  defaultValue="javascript"
+  values={[
+    {label: 'JavaScript', value: 'javascript'},
+    {label: 'Swift', value: 'swift'}
+  ]
+}>
+<TabItem value="javascript">
+
+```js
+let loggedIn = false
+if (auth0.isAuthenticated()) {
+  loggedIn = true
+}
+```
+ 
+```html
+if (loggedIn) {
+  // render the logout button
+  <button onClick={onLogoutClick}>Logout</button>
+} else {
+  <button onClick={login}>Login</button>
+}
+```
+
+
+And then we can write the logout function and attach it to the button.
+
+We also recommend calling `ditto.auth.logout` with a callback function that
+evicts any data from the local database. 
+
+```js
+function onLogoutClick() {
+  ditto.auth.logout(() => {
+    ditto.store.collection('cars').findAll().evict()
+  })
+  await auth0.logout({ returnTo: window.location.origin })
+}
+```
+
+</TabItem>
+<TabItem value="swift">
+
+``` swift
+class ProfileViewModel: ObservableObject {
+  //highlight-start
+  @Published private(set) var state = State.isLoading
+
+  enum State {
+      case isLoading
+      case loaded(UserInfo)
+  }
+  //highlight-end
+
+}
+
+struct ContentView: View {
+    @ObservedObject var viewModel: ProfileViewModel = ProfileViewModel()
+    
+    var body: some View {
+       
+        switch viewModel.state {
+          case .isLoading:
+              Button("Login", action: viewModel.login)
+          case .loaded(let user):
+              Text(user.name ?? "Anonymous Ditto User")
+              Button("Logout", action: viewModel.logout)
+          }
+    
+        Text("Cars:" + String(viewModel.docs.count))
+        
+    }
+}
+```
+
+And then we can write the logout function and attach it to the button.
+
+We also recommend calling `ditto.auth.logout` with a callback function that
+evicts any data from the local database. 
+
+```swift
+class ProfileViewModel: ObservableObject {
+  ...
+  
+  func logout () {
+      Auth0
+          .webAuth()
+          .clearSession(federated: false) { result in
+              if result {
+                  if (self.ditto != nil) {
+                    // Clean up the cars collection after logout
+                    // highlight-start
+                      self.ditto!.auth?.logout(cleanup: { ditto in
+                          ditto.store.collection("cars").findAll().evict()
+                      })
+                    // highlight-end
+                  }
+                  self.state = State.isLoading
+              }
+          }
+  }
+  
+}
+
+```
+</TabItem>
+</Tabs>
+
+🎉 You now have a fully functioning `onlineWithAuthentication` app. Build and
+run it on a device.
+
+For the full application code in React and iOS, see the [code samples on GitHub](https://github.com/getditto/samples/tree/master/authentication).

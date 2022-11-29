@@ -1,11 +1,17 @@
 ---
 title: 'Shared Key'
-sidebar_position: 5 
+sidebar_position: 10
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SnippetGroup from '@site/src/components/SnippetGroup';
+
+:::info
+Shared key is appropriate for devices that never connect to the Internet. 
+
+If you need to syncronize data over the Internet with the Big Peer, [use Online With Authentication instead](./authentication/overview).
+:::
 
 Ditto offers an intermediate level of security for applications where all users
 and devices are trusted. For example, this could be appropriate for an
@@ -14,7 +20,7 @@ device knows the same secret key, and uses this to validate incoming
 connections. The benefit of this approach is that distinct certificates do not
 have to be distributed to every device, simplifying the deployment.
 
-Small Peers in this mode use a `SharedKey` [identity type](../mesh-network/identities). The secret key must be provided as a
+Small Peers in this mode use a `SharedKey` identity type. The secret key must be provided as a
 String when initializing the `DittoIdentity` on each peer. This key should be securely and randomly generated and Ditto
 expects it to be in a particular format.
 
