@@ -14,9 +14,9 @@ DittoSwiftTools is an iOS package that gives you access to the Ditto Presence Vi
 
 Xcode will take a minute or two to download the Ditto package.
 
-1. Select the package product(s) you want to use in your app.
-    1. Presence Viewer
-    2. Disk Usage (coming soon)
+Select the package product(s) you want to use in your app.
+  1. Presence Viewer
+  2. Disk Usage (coming soon)
 
 Click the "Add Package" button.
 
