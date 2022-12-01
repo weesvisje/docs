@@ -21,9 +21,8 @@ These sections will describe how you can:
 There are several types of identities.  Every installation of an app that uses
 Ditto has its own identity. This identity is used to identify each unique peer
 in the mesh network. Each Ditto Identity is associated to a single Ditto client
-via a globally unique AppId and may not be used across multiple Ditto apps. Each identity has an `appID`, an authentication certificate, and a set of `permissions`. A Ditto Identity is used
-to accept or reject read and writes with peer instances. Each Ditto Identity can
-be associated to a set of [access control permissions](../concepts/designing-permissions) which you specify.
+via a globally unique AppId and may not be used across multiple Ditto apps. Each identity has an `appID`, an authentication certificate, and a set of [access control permissions](../concepts/designing-permissions) which you specify. This information is used
+to accept or reject syncronization with peers. 
 
 ### Development identities
 
