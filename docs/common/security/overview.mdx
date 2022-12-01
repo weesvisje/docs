@@ -6,9 +6,7 @@ sidebar_position: 1
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Most applications need a way to control which users can write or read certain data. Ditto security is controlled by __identities__. An identity is a combination of a `userID` and a set of `permissions` that identifies how a Ditto instance behaves with other ditto instances. 
-
-For example, you might build an application where senior staff members can `READ` and `WRITE` documents in the `"menuItems"` collection while junior staff members can only `READ`. 
+Most applications need a way to control which users can write or read certain data. For example, you might build an application where senior staff members can `READ` and `WRITE` documents in the `"menuItems"` collection while junior staff members can only `READ`. Ditto's security is controlled by __identities__. Each Ditto instance must identify itself to other peers in order to syncronize with them.
 
 ## Get started
 
@@ -21,7 +19,7 @@ These sections will describe how you can:
 There are several types of identities.  Every installation of an app that uses
 Ditto has its own identity. This identity is used to identify each unique peer
 in the mesh network. Each Ditto Identity is associated to a single Ditto client
-via a globally unique AppId and may not be used across multiple Ditto apps.
+via a globally unique AppId and may not be used across multiple Ditto apps. Each identity has an `appID`, an authentication certificate, and a set of `permissions`.
 
 ### Development identities
 
