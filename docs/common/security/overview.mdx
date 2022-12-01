@@ -6,7 +6,9 @@ sidebar_position: 1
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Most applications need a way to control which users can write or read certain data. For example, you might build an application where senior staff members can `READ` and `WRITE` documents in the `"menuItems"` collection while junior staff members can only `READ`. Ditto's security is controlled by __identities__. Each Ditto instance must identify itself to other peers in order to syncronize with them.
+Most applications need a way to control which users can write or read certain data. For example, you might build an application where senior staff members can `READ` and `WRITE` documents in the `"menuItems"` collection while junior staff members can only `READ`. Ditto's security is controlled by __identities__. Each Ditto instance must identify itself to other peers in order to syncronize with them. 
+
+ 
 
 ## Get started
 
@@ -19,7 +21,9 @@ These sections will describe how you can:
 There are several types of identities.  Every installation of an app that uses
 Ditto has its own identity. This identity is used to identify each unique peer
 in the mesh network. Each Ditto Identity is associated to a single Ditto client
-via a globally unique AppId and may not be used across multiple Ditto apps. Each identity has an `appID`, an authentication certificate, and a set of `permissions`.
+via a globally unique AppId and may not be used across multiple Ditto apps. Each identity has an `appID`, an authentication certificate, and a set of `permissions`. A Ditto Identity is used
+to accept or reject read and writes with peer instances. Each Ditto Identity can
+be associated to a set of [access control permissions](../concepts/designing-permissions) which you specify.
 
 ### Development identities
 
@@ -41,9 +45,9 @@ enforced.
 * [Online With Authentication](../security/authentication/overview) - for hybrid offline/online synchronization with customized permissioning.
 * [Shared Key](../security/shared-key) - an intermediate level of security for offline-only applications where all devices are trusted.
 
- A Ditto Identity is used
-to accept or reject read and writes with peer instances. Each Ditto Identity can
-be associated to a set of [access control permissions](../concepts/designing-permissions) which you specify.
+### Parts of a Ditto Identity
+
+For more detailed information on what is contained within Ditto Identity certificates, see [Certificate Security](../how-it-works/certificate-security).
 
 ## Ditto Identity Lifecycle
 
@@ -66,13 +70,3 @@ Provider. If the credentials are valid, then the Authentication Provider will
 return to Ditto an Authentication Token, validating its credentials and granting
 the Ditto instance individualized permissions. The Ditto instance can now sync
 with other peers.
-
-### Parts of a Ditto Identity
-
-* `AppId` - Uniquely Identifies a Ditto-based App. It establishes a top-level "namespace" within which all Ditto Identities, collections of documents, timeseries events, and permissions live. It is a part of all Identity types. It may be either a string or, more typically, a UUID v4 lowercased and hyphenated. The Ditto Big Peer provisions `UUIDv4` strings that be used to sync with its servers in the Cloud.
-* `CustomAuthUrl` - The URL of an Auth Provider which can validate credentials and issue Auth Tokens and x509 certificates. The default values is `https://<app-id>.cloud.ditto.live/`. A `CustomAuthUrl` is only required when another, possibly self-hosted, Auth Provider is preferred. `OfflinePlayground`, `SharedKey`, and `Manual` Identities don't require any AuthURL.
-* `EnableCloudSync` - Whether Ditto should attempt to sync with `wss://<app-id>.cloud.ditto.live`. Only used by `OnlineWithAuthentication` and `OnlinePlayground` Identities. If you're hosting your own Ditto Big Peer, this should be set to `false` and a custom SyncUrl provided to the Ditto `TransportConfig`
-* `WorkingDir` (DittoRoot) - A location where Ditto can cache Auth Tokens, x509 certificates, and other auth-related data. Typically the same as the working directory containing Ditto's local data store.
-* `AuthEventHandler` (Callback) - A type defined by the App developer which implements the `DittoAuthEventHandler` (`DittoAuthCallback`) Trait/Interface/Protocol. Typically responsible for obtaining and storing credentials like a username, password, or other token from the App's user and then supplying them to Ditto when authentication is required.
-
-For more detailed information on what is contained within Ditto Identity certificates, see [Certificate Security](../how-it-works/certificate-security).
