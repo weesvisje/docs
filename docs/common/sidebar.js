@@ -74,7 +74,7 @@ module.exports = function (opts) {
         }]
       },
       opts.api,
-      "common/v2",
+      "common/v3",
       "common/troubleshooting"
     ]
   }
