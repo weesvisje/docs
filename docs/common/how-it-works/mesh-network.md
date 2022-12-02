@@ -9,7 +9,10 @@ export function ImageHolder(props) {
 
 When you use Ditto in your app you don’t have to think about how your devices will connect to each other. A device like an iPhone will build an interconnected mesh all on its own. As soon as you call `startSync()` it fires up Bluetooth LE, scans for peers on the WiFi, and activates AWDL to create high-speed connections with nearby Apple devices—all this with one line of code.
 
-<img src={require("./diagram1_basic_sync.png").default} className="max-h-72 m-auto py-4" />
+<video autoPlay loop muted>
+  <source src="/animations/transports/mesh_network/mesh_animation.webm" type="video/webm"/>
+  Your browser does not support the video tag.
+</video>
 
 The mesh is an underlay for data sync. It operates independently of your queries and subscriptions. Data updates will propagate through the mesh automatically, [provided your subscriptions match](../concepts/syncing-data).
 
@@ -86,6 +89,11 @@ In smaller meshes Ditto will often create multiple connections to the same peer 
 4. If the fastest connection is lost, the next-best option is ready to go, reducing or eliminating the gap when no sync is possible.
 
 The seamless switching between transports relies on a Ditto component called the Multiplexer, which is described in detail in a <a href="https://www.ditto.live/blog/the-new-network-multiplexer">blog post</a>.
+
+<video autoPlay loop muted>
+  <source src="/animations/transports/rainbow_connection/rainbow_connection_transparent.webm" type="video/webm"/>
+  Your browser does not support the video tag.
+</video>
 
 As of Ditto v1.0 the Multiplexer uses one transport at a time with failover. In future versions this feature will enable more complex scenarios such as load-balancing across multiple routes and lossy transports.
 

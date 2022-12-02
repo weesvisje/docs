@@ -4,11 +4,21 @@ sidebar_position: 1
 displayed_sidebar: 'common'
 --- 
 
-import Lottie from "@site/src/components/Lottie"
+## Intro
 
-## Details
+<div className="iframe-container" align="center">
+  <iframe 
+    className="responsive-iframe"
+    width="560" 
+    height="315" 
+    src="https://www.youtube.com/embed/u3y2NpA5R0A" 
+    title="YouTube video player" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen>
+  </iframe>
+</div>
 
-<Lottie path="/animations/intro/data.json" />
 
 The Ditto platform is a fully distributed database that runs in the cloud and on
 local devices. Each Ditto instance is a called a __peer__. There are two types
@@ -31,3 +41,5 @@ __Big Peers__ and __Small Peers__ can sync with eachother with a common __appID_
 * Small peers will __only sync data down from nearby Small Peers or Big Peers__ when it has a [live query](../concepts/syncing-data). We call this a __selfish replication strategy__. Small peers can stop syncing by disposing or stopping a live query.
 * Small peers are __not capable of sharding or partitioning__. It will use whatever storage size the device allows but not any more. When you buy a mobile phone with 256 GB of storage, you're stuck until you buy a new one. 
 * __Small peers are capable of using device peer to peer communication tactics__ like Bluetooth Low Energy, Wi-Fi Direct, AWDL, Wi-Fi Aware, Local Area Network, and more to transmit data.
+
+In this narrated video below, we will walk you through the difference between Ditto's Big and Small Peers, and how they make connections between devices to efficiently sync data with or even without the internet.
