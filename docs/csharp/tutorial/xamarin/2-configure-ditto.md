@@ -4,29 +4,19 @@ title: "2 - Configure Ditto"
 
 ## 2-1 Create Your Ditto App
 
-Before we start coding, we first need to create a new app in the [portal](https://portal.ditto.live). Apps created on the portal will automatically sync data between them and also to the Ditto Big Peer.
+Before we start coding, we first need to create a new app in the
+[portal](https://portal.ditto.live). Apps created on the portal will
+automatically sync data between them and also to the Ditto Big Peer.
 
-Each app created on the portal has a unique `appID` which can be seen on your app's settings page once the app has been created. This ID is used in subsequent sections to configure your Ditto instance.
+Each app created on the portal has a unique `appID` which can be seen on your
+app's settings page once the app has been created. This ID is used in subsequent
+sections to configure your Ditto instance.
 
 ## 2-2 Add Permissions to the `Info.plist`
 
-For Ditto to fully use all the network transports like Bluetooth Low Energy, Local Area Network, Apple Wireless Direct, the app will need to ask the user for permissions. These permission prompts need to be in the **Info.plist** file of your project.
+For Ditto to fully use all the network transports like Bluetooth Low Energy, Local Area Network, Apple Wireless Direct, the app will need to ask the user for permissions. These permission prompts need to be in the __Info.plist__ file of your project.
 
-1. Locate the **Info.plist** file and open it
-2. Create 4 new entries using the `key, string` pairs below.
-
-```xml title=Info.plist
-<key>NSBluetoothAlwaysUsageDescription</key>
-<string>Uses Bluetooth to connect and sync with nearby devices</string>
-<key>NSBluetoothPeripheralUsageDescription</key>
-<string>Uses Bluetooth to connect and sync with nearby devices</string>
-<key>NSLocalNetworkUsageDescription</key>
-<string>Uses WiFi to connect and sync with nearby devices</string>
-<key>NSBonjourServices</key>
-<array>
-  <string>_http-alt._tcp.</string>
-</array>
-```
+Follow the instructions on the [iOS Installation page](../../../ios/installation#platform-permissions).
 
 ## 2-3 Add `ditto` to `AppDelegate.cs`
 

@@ -16,7 +16,14 @@ Next, fill out the options with the product name: "Tasks" and choose the followi
 
 ![Xcode app selection](./xcode2.png)
 
-## 1-2 Create the UI Interface
+
+## 1-2 Add Permissions to the `Info.plist`
+
+For Ditto to fully use all the network transports like Bluetooth Low Energy, Local Area Network, Apple Wireless Direct, the app will need to ask the user for permissions. These permission prompts need to be in the __Info.plist__ file of your project.
+
+Follow the instructions on the [iOS Installation page](/ios/installation#platform-permissions).
+
+## 1-3 Create the UI Interface
 
 The UI for the app will look like this:
 
@@ -44,7 +51,7 @@ You can then delete the `ViewController.swift` file from the project so your str
 
 Now the project is set up, so we can configure `Main.storyboard` to create the UI.
 
-## 1-3 Configure Storyboard
+## 1-4 Configure Storyboard
 
 Click on `Main.storyboard` to load the storyboard editor. The initial storyboard includes a scene tied to the ViewController. We deleted it, so we need to remove it and add a `UINavigationController` . Click on the View Controller Scene on the left-hand panel and click delete so the storyboard is now empty:
 
@@ -73,7 +80,7 @@ The last configuration is to adjust the name in the navigation bar to "Tasks", c
 
 Great! We have the UI elements in place, but now we need to wire them up, or connect them with our implementation code in `TasksTableViewController`.
 
-## 1-4 Wire Up UI
+## 1-5 Wire Up UI
 
 First, we need to declare a function that will called when the user clicks on the add icon in the navigation bar. To do so, click the "Show Assistant Editor" button in the top right so that our storyboard and `TaskTableViewController.swift` file are both displayed:
 

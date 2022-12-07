@@ -22,7 +22,7 @@ typical example:
 
 ```swift
 // BAD:
-self.liveQuery = ditto.store.collection("A").find("store_id == 'abc123'").observe { [weak self] documents, event in
+self.liveQuery = ditto.store.collection("A").find("store_id == 'abc123'").observeLocal { [weak self] documents, event in
     self?.documentProcessingQueue.async {
         print("[INFO] Processing \(documents.count) changed documents...")
         // Inspect the changed documents, update UI state, etc.
