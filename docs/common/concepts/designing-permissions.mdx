@@ -124,7 +124,7 @@ Here is a full example for a complex permissions query:
   "expirationSeconds": 3600,
   "permissions": {
       "read": {
-          "everything": true,
+          "everything": false,
           "queriesByCollection": {
               "cars": ["_id == 'my-specific-id'", "_id == 'id1' || _id == 'id2"],
               "boats": ["_id > 100", "_id > -10 && _id < 10"],
@@ -133,7 +133,7 @@ Here is a full example for a complex permissions query:
           }
       },
       "write": {
-          "everything": true,
+          "everything": false,
           "queriesByCollection": {
               "cars": ["_id.price > 1500 && _id.currency == 'USD'", "_id.color == 'red"],
               "boats": ["regex(_id, '^Wave.*')"]
