@@ -84,6 +84,14 @@ private struct V1Car {
     let model: String
     let year: String
     var version: Int
+    
+    init(doc: DittoDocument) {
+      self._id = doc["_id"].stringValue
+      self.make = doc["make"].stringValue
+      self.model = doc["model"].stringValue
+      self.year = doc["year"].stringValue
+      self.version = doc["version"].intValue
+    }
 }
 
 private struct V2Car {
@@ -93,22 +101,35 @@ private struct V2Car {
     let year: Int
     let hometown: String
     var version: Int
+    
+    init(_id: String, make: String, model: String, year: Int, hometown: String, version: Int) {
+        self._id = _id
+        self.make = make
+        self.model = model
+        self.year = year
+        self.hometown = hometown
+        self.version = version
+    }
+    
+    init(doc: DittoDocument) {
+        self._id = doc["_id"].stringValue
+        self.make = doc["make"].stringValue
+        self.model = doc["model"].stringValue
+        self.year = doc["year"].intValue
+        self.hometown = doc["hometown"].stringValue
+        self.version = doc["version"].intValue
+    }
 }
 
 func decode(car: DittoDocument) -> V2Car {
   switch(car.version) {
     case 1 {
-      let oldCar = try person.typed(as: V1Car.self).value
-      let migratedCar = V2Car()
-      migratedCar.make = oldCar.make
-      migratedCar.model = oldCar.model
-      migratedCar.year = Int(oldCar.year)
-      migratedCar.version = 2
-      migratedCar.hometown = "N/A"
+      let oldCar = V1Car(car)
+      let migratedCar = V2Car(_id: oldCar._id, make: oldCar.make, model: oldCar.model, year: Int(oldCar.year), hometown: "N/A", version: 2)
       return migratedCar
     }
     case 2 {
-      return try person.typed(as: V2Car.self).value
+      return V2Car(car)
     }
   }
 }
@@ -125,12 +146,20 @@ private struct V1Car {
     let model: String
     let year: String
     var version: Int
+    
+    init(doc: DittoDocument) {
+      self._id = doc["_id"].stringValue
+      self.make = doc["make"].stringValue
+      self.model = doc["model"].stringValue
+      self.year = doc["year"].stringValue
+      self.version = doc["version"].intValue
+    }
 }
 
 func decode(car: DittoDocument) -> V1Car {
   switch(car.version) {
     case 1 :
-      let oldCar = try person.typed(as: V1Car.self).value
+      let oldCar = V1Car(car)
       return oldCar
     default:
       // create default car item, or ignore document altogether
