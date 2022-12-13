@@ -2,131 +2,21 @@
 title: '2 - Ditto events'
 ---
 
+import SnippetGroup from '@site/src/components/SnippetGroup';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-## Consuming events
+## Testing the consumer
 
-Once you have your consumer running, you will see events written to the console every time a change is replicated to the Ditto Big Peer. 
+Once you have your consumer running, you will see events written to the console
+every time a change is replicated to the Ditto Big Peer.  If you want to create
+changes to the Ditto database as a result of a consumable event, use the [Ditto
+HTTP API](/http/common/concepts/writing).
 
-While the script is running, make a change to see the event in the console. For example, `upsert` a new value into the `people` collection:
 
+While the script is running, make a change to see the event in the console. For example, `upsert` a new value:
 
-<Tabs
-  groupId="programming-language"
-  defaultValue="javascript"
-  values={[
-    {label: 'HTTP', value: 'http'},
-    {label: 'JavaScript', value: 'javascript'},
-    {label: 'Swift', value: 'swift'},
-    {label: 'Objective-C', value: 'objc'},
-    {label: 'Kotlin', value: 'kotlin'},
-    {label: 'Java', value: 'java'},
-    {label: 'C#', value: 'csharp'},
-    {label: 'C++', value: 'cpp'},
-    {label: 'Rust', value: 'rust'},
-  ]
-}>
-
-<TabItem value="http">
-
-  ```bash
-  curl -X POST 'https://{app_id}.cloud.ditto.live/api/v1/collections/people/documents' \
-    --header 'X-DITTO-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
-    --header 'Content-Type: application/json' \
-    --data-raw '{"name": "Susan", "age": 31}'
-  ```
-
-</TabItem>
-<TabItem value="javascript">
-
-```js
-const docID = await ditto.store.collection('people').upsert({
-    name: "Susan",
-    age: 31
-})
-```
-
-</TabItem>
-<TabItem value="swift">
-
-```swift
-// upsert JSON-compatible data into Ditto
-let docId = ditto.store["people"].upsert([
-    "name": "Susan",
-    "age": 31
-])
-```
-
-</TabItem>
-<TabItem value="objc">
-
-```objc
-// upsert JSON-compatible data into Ditto
-DITDocumentID *docID = [[ditto.store collection:@"people"]
-     upsert:@{ @"name": @"Susan", @"age": [NSNumber numberWithInt:31] }
-     isDefault:false
-     error:nil];
-```
-
-</TabItem>
-<TabItem value="kotlin">
-
-```kotlin
-val docId = ditto.store["people"].upsert(mapOf(
-    "name" to "Susan",
-    "age" to 31
-))
-```
-
-</TabItem>
-<TabItem value="java">
-
-```java
-Map<String, Object> content = new HashMap<>();
-content.put("name", "Susan");
-content.put("age", 31);
-DittoDocumentID docId = ditto.store.collection("people").upsert(content);
-```
-
-</TabItem>
-<TabItem value="csharp">
-
-```csharp
-var content = new Dictionary<string, object>
-{
-    { "name", "Susan" },
-    { "age", 31 }
-};
-var docId = ditto.Store.Collection("people").upsert(content);
-```
-
-</TabItem>
-<TabItem value="cpp">
-
-```cpp
-json content = json({
-    { "name", "Susan" },
-    { "age", 31 }
-});
-DocumentId doc_id = ditto.store.collection("people").upsert(content);
-```
-
-</TabItem>
-<TabItem value="rust">
-
-  ```rust
-  use serde_json::json;
-  let content = json!({
-    "name": "Susan",
-    "age": 31
-  });
-  let doc_id = ditto.store().collection("people")?.upsert(content, None, false)?;
-  ```
-
-</TabItem>
-</Tabs>
-
+<SnippetGroup name='upsert' />
 
 After changing a document, look at the terminal running the `bin/kafka-console-consumer.sh` script. 
 
@@ -219,3 +109,15 @@ When a document was removed, `method` is `remove`, and the property `change.valu
 }
 ```
 
+## RequeryRequired
+​
+In the event of a failure of the consumer stream fails to keep up with the incoming changes or when there are gaps of data, you may get an event that looks like:
+​
+```jsonc
+{
+  "txnID": 45,
+  "type": "RequeryRequired"
+}
+```
+
+This should signal you to call our HTTP RPC API endpoint to query using the transaction_id to catch your system up. Use the `txn_id` as part of the `X-DITTO-TXN-ID`. 

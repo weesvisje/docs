@@ -95,7 +95,7 @@ The seamless switching between transports relies on a Ditto component called the
   Your browser does not support the video tag.
 </video>
 
-As of Ditto v1.0 the Multiplexer uses one transport at a time with failover. In future versions this feature will enable more complex scenarios such as load-balancing across multiple routes and lossy transports.
+The Multiplexer uses one transport at a time with failover. In future versions, this feature will enable more complex scenarios such as load-balancing across multiple routes and lossy transports.
 
 ## Servers and the Big Peer
 

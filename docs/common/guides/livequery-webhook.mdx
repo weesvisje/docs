@@ -24,8 +24,8 @@ Login to the [Ditto Portal](https://portal.ditto.live/) and choose your app.
 ![Screenshot of configured live query webhook](/img/livequery.png)
 
 Type the name of the collection as well as the [query](../concepts/querying) you
-want to monitor. You can use `true` to be notified of all changes to documents
-within that collection.
+want to monitor. If you want to be notified of all changes to documents, `true` is a valid query which will match all documents
+in the given collection. 
 
 ## New document created
 
@@ -66,7 +66,7 @@ After updating the document `6213e9c90012e4af0017cb9f` with the properties:
 }
 ```
 
-We will see the following JSON event stream through the Kafka console:
+We will see the following JSON event:
 
 ```json
 {

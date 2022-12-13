@@ -158,7 +158,7 @@ Now the database is at Version 1, and both replicas will return the same answer.
 But what if Transaction 2 doesn't make it to Replica B? This can happen if
 there is a brief network outage, or for some reason the message is delayed. So
 while message B is delayed, A has committed transactions 1 and 2, but B only
-has committed Transaction 1. Since Ditto is eventually consistent, it never
+has committed Transaction 1. Since Ditto is causally consistent, it never
 blocks reads or writes. This means that a client can read even while replicas
 are in an inconsistent state.
 

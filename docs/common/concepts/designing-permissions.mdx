@@ -147,8 +147,10 @@ Here is a full example for a complex permissions query:
 
 The access rules contained in the identity are rigid, signed by the central
 certificate authority, and enforced by all participating devices. This offers
-the highest level of security. If a person is not allowed to access particular
-data, it will never be synced to their device.
+the highest level of security. If a device is not allowed to access particular
+data, it will never be synced to their device. See [Query Overlap
+Groups](../mesh-network/query-overlap-groups), for more details on multi-hopping
+through untrusted devices.
 
 For apps with weaker security requirements, a developer may choose to relax the
 access rules inside the Ditto certificate, and instead restrict access in their application code.

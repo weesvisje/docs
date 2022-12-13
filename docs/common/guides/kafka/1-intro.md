@@ -38,6 +38,7 @@ You can use the following bash script to test out your cluster. Replace each var
 
 If it's working, you won't see any errors and the script will not shut down. Leave this script running in a terminal, and open a new terminal for the next section.
 
+Currently, Ditto only supports consuming all events from a Ditto application at the Kafka endpoint topic `user-consumable-APPID`. 
 
 ```sh
 CLUSTER_CERT_LOCATION=/path/to/cluster.p12
