@@ -146,6 +146,8 @@ For example, you write data using the HTTP API and get back Transaction 17. If
 you want to ensure that the values included in Transaction included in our
 subsequent query, we would include the header `X-DITTO-TXN-ID: 17` in the next request. 
 
+Note: the HTTP API will return an error when the requested DITTO-TXN-ID is not
+yet available on the server.
 
 ### Remove Wins
 
