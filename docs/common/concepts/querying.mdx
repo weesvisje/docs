@@ -58,7 +58,14 @@ There are times where you need to limit the number of results that a query retur
 
 ## Creating query strings
 
-The Ditto query language is very similar to what you'd write in most `if` statements. In addition, we offer standard, easy-to-understand query condition operators that most developers should understand.
+The Ditto query language is very similar to what you'd write in most `if`
+statements. In addition, we offer standard, easy-to-understand query condition
+operators that most developers should understand.
+
+:::info
+On the small peer, there are no secondary indexes. Queries such as `status ==
+'Active'` will have to perform a full table scan.  
+:::
 
 
 ## Navigating Document Properties
@@ -86,6 +93,7 @@ Keys in the query syntax by default must be alphanumeric or include underscore (
 ```js
 "work['street-line'] == '678 Johnson Street'"
 ```
+
 
 
 ### Equality `==`, Inequality
@@ -168,11 +176,14 @@ Use `regex(property, test)` to see if a property with a string value passes a [R
 // A title property of "abc129_24A  3" will not pass
 ```
 
-Queries also parse ISO-8601 date strings as comparable dates
+### Dates
+
+Queries also parse ISO-8601 date strings as comparable dates:
 
 ```js
 "created_at >= '2022-04-29T00:55:31.859Z'"
 ```
+
 
 ### Booleans
 

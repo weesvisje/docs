@@ -1,0 +1,77 @@
+---
+title: '2 - Syncing data'
+---
+
+## 2-1 Set up subscription
+
+You must create a `subscription` object in the global scope so that
+ditto syncronizes in the background throughout the duration of the program.
+
+
+```js
+import { init, Ditto } from '@dittolive/ditto'
+
+let ditto
+//highlight-start
+let subscription
+let liveQuery
+//highlight-end
+
+async function main () {
+  await init()
+
+  const identity = { type: 'onlinePlayground', appID: 'YOUR_APP_ID', token: 'YOUR_TOKEN_HERE'}
+  ditto = new Ditto(identity)
+
+  //highlight-start
+  // Start a subscription
+  subscription = ditto.store.collection("tasks").find("isDeleted == false").subscribe()
+  //highlight-end
+
+
+}
+
+main()
+```   
+
+## 2-2 Listen to changes
+
+Now, every time there is a change to a document, you can retrieve those
+documents and print them out to the console. Use `observeLocal()` for this, as seen below:
+
+```js
+import { init, Ditto } from '@dittolive/ditto'
+
+let ditto
+let subscription
+//highlight-start
+let liveQuery
+//highlight-end
+
+async function main () {
+  await init()
+
+  const identity = { type: 'onlinePlayground', appID: 'YOUR_APP_ID', token: 'YOUR_TOKEN_HERE'}
+  ditto = new Ditto(identity)
+
+  subscription = ditto.store.collection("tasks").find("isDeleted == false").subscribe()
+
+  //highlight-start
+  // Listen for changes
+  liveQuery = ditto.store.collection("tasks").find("isDeleted == false").observeLocal((docs, event) => {
+    console.log(docs)
+  })
+  //highlight-end
+
+  ditto.store.collection("tasks").upsert({
+    isCompleted: false,
+    isDeleted: false,
+    body: "Hello world!"
+  })
+}
+
+main()
+```   
+
+
+Now you're ready to make a tasks app!

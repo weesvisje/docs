@@ -1,0 +1,95 @@
+---
+title: '3 - Create tasks'
+---
+
+[See the full source code here](https://github.com/getditto/samples/tree/master/tasks/nodejs)
+
+## 3-1 Create a command
+
+In the command line, the user can input a task they want to create using `readline`. We will listen to four different commands:
+
+1. `--insert`. We will parse the string without `--insert` and create a new task with the `body`.
+1. `--list`. We print out the tasks. Every time a task is changed, both locally and by other devices, the global `tasks` variable is updated from `observeLocal`
+1. `--toggle`. We will parse the string without --toggle and assume the user's input is a Task document's id. We can then find the document by it's id and call `.update`
+1. `--delete`. We will parse the string without --delete and assume the user's input is a Task document's id. We can then find the document by it's id and toggle the `isDeleted` property
+
+```js
+import { init, Ditto } from '@dittolive/ditto'
+import * as readline from 'readline/promises'
+import { stdin as input, stdout as output } from 'node:process';
+
+let ditto
+let subscription
+let liveQuery
+let tasks = []
+
+async function main () {
+  await init()
+
+  const identity = { type: 'onlinePlayground', appID: 'YOUR_APP_ID', token: 'YOUR_TOKEN' }
+  ditto = new Ditto(identity)
+
+  subscription = ditto.store.collection("tasks").find("isDeleted == false").subscribe()
+  liveQuery = ditto.store.collection("tasks").find("isDeleted == false").observeLocal((docs, event) => {
+    tasks = docs
+  })
+  let isAskedToExit = false
+  
+  console.log("************* Commands *************");
+  console.log("--insert my new task");
+  console.log("   Inserts a task");
+  console.log("   Example: \"--insert Get Milk\"");
+  console.log("--toggle myTaskTd");
+  console.log("   Toggles the isComplete property to the opposite value");
+  console.log("   Example: \"--toggle 1234abc\"");
+  console.log("--delete myTaskTd");
+  console.log("   Deletes a task");
+  console.log("   Example: \"--delete 1234abc\"");
+  console.log("--list");
+  console.log("   List the current tasks");
+  console.log("--exit");
+  console.log("   Exits the program");
+  console.log("************* Commands *************");
+
+  const rl = readline.createInterface({ input, output });
+  while (!isAskedToExit) {
+
+      let answer = await rl.question('Your command:')
+      if (answer.startsWith("--insert")) {
+        let body = answer.replace("--insert ", "")
+        ditto.store.collection("tasks").upsert({
+          body,
+          isDeleted: false,
+          isCompleted: false
+        })
+      }
+      if (answer.startsWith("--toggle")) {
+        let id = answer.replace("--toggle ", "")
+        ditto.store.collection("tasks")
+        .findByID(id).update((doc) => {
+          let isCompleted = doc.value.isCompleted
+          doc.at("isCompleted").set(!isCompleted)
+        })
+      }
+      if (answer.startsWith("--list")) {
+        console.log(tasks.map((task) => task.value))
+      }
+      if (answer.startsWith("--delete")) {
+        let id = answer.replace("--delete ", "")
+        ditto.store.collection("tasks")
+        .findByID(id).update((doc) => {
+          doc.at("isDeleted").set(true)
+        })
+      }
+      if (answer.startsWith("--exit")) {
+        ditto.stopSync()
+        process.exit()
+        
+      }
+  }
+
+}
+
+main()
+
+```   
