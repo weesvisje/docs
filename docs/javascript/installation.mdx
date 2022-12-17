@@ -56,3 +56,19 @@ Need to run NodeJS on a Linux or Raspberry Pi? [Make sure to read this.](/raspbe
 |---|---|
 | iOS | In Development |
 | Android | In Development |
+
+
+## Svelte
+
+If you are using Svelte, remember to keep your Ditto instance and subscriptions
+alive for the duration of the program by using `writable`:
+
+```js
+import { writable } from "svelte/store";
+
+let ditto = writable([]);
+let subscription = writable([]);
+
+ditto.set(new Ditto(identity))
+subscription.set($ditto.store.collections("cars").find("color == 'red'").subscribe())
+```
