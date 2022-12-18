@@ -12,6 +12,14 @@ that you can always write to your local database even if you are disconnected
 from the internet. Writes from all peers will synchronize and Ditto will resolve
 any conflicts.
 
+
+Ditto is a delta state CRDT, which means Ditto only replicates the data that has changed. This makes Ditto very fast.
+
+<video autoPlay loop muted>
+  <source src="/animations/delta_sync/fine_grained_property_sync.webm" type="video/webm"/>
+  Your browser does not support the video tag.
+</video>
+
 ## Upserting 
 
 Ditto doesn't have a concept of "inserting" data, only "upserting" data. This
@@ -58,14 +66,6 @@ This results in the `name` and `age` changing, but `isOnline` is untouched:
   "isOnline": false
 }
 ```
-
-Ditto is a delta state CRDT, which means Ditto only replicates the data that has changed. This makes Ditto very fast.
-
-<video autoPlay loop muted>
-  <source src="/animations/delta_sync/fine_grained_property_sync.webm" type="video/webm"/>
-  Your browser does not support the video tag.
-</video>
-
 ### Default Data
 
 Default Data can be thought of as "placeholder" data.  Default Data is useful when your app needs to load "starter" data from an external data source, like from a backend API, on multiple devices without creating odd "overwriting" behavior.
@@ -105,6 +105,41 @@ Updating an existing document is different depending on the type being updated
 <SnippetGroup
   name='update' 
 />
+
+:::warning
+## Blocked transactions
+You cannot start a write transaction within a write transaction. 
+:::
+
+At any given time, there can be only one write transaction. Any subsequent
+attempts to open another write transaction will become blocked and not progress
+until the existing write transaction finishes. The process of unblocking is
+automatic and you don’t need to write any code to handle this.
+
+The following code will create a deadlock which **never** resolves itself.
+
+
+```swift
+// Start a write transaction:
+ditto.store["people"].findByID(docID).update { mutableDoc in
+  // Start a write transaction _within_ a write transacton.
+  // !! Deadlocks !!
+  let docID = try! ditto.store["settings"].upsert([
+      "_id": "abc123",
+      "preference": 31,
+  ]) 
+  // ...
+}
+```
+
+This might manifest itself in the logs as: 
+
+`LOG_LEVEL: Waiting for write transaction (elapsed: XXs), originator=User blocked_by=User`
+
+If the transaction never unblocks and the log messages at `ERROR` level continue
+forever - you have a strong indication that there’s a deadlock and should
+investigate the application code.
+
 
 ## Batching multiple updates in a single transaction
 
