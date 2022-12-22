@@ -68,8 +68,8 @@ using DittoSDK;
 using System.Collections.Generic;
 ```
 
-4. Now we'll need to hold a reference to our Ditto instance as a `static` variable and also add a `static DittoLiveQuery` variable. These variables must be `static` because the console program's `Main` function is also `static`.
-5. Instantiate the `ditto` static variable by constructing it with a development identity with an `appID: "live.ditto.tasks"`. If you want to sync with other tutorial app types like iOS or Android, you'll need to match the `appID` to enable sync. Also ensure to add your license token to `ditto.SetLicenseToken` to properly
+4. Now we'll need to hold a reference to our Ditto instance as a `static` variable and also add a `static DittoLiveQuery` and `static DittoSubscription` variable. These variables must be `static` because the console program's `Main` function is also `static`.
+5. Instantiate the `ditto` static variable by constructing it with a development identity with an `appID: "live.ditto.tasks"`. If you want to sync with other tutorial app types like iOS or Android, you'll need to match the `appID` to enable sync. Also ensure to add your license token to `ditto.SetOfflineOnlyLicenseToken` to properly
 
 ```csharp title="Program.cs"
 namespace Tasks
@@ -80,17 +80,18 @@ namespace Tasks
         // highlight-start
         static Ditto ditto;
         static DittoLiveQuery liveQuery;
+        static DittoSubscription subscription;
         // highlight-end
 
         public static void Main(params string[] args)
         {
           // 5.
           // highlight-start
-          ditto = new Ditto(DittoIdentity.OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID", "REPLACE_ME_WITH_YOUR_PLAYGROUND_TOKEN"), path);
+          ditto = new Ditto(identity: DittoIdentity.OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID", "REPLACE_ME_WITH_YOUR_PLAYGROUND_TOKEN"), path);
 
           try
           {
-              ditto.SetLicenseToken("<REPlACE_ME>");
+              ditto.SetOfflineOnlyLicenseToken("<REPlACE_ME>");
               ditto.StartSync();
           }
           catch (DittoException ex)
