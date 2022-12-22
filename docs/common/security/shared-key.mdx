@@ -7,11 +7,13 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SnippetGroup from '@site/src/components/SnippetGroup';
 
-:::info
-Shared key is appropriate for devices that never connect to the Internet. 
+:::warning
+## Do not deploy to the app store
+Shared key is not suitable for apps deployed to the public app store, because the key could be reverse-engineered. Shared key is more appropriate for an enterprise application run on centrally managed devices that do not connect to the Internet.
 
 If you need to syncronize data over the Internet with the Big Peer, [use Online With Authentication instead](./authentication/overview).
 :::
+
 
 Ditto offers an intermediate level of security for applications where all users
 and devices are trusted. For example, this could be appropriate for an
@@ -19,6 +21,7 @@ enterprise application run on centrally managed devices. In this mode, every
 device knows the same secret key, and uses this to validate incoming
 connections. The benefit of this approach is that distinct certificates do not
 have to be distributed to every device, simplifying the deployment.
+
 
 Small Peers in this mode use a `SharedKey` identity type. The secret key must be provided as a
 String when initializing the `DittoIdentity` on each peer. This key should be securely and randomly generated and Ditto
