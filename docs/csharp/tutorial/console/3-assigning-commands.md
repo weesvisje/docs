@@ -35,6 +35,7 @@ namespace Tasks
         static bool isAskedToExit = false;
         static List<Task> tasks = new List<Task>();
         static DittoLiveQuery liveQuery;
+        static DittoSubscription subscription;
 
 
         public static void Main(params string[] args)
@@ -44,6 +45,8 @@ namespace Tasks
             /**
             * Omitted for brevity
             */
+
+            subscription = ditto.Store["tasks"].Find("!isDeleted").Subscribe()
 
             liveQuery = ditto.Store["tasks"].Find("!isDeleted").ObserveLocal((docs, _event) => {
                 tasks = docs.ConvertAll(d => new Task(d));
@@ -77,7 +80,7 @@ namespace Tasks
                     case string s when command.StartsWith("--toggle"):
                         string _idToToggle = s.Replace("--toggle ", "");
                         ditto.Store["tasks"]
-                            .FindById(new DittoDocumentID(_idToToggle))
+                            .FindById(new DittoDocumentId(_idToToggle))
                             .Update((mutableDoc) => {
                                 if (mutableDoc == null) return;
                                 mutableDoc["isCompleted"].Set(!mutableDoc["isCompleted"].BooleanValue);
@@ -89,7 +92,7 @@ namespace Tasks
                     case string s when command.StartsWith("--delete"):
                         string _idToDelete = s.Replace("--delete ", "");
                         ditto.Store["tasks"]
-                            .FindById(new DittoDocumentID(_idToDelete))
+                            .FindById(new DittoDocumentId(_idToDelete))
                             .Update((mutableDoc) => {
                                 if (mutableDoc == null) return;
                                 mutableDoc["isDeleted"].Set(true);
@@ -136,17 +139,34 @@ namespace Tasks
         static Ditto ditto;
         static bool isAskedToExit = false;
         static List<Task> tasks = new List<Task>();
-        static DittoSubscription subscription;
         static DittoLiveQuery liveQuery;
+        static DittoSubscription subscription;
 
 
         public static void Main(params string[] args)
         {
-            ditto = new Ditto(identity: DittoIdentity.Development(appName: "live.ditto.tasks"));
+            ditto = new Ditto(DittoIdentity.OnlinePlayground("REPLACE_ME_WITH_YOUR_APP_ID", "REPLACE_ME_WITH_YOUR_PLAYGROUND_TOKEN"), path);
 
             try
             {
-                ditto.SetLicenseToken("<REPlACE_ME>");
+                ditto.SetOfflineOnlyLicenseToken("<REPLACE_ME>");
+                DittoTransportConfig transportConfig = new DittoTransportConfig();
+
+                // Enable Local Area Network Connections
+                transportConfig.EnableAllPeerToPeer();
+
+                // Listen for incoming connections on port 4000
+                transportConfig.Listen.Tcp.Enabled = true;
+                transportConfig.Listen.Tcp.InterfaceIp = "0.0.0.0";
+                transportConfig.Listen.Tcp.Port = 4000;
+
+                // Connect explicitly to a remote device on 
+                transportConfig.Connect.TcpServers.Add("135.1.5.5:12345");
+                // you can add as many TcpServers as you would like.
+                transportConfig.Connect.TcpServers.Add("185.1.5.5:12345");
+
+                ditto.TransportConfig = transportConfig;
+
                 ditto.StartSync();
             }
             catch (DittoException ex)
@@ -160,22 +180,25 @@ namespace Tasks
 
             Console.WriteLine("Welcome to Ditto's Task App");
 
-            subscription = ditto.Store["tasks"].Find("!isDeleted").Subscribe()
+            subscription = ditto.Store["tasks"].Find("!isDeleted").Subscribe();
+
             liveQuery = ditto.Store["tasks"].Find("!isDeleted").ObserveLocal((docs, _event) => {
-                tasks = docs.ConvertAll(d => new Task(d));
+                tasks = docs.ConvertAll(document => new Task(document));
             });
+
+            ditto.Store["tasks"].Find("isDeleted == true").Evict();
 
             ListCommands();
 
             while (!isAskedToExit)
             {
-
+                
                 Console.Write("\nYour command: ");
                 string command = Console.ReadLine();
 
                 switch (command)
                 {
-
+                    
                     case string s when command.StartsWith("--insert"):
                         string taskBody = s.Replace("--insert ", "");
                         ditto.Store["tasks"].Upsert(new Task(taskBody, false).ToDictionary());
@@ -183,7 +206,7 @@ namespace Tasks
                     case string s when command.StartsWith("--toggle"):
                         string _idToToggle = s.Replace("--toggle ", "");
                         ditto.Store["tasks"]
-                            .FindById(new DittoDocumentID(_idToToggle))
+                            .FindById(new DittoDocumentId(_idToToggle))
                             .Update((mutableDoc) => {
                                 if (mutableDoc == null) return;
                                 mutableDoc["isCompleted"].Set(!mutableDoc["isCompleted"].BooleanValue);
@@ -192,11 +215,11 @@ namespace Tasks
                     case string s when command.StartsWith("--delete"):
                         string _idToDelete = s.Replace("--delete ", "");
                         ditto.Store["tasks"]
-                            .FindById(new DittoDocumentID(_idToDelete))
+                            .FindById(new DittoDocumentId(_idToDelete))
                             .Update((mutableDoc) => {
                                 if (mutableDoc == null) return;
                                 mutableDoc["isDeleted"].Set(true);
-                            });;
+                            });
                         break;
                     case { } when command.StartsWith("--list"):
                         tasks.ForEach(task =>
