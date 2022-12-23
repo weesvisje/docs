@@ -67,7 +67,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
     // Listen for clicks to mark tasks [in]complete
     tasksAdapter.onItemClick = { task ->
-        ditto.store.collection("tasks").findByID(task.id).update { newTask ->
+        ditto.store.collection("tasks").findById(task.id).update { newTask ->
             newTask!!["isCompleted"].set(!newTask["isCompleted"].booleanValue)
         }
     }
