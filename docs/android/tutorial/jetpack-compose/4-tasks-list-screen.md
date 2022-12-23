@@ -128,8 +128,8 @@ The entire screen's data will be completely controlled by a Jetpack Compose `Vie
 
 1. Now create a new file called __TasksListScreenViewModel.kt__
 2. Add a property called `val tasks: MutableLiveData<List<Task>> = MutableLiveData(emptyList())`. This will house all of our tasks that the `TasksListScreen` can observeLocal for changes. When any `MutableLiveData` type changes, Jetpack Compose will intelligently tell `@Composable` types to reload with the necessary changes.
-3. Create a `liveQuery` by observing all the tasks documents. Remember our `Task` data class that we created? We will now map all the `DittoDocument` to a `List<Task>` and set them to the tasks.
-4. Ditto's `DittoLiveQuery` types should be disposed by calling `stop()` once the `ViewModel` is no longer necessary. For a simple application, this isn't necessary but it's always good practice once you start building more complex applications.
+3. Create a `liveQuery` and `subscription` by observing/subscribing to all the tasks documents. Remember our `Task` data class that we created? We will now map all the `DittoDocument` to a `List<Task>` and set them to the tasks.
+4. Ditto's `DittoLiveQuery` and `DittoSubscription` types should be disposed by calling `close()` once the `ViewModel` is no longer necessary. For a simple application, this isn't necessary but it's always good practice once you start building more complex applications.
 
 ```kotlin title="TasksListScreenViewModel.kt"
 class TasksListScreenViewModel: ViewModel() {
@@ -139,10 +139,13 @@ class TasksListScreenViewModel: ViewModel() {
         .find("!isDeleted").observeLocal { docs, _ ->
             tasks.postValue(docs.map { Task(it) })
         }
+        
+    val subscription = TasksApplication.ditto!!.store["tasks"]
+        .find("!isDeleted").subscribe()
 
     fun toggle(taskId: String) {
         TasksApplication.ditto!!.store["tasks"]
-            .findByID(DittoDocumentID(taskId))
+            .findById(DittoDocumentId(taskId))
             .update { mutableDoc ->
                 val mutableDoc = mutableDoc?.let { it } ?: return@update
                 mutableDoc["isCompleted"].set(!mutableDoc["isCompleted"].booleanValue)
@@ -151,7 +154,8 @@ class TasksListScreenViewModel: ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        liveQuery.stop()
+        liveQuery.close()
+        subscription.close()
     }
 }
 ```
@@ -166,7 +170,7 @@ This `toggle` function will take the `task`, find it by it's `_id` and switch it
 // ***
 fun toggle(taskId: String) {
     TasksApplication.ditto!!.store["tasks"]
-        .findByID(DittoDocumentID(taskId))
+        .findById(DittoDocumentId(taskId))
         .update { mutableDoc ->
             val mutableDoc = mutableDoc?.let { it } ?: return@update
             mutableDoc["isCompleted"].set(!mutableDoc["isCompleted"].booleanValue)

@@ -131,7 +131,7 @@ class EditScreenViewModel: ViewModel() {
         canDelete.value = taskId != null
         val taskId: String = taskId?.let { it } ?: return;
         val doc: DittoDocument = TasksApplication.ditto!!.store["tasks"]
-            .findByID(DittoDocumentID(taskId))
+            .findById(DittoDocumentId(taskId))
             .exec()?.let { it } ?: return;
         val task = Task(doc)
         _id = task._id
@@ -151,7 +151,7 @@ class EditScreenViewModel: ViewModel() {
                 ))
         } else {
             // update
-            TasksApplication.ditto!!.store["tasks"].findByID(DittoDocumentID(_id!!))
+            TasksApplication.ditto!!.store["tasks"].findById(DittoDocumentId(_id!!))
                 .update { mutableDoc ->
                     val mutableDoc = mutableDoc?.let { it } ?: return@update
                     mutableDoc["body"].set(body.value ?: "")
