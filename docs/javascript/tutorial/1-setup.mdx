@@ -39,9 +39,12 @@ npm i @dittolive/ditto
 
 ## 1-3 Initialize Ditto
 
+
 Ditto is implemented using Rust and is bridged to JavaScript over WASM. That
 means that you must initialize ditto first using `init()` as part of an async
-context, like so:
+context.
+
+Create an `index.ts` file:
 
 ```js
 import { init, Ditto } from '@dittolive/ditto'
