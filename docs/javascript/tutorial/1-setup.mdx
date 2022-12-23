@@ -57,7 +57,7 @@ main()
 
 Then, you can create a new Ditto instance. The `ditto` instance must stay in
 scope for the duration of the program, otherwise it will be garbage collected.
-To ensure this, make `ditto` a global variable:
+To prevent garbage collection, make sure `ditto` is a global variable:
 
 ```js
 import { init, Ditto } from '@dittolive/ditto'
