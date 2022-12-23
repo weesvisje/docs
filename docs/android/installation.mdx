@@ -41,34 +41,7 @@ buildscript {
 4. Configure your manifest with the following permissions. Ditto's required
    permissions have changed since Android 13. Refer to [Android Platform
    Permissions](#android-platform-permissions) for details.
-
-```xml
-<uses-permission android:name="android.permission.BLUETOOTH"
-    android:maxSdkVersion="30" />
-<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
-    android:maxSdkVersion="30" />
-<uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"
-    tools:targetApi="s" />
-<uses-permission android:name="android.permission.BLUETOOTH_CONNECT"
-    tools:targetApi="s" />
-<uses-permission android:name="android.permission.BLUETOOTH_SCAN"
-    android:usesPermissionFlags="neverForLocation"
-    tools:targetApi="s" />
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
-    android:maxSdkVersion="32" />
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"
-    android:maxSdkVersion="30" />
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-<uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-<uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"
-    android:usesPermissionFlags="neverForLocation"
-    tools:targetApi="tiramisu" />
-```
-
+   
 5. Access the [portal](https://portal.ditto.live) to create a new app. Apps created on the portal will automatically sync data between them and also to the Ditto Big Peer. Each app created on the portal has a unique `appID` which can be seen on your app's settings page once the app has been created. This ID is used in subsequent sections to configure your Ditto instance.
 
 6. Create your Ditto instance as below. We recommend placing this in your Application.onCreate method:
@@ -105,7 +78,7 @@ Then at runtime your app must prompt the user to request certain permissions.
 
 #### Android Manifest Permissions
 
-```xml title=AndroidManifest.xml
+```xml
 <uses-permission android:name="android.permission.BLUETOOTH"
     android:maxSdkVersion="30" />
 <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
@@ -117,8 +90,10 @@ Then at runtime your app must prompt the user to request certain permissions.
 <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
     android:usesPermissionFlags="neverForLocation"
     tools:targetApi="s" />
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
+    android:maxSdkVersion="32" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"
+    android:maxSdkVersion="30" />
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -129,6 +104,7 @@ Then at runtime your app must prompt the user to request certain permissions.
     android:usesPermissionFlags="neverForLocation"
     tools:targetApi="tiramisu" />
 ```
+
 
 Since the Ditto SDK does not use BLE to locate the user physically it assumes you
 are using the `neverForLocation` flag on `BLUETOOTH_SCAN`.
