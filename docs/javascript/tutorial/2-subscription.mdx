@@ -22,6 +22,8 @@ async function main () {
 
   const identity = { type: 'onlinePlayground', appID: 'YOUR_APP_ID', token: 'YOUR_TOKEN_HERE'}
   ditto = new Ditto(identity)
+  ditto.startSync()
+
 
   //highlight-start
   // Start a subscription
@@ -53,6 +55,7 @@ async function main () {
 
   const identity = { type: 'onlinePlayground', appID: 'YOUR_APP_ID', token: 'YOUR_TOKEN_HERE'}
   ditto = new Ditto(identity)
+  ditto.startSync()
 
   subscription = ditto.store.collection("tasks").find("isDeleted == false").subscribe()
 
