@@ -20,42 +20,6 @@ don't deterministically resolve all conflicting registers to the value "Sprite",
 but instead pick whichever value of "Coca-Cola" or "Pepsi" was written at the
 latest time.
 
-## Version Vector
-
-The foundation of determining how data should be merged is using a Ditto document's version vector. 
-Each document in each peer contains a hidden metadata map of a `Site_ID` and a `HLC`. The HLC stands for a 
-hybrid logical clock. This `HLC` is used to determine whether a change has "happened before". 
-For more information about the Hybrid Logical Clock, see below.
-
-Say we have DocumentId: `"123abc"` on Peer A. 
-
-```
-DocumentId: "123abc"
-Version Vector: {
-  "A": 5,
-  "B": 1,
-  "C": 4
-}
-```
-
-The version vector above represents that Peer `"A"` has incorporated change from other peers `"B"` and `"C"` at times `1` an `4` respectively.
-
-_Disclaimer: Ditto uses a `UInt128` to represent the `Site_ID` and `64bit timestamp` for the `HLC`. But for educational purposes, 
-this documentation will often use strings and numbers for readability. Please continue to the Hybrid Logical Clock portion below to learn more._
-
-If an incoming change arrives at Peer `"A"` with `"B": 4`, then Document will merge the incoming data. This is because Peer `"A"` determined that the document's current state has yet not seen the new change. 
-
-
-```
-DocumentId: "123abc"
-Version Vector: {
-  "A": 5,
-  "B": 1, // 👈 merge in {"B": 4} because 4 > 1
-  "C": 4
-}
-```
-
-
 ## Types
 
 
@@ -73,12 +37,46 @@ types listed above. One way to think about the types that make up a Ditto
 document is like a tree, where there are collections (Array and Map) and leaf
 values that are registers or counters.
 
+## Version Vector
+
+The foundation of determining how data should be merged is using a Ditto document's [version vector](https://en.wikipedia.org/wiki/Version_vector). The replication system uses the version vector to capture local and observed edits from other peers. 
+
+Every time a change is made to a document, the version of that document is incremented by one.  When a peer incorporates changes from other peers, the local peer can use the incoming remote peer's version vectors to determine whether the changes are new or old. In other words, a peer can distinguish from other peer's incoming version vectors if the incoming data has "happened before" or not.
+
+Say we have DocumentId: `"123abc"` on Peer A. 
+
+```
+DocumentId: "123abc"
+Version Vector: {
+  "A": 5,
+  "B": 1,
+  "C": 4
+}
+```
+
+The version vector above represents that Peer `"A"` has incorporated change from other peers `"B"` and `"C"` at times `1` and `4` respectively.
+
+If an incoming change arrives at Peer `"A"` with `"B": 4`, then Document will merge the incoming data. This is because Peer `"A"` determined that the document's current state has yet not seen the new change. 
+
+```
+DocumentId: "123abc"
+Version Vector: {
+  "A": 5,
+  "B": 1, // 👈 merge in {"B": 4} because 4 > 1
+  "C": 4
+}
+```
+
+_Disclaimer: Ditto uses a `UInt128` to represent the `Site_ID` and `64bit timestamp` for the `HLC`. But for educational purposes, 
+this documentation will often use strings and numbers for readability. Please continue to the Hybrid Logical Clock portion below to learn more._
+
 
 ## Hybrid Logical Clock
 
-It might be tempting to use physical clocks to resolve conflicts when attempting to merge concurrent data changes. However, it's essential to know that even quartz-crystal-based physical clocks can skew forwards or backward in time. Almost every device regularly attempts to synchronize with an NTP-synchronized clock server. But even then, the round trip time from the request to the server's response adds additional variability. In addition, there are limitations to nature and physics that will never allow two measurements of physical time to align precisely. Thus, these conditions led us to determine that physical clocks were not reliable in a distributed mesh network. 
+Each document in each peer contains a hidden metadata map of a `Site_ID` and a `HLC`. The HLC stands for a 
+hybrid logical clock. This `HLC` is used to determine whether a change has "happened before".  
 
-Each Ditto document includes a version vector. The replication system uses the version vector to capture local and observed edits from other peers. When a peer incorporates changes from other peers, the local peer can use the incoming remote peer's version vectors to determine whether the changes are new or old. In other words, a peer can distinguish from other peer's incoming version vectors if the incoming data has "happened before" or not.
+It might be tempting to use physical clocks to resolve conflicts when attempting to merge concurrent data changes. However, it's essential to know that even quartz-crystal-based physical clocks can skew forwards or backward in time. Almost every device regularly attempts to synchronize with an NTP-synchronized clock server. But even then, the round trip time from the request to the server's response adds additional variability. In addition, there are limitations to nature and physics that will never allow two measurements of physical time to align precisely. Thus, these conditions led us to determine that physical clocks were not reliable in a distributed mesh network.
 
 Although we decided that we could not build a system that resolved conflicts based purely on physical time, we needed to preserve the notion of physical time as not to confuse users of collaborative applications. However, each peer still needs a deterministic way to resolve conflicts. In other words, each peer when sharing CRDT deltas needs to always resolve conflicts exactly the same way. This requirement still needs _logical_ ordering. This requirement led us to implement the version vector with a Hybrid Logical Clock (often referred to as HLC).
 
