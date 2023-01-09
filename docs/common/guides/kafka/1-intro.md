@@ -8,7 +8,7 @@ title: '1 - Enabling Kafka'
 The Kafka settings are only enabled if your Organization is on a dedicated cluster. [Contact us](mailto:support@ditto.live) if you are interested in this feature.  You can also use Ditto's [Live Query Webhook](../livequery-webhook), which is free for all users.
 :::
 
-Kafka is one way to implement CDC ([Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture)). The document change stream is a coarse user-consumable Kafka queue that allows you to react to changes made as documents are inserted, updated, or deleted from Ditto's Big Peer. You should use this in conjunction with the HTTP API. Ditto supports connecting to Kafka and retrieving updates and events for your data through a Kafka topic. 
+Kafka is one way to implement CDC ([Change Data Capture](https://en.wikipedia.org/wiki/Change_data_capture)). The document change stream is a coarse user-consumable Kafka queue that allows you to react to changes made as documents are inserted, updated, or deleted from Ditto's Big Peer. This keeps an external database in sync with Ditto, which can be useful for integration with legacy systems such as business intelligence tools.
 
 ## Installing Kafka
 
@@ -16,7 +16,7 @@ If you aren't familiar with Kafka, first follow the instructions on [Kafka Quick
 
 ## Handling credentials 
 
-To connect to your Kafka instance, you need to have an SSL connection. In your organization page, click "Live Query Settings" and you will see the credentials for your cluster. Download the Cluster Certificate and User Certificate. Keep these files safe!
+To connect to your Kafka instance, you need to have an SSL connection. In your organization page, click "Live Query Settings" and you will see the credentials for your cluster. Download the Cluster Certificate and User Certificate. Keep these files safe! 
 
 **Organization Apps > Your App Name > Live Query Settings > Kafka Connection Data**
 
