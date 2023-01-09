@@ -599,7 +599,7 @@ In addition to storing mutable Documents backed by CRDTs, Big Peer recently adde
 
 ### HTTP API
 
-Although we have a rudimentary HTTP API, we expect this area to grow and improve to make it simpler for non-Small Peers to use Big Peer. At present you can insert, query, and delete docs. Expect transactions and updates in the future.
+For more information on how to use the HTTP API, see the [HTTP documentation](https://docs.ditto.live/http/installation).
 
 ### Eventual Consistency Mode
 
