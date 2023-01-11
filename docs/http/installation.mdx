@@ -57,12 +57,12 @@ b'AAAAAAAAAAUAAAAAAAAAAA=='
 ## Authorization 
 
 Access to the Ditto HTTP API is mediated by an `Authorization: Bearer` HTTP
-Header containing a valid, signed, JWT Token (RFC 7519).
+Header. There are two ways to authorize access: via a JWT (JSON Web Token) or a static API Key.
 
 ### API Key
 
 Long-lived API tokens are great for server-side hydration, which are not owned
-by a particular user. These API keys can be obtained and managed through the
+by a particular user.  These API keys can be obtained and managed through the
 portal in the "API Key" section. 
 
 ![api_key_top.png](./api_key_top.png)
@@ -92,10 +92,17 @@ curl --location --request POST 'https://{YOUR_APP_ID}.cloud.ditto.live/api/v2/st
     }]
   }'
 ```
+#### Security
 
+The API key is formed by three parts: randomly generated prefix, fixed prefix and randomly generated suffix.
+The value is generated through cryptographically secure PRNG. The suffix is hashed using `scrypt` before 
+being stored in database along with the prefix. The unhashed API key will only be shown once in the portal and 
+will be inaccessible after creation.
 
+Apart from that, an approximate of the timestamp when the API key is last used is tracked and is available in the
+portal. 
 
-### Online With Authentication
+### JWT (JSON Web Token)
 
 There are specific cases where a broad, long-lived HTTP API key is not the right
 authorization mechanism. For user-scoped credentials, you can use a JWT retrieved from [Online With
@@ -103,13 +110,37 @@ Authentication](../common/security/authentication/overview) to secure your
 HTTP endpoint. To retrieve a JWT for a particular user, send a POST request to the Big Peer
 with the given provider and the user's token.
 
+1. First, set your application to enable Authentication using OnlineWithAuthentication. This involves deploying an authentication server on a publicly-accessible URL by following the [tutorial](./common/security/authentication/tutorial).
+2. Send a POST request to the `/_ditto/auth/login` endpoint. This is the same endpoint used to authorize small peers access, used by the `OnlineWithAuthentication` identity.
+
 ```
 curl --location \
     --request POST '{YOUR_APP_ID}.cloud.ditto.live/_ditto/auth/login' \
     --data-raw 'appId={YOUR_APP_ID}&provider={YOUR_PROVIDER}&token={USER_TOKEN}&siteId=1'
 ```
 
-Once you have this token, you can use it as part of the `Authorization: Bearer` HTTP header in subsequent requests (as seen in the previous section).
+3. The following payload will be returned. Extract the `accessToken` value. You
+can use the `accessExpiry` value in your application code to handle the
+expiration date and refresh of the token.
+
+```
+{
+    "result": "success",
+    "userId": "...",
+    "identityB64": "..."
+    "accessToken": "MY_ACCESS_TOKEN"
+    "accessExpiry": "YYYY-MM-DDT00:00:00.0000000Z",
+    "refreshToken": null,
+    "refreshExpiry": null,
+    "audiences": [
+        "sync"
+    ],
+    "clientInfo": null
+}
+```
+
+4. Once you have this token, you can use it as part of the `Authorization: Bearer` HTTP header in subsequent requests (as seen in the previous section).
+
 
 ### Errors
 
