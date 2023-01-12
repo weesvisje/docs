@@ -19,25 +19,15 @@ remember to enable peer to peer connnections with `EnableAllPeerToPeer()`.
 ## Enabling/Disabling Transports
 
 You can enable all peer to peer connections with `EnableAllPeerToPeer()`. You can also customize which transports are used by enabling/disabling each transport separately.
-```
-// Create a new DittoTransportConfig()
-var transportConfig = DittoTransportConfig()
 
-//Enable all peer to peer transports
-transportConfig.enableAllPeerToPeer()
-
-//Or enable/disable each transport separately
-transportConfig.peerToPeer.bluetoothLe.isEnabled = true
-transportConfig.peerToPeer.lan.isEnabled = true
-transportConfig.peerToPeer.awdl.isEnabled = true
-```
+<SnippetGroup name="transport-configurations" />
 
 ## Sync to Ditto Cloud
 
 In order to sync to the Ditto Cloud you must use an online identity (onlinePlayground, onlineWithAuthentication). When setting up the online identity there is a boolean parameter called `enableDittoCloudSync` which allows you to enable/disable syncing with the Ditto Cloud. `enableDittoCloudSync` is set to true by default.
-```
-ditto = Ditto(identity: .onlinePlayground(appID: "Your_AppId", token: "Your_Token", enableDittoCloudSync: true)) // Set to false to disable syncing with the cloud
-```
+
+<SnippetGroup name="online-playground-cloudSync" />
+
 
 ## Observing Peers 
 
@@ -92,13 +82,10 @@ connections can reach the port_ that you have specified in your configuration.
 You may need to set up port forwarding if external ports map differently to your
 host.
 
-You can also configure your Ditto instance to use websockets using a similar setup to the tcpServer above.
-```
-val transportConfig = DittoTransportConfig()
-transportConfig.connect.websocketURLs.add()
-ditto.transportConfig = newConfig
-ditto.startSync()
-```
+You can also configure your Ditto instance to connect to a websocket
+
+<SnippetGroup name="websocket-connect" />
+
 
 ## Combining Multiple Transports
 
