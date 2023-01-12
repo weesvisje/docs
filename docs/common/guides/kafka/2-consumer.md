@@ -116,8 +116,13 @@ In the event of a failure of the consumer stream fails to keep up with the incom
 ```jsonc
 {
   "txnID": 45,
-  "type": "RequeryRequired"
+  "type": "requeryRequired,
+  "documents": [{
+    "appId": "abc",
+    "collectionName": "people",
+    "documentId": "6213e9c90012e4af0017cb9f"
+  }]
 }
 ```
 
-This should signal you to call our HTTP RPC API endpoint to query using the transaction_id to catch your system up. Use the `txn_id` as part of the `X-DITTO-TXN-ID`. 
+This should signal you to call our HTTP RPC API endpoint to query using the transaction_id to catch your system up for each document listed in the collection. Use the `txnId` as a value of the header `X-DITTO-TXN-ID`. 
