@@ -63,7 +63,7 @@ scope for the duration of the program, otherwise it will be garbage collected.
 To prevent garbage collection, make sure `ditto` is a global variable:
 
 ```js
-import { init, Ditto } from '@dittolive/ditto'
+import { init, Ditto, Identity } from '@dittolive/ditto'
 
 //highlight-start
 let ditto
@@ -74,7 +74,7 @@ async function main () {
 
   //highlight-start
   // Create a Ditto' context:
-  const identity = { type: 'onlinePlayground', appID: 'YOUR_APP_ID', token: 'YOUR_TOKEN_HERE'}
+  const identity: Identity = { type: 'onlinePlayground', appID: 'YOUR_APP_ID', token: 'YOUR_TOKEN_HERE'}
   ditto = new Ditto(identity)
   //highlight-end
 
