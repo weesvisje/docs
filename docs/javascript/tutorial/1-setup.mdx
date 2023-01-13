@@ -74,8 +74,7 @@ async function main () {
 
   //highlight-start
   // Create a Ditto' context:
-  const identity: Identity = { type: 'onlinePlayground', appID: 'YOUR_APP_ID', token: 'YOUR_TOKEN_HERE'}
-  ditto = new Ditto(identity)
+  ditto = new Ditto({ type: 'onlinePlayground', appID: 'YOUR_APP_ID', token: 'YOUR_TOKEN_HERE'})
   //highlight-end
 
   ditto.startSync()
