@@ -136,9 +136,9 @@ will check that it is present.
 
 #### Runtime Permissions
 
-Your apps must ensure all required permissions for sync have been requested from
+Bluetooth LE and WiFi Aware require location permissions. Your apps must ensure all required permissions for sync have been requested from
 the user. The Android Ditto SDK provides a `DittoSyncPermissions` helper which
-makes this easy. For example, a fragment can use a method like this:
+makes this easy. Call the following in your Activity or Fragment's `onCreate` method:
 
 <Tabs
   groupId="android-permissions"
@@ -176,28 +176,8 @@ fun checkPermissions() {
     }
 }
 ```
-
-</TabItem>
-<TabItem value="java">
-
-On older versions of Android, parts of Bluetooth LE and WiFi Aware require
-location permission. Ditto will operate without it but synchronization may be
-impossible in certain scenarios.
-
-```java
-if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-    // We ignore the result - Ditto will automatically notice when the permission is granted
-    String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
-    ActivityCompat.requestPermissions(this, permissions, 0);
-}
-```
-
-</TabItem>
-</Tabs>
-
-For more information about requesting permissions in a user-friendly way refer to
-Android's documentation: [Request App Permissions](https://developer.android.com/training/permissions/requesting).
-
+    
+   
 On Android there may be a noticeable delay between when the user grants location
 access and when Ditto notices the new permission. For this reason it is
 recommended to call `refreshPermissions()` whenever a relevant permission might
@@ -215,3 +195,37 @@ override fun onRequestPermissionsResult(
     ditto?.refreshPermissions()
 }
 ```
+
+
+</TabItem>
+<TabItem value="java">
+
+```java
+void checkLocationPermission() {
+   DittoSyncPermissions permissions = new DittoSyncPermissions(this);
+   String[] missing = permissions.missingPermissions(permissions.requiredPermissions());
+   if (missing.length > 0) {
+      this.requestPermissions(missing, 0);
+   }
+}
+```
+
+On Android there may be a noticeable delay between when the user grants location
+access and when Ditto notices the new permission. For this reason it is
+recommended to call `refreshPermissions()` whenever a relevant permission might
+have changed. This will force an immediate check. If a permission has become
+available your app can begin syncing as quickly as possible.
+
+```java
+@Override
+public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+   super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+   this.ditto.refreshPermissions();
+}
+```
+    
+</TabItem>
+</Tabs>
+
+For more information about requesting permissions in a user-friendly way refer to
+Android's documentation: [Request App Permissions](https://developer.android.com/training/permissions/requesting).
