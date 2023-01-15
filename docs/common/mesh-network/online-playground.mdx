@@ -44,9 +44,11 @@ Online Playground devices must connect to the internet first
 *before* going offline. Once the device connects to the internet, it creates a
 certificate that can be used to authenticate while offline. Once offline, the
 device can synchronize for one week. After one week, the certificate will expire, and the device
-must re-connect to the Internet to get a new certificate. Use
+must re-connect to the Internet to get a new certificate. 
+
+This one week expiration is a setting that you can customize. Use
 [OnlineWithAuthentication](../security/authentication/overview) if a device needs to
-be offline for more than one week.
+be offline for more or less than one week.
 
 <SnippetGroup name="online-playground" />
 
