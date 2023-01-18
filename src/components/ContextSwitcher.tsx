@@ -36,6 +36,8 @@ const ContextSwitcher = ({ className }) => {
     }
 
     const currContext = getContext(doc);
+
+    setTabGroupChoices("platform", context.id)
     if (currContext && currContext.id !== context.id) {
       setContext(currContext);
     }

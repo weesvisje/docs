@@ -26,6 +26,7 @@ export default (platform: string) => {
       break;
     case 'raspberrypi':
       languages = [
+        {label: 'NodeJS', value: 'javascript'},
         {label: 'C++', value: 'cpp'},
         {label: 'Rust', value: 'rust'},
         {label: 'HTTP', value: 'http'}
