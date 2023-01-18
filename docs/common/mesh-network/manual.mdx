@@ -22,10 +22,13 @@ Ditto always monitors the mesh network and can report the device names of peers
 it is connected to. You can manually set the device name of those peers and
 observe those peers in the network.
 
+:::info
+The device name must be set before `startSync()` is called.
+:::
+
 <SnippetGroup name="device-name" />
 
-Because ditto is a pull-based sync system, each device observes changes that
-other devices have made. If you want to observe changes made by a particular
+If you want to observe changes made by a particular
 device, include the device name as a field in the document and query for that field in
 your [ditto live query](../concepts/querying)
 
@@ -33,6 +36,28 @@ your [ditto live query](../concepts/querying)
 "status == 'open' && edited_by == 'deviceC'"
 ```
 
+
+## Sync Groups
+
+When peer-to-peer transports are enabled, all devices with the same App ID will
+normally form an interconnected mesh network. In some situations it may be
+desirable to have distinct groups of devices within the same app, so that
+connections will only be formed within each group. The `syncGroup` parameter
+changes that group membership. A device can only ever be in one sync group, which
+by default is group 0. Up to 2^32 distinct group numbers can be used in an app.
+
+This is an optimization, not a security control. If a connection is created
+manually, such as by specifying a `connect` transport, then devices from
+different sync groups will still sync as normal. If two groups of devices are
+intended to have access to different data sets, this must be enforced using
+Ditto's permissions system.
+
+For example, imagine an application that supports multiple different restaurant
+locations. When a device identifies itself to the Big Peer, it is given a
+location ID as part of the authentication callback. Before calling
+`startSync()`, you can use a different sync group for each restaurant.
+
+<SnippetGroup name="transport-sync-groups" />
 
 ## Connecting to a Remote Ditto Peer
 
