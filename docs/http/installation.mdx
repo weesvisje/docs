@@ -25,7 +25,7 @@ the HTTP API is external systems which integrate with `cloud.ditto.live`.
 The canonical root URL for the HTTP API can be found in your app's page on the Ditto Portal. The standard port 443 is used.
 
 ```bash
-curl https://{app_id}.cloud.ditto.live/api/v2
+curl https://{app_id}.cloud.ditto.live/api/v3
 ```
 
 ### Generating a Client ID
@@ -78,7 +78,7 @@ Currently, you can only specify a permission query on the _id field of a documen
 Once you have your API Key, you can use it as part of the `Authorization: Bearer` HTTP header in subsequent HTTP requests.
 
 ```
-curl --location --request POST 'https://{YOUR_APP_ID}.cloud.ditto.live/api/v2/store/write' \
+curl --location --request POST 'https://{YOUR_APP_ID}.cloud.ditto.live/api/v3/store/write' \
 --header 'X-DITTO-CLIENT-ID: AAAAAAAAAAAAAAAAAAAABQ==' \
 --header 'Authorization: Bearer {YOUR_API_KEY}' \
 --header 'Content-Type: application/json' \
