@@ -16,6 +16,6 @@ module.exports = common({
   api: {
     type: "link",
     label: "API Reference", 
-    href: downloadedChangelog.rustsdk.Ditto.latest.api_reference_docs_url,
+    href: downloadedChangelog.rustsdk.Ditto["3.0.1"].api_reference_docs_url,
   }
 })
