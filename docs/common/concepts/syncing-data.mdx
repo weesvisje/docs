@@ -256,8 +256,6 @@ subscription = ditto.store.collection("flights").find("createdAt > $args.yesterd
 
 *Your subscription variable should remain in scope throughout the runtime time of the app, so that it will continue to sync data and not be garbage collected. 
 
-Though there are different ways you may stop a subscription (setting it to null, reassigning its value) it is important to always call `cancel` on the subscription. 
-
 Subscriptions run asynchronously, which means that if you want to stop a subscription and evict the data it was syncing at the same time it is important to ensure your subscription has completely stopped before `evict` is called or else you may experience a race condition where the evict call happens before the subscription is stopped. The way to ensure your subscription completely stops before `evict` is called is by calling `cancel` on the subscription.
 ```
 // Start a subscription for syncing only red cars
