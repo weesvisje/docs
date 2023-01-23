@@ -83,7 +83,7 @@ Bluetooth Low Energy is a newer mode of Bluetooth that requires less power and d
 
 For a more detailed explanation, please look to our blog post [What's the Difference Between Bluetooth Classic and Bluetooth Low Energy?](https://ditto.live/blog/posts/whats-the-difference-between-btclassic-and-ble)
 
-### Does the SDK require Bluetooth paring?
+### Does the SDK require Bluetooth pairing?
 
 No. Ditto uses exclusively Bluetooth Low Energy, which does not require pairing.
 
