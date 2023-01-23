@@ -194,7 +194,7 @@ subscription = ditto.store.collection("flights").find("createdAt > $args.yesterd
 ```
 
 Notice that the query for eviction is exactly the opposite as the query for subscription. These
-queries should not overlap.
+queries should not overlap, so you must stop your subscription before you evict.
 Your subscription variable should remain in scope throughout the runtime time of the app, so that
 it will continue to sync data and not be garbage collected.
 
