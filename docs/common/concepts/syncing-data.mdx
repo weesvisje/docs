@@ -73,7 +73,7 @@ the data.
 <SnippetGroup name="subscribe" />
 
 * Call `.subscribe` after `ditto.startSync()` to synchronize and download real-time data from other peers.
-* To manually stop the `liveQuery`, set it either to `null`, drop the variable, or call `liveQuery.stop()`.
+* To stop the `subscription`, call `subscrption.cancel()`.
 
 ### Observe
 
@@ -164,18 +164,39 @@ ditto.store.collection("flights").find("createdAt <= $args.yesterday", args: [
 ```
 
 One way to implement eviction would be to create a global interval. For example,
-every 4 hours check to see if there is any data on the local machine that is
+every 24 hours check to see if there is any data on the local machine that is
 irrelevant. If so, evict it.
 
-Devices should periodically restart the query with a new date. Notice that the
-query for eviction is exactly the opposite as the query for subscription. These
-queries should not overlap.
+Whenever you have an eviction query that changes over time it is important that
+you also properly stop your subscription and update it with a new query each time your
+eviction query changes. This is because if you try to evict data that you are also subscribed to, then
+after you evict the data you will immediately sync it back to the device since the
+subscription is still syncing that data.
+
+Using the example of evicting data every 24 hours we will see how to stop the subscription, evict the data,
+and then start the new subscription.
 
 ```swift
-ditto.store.collection("flights").find("createdAt > $args.yesterday", args: [
+// 24 hours pass. Need to evict irrelevant data.
+
+// 1. Stop subscription
+subscription.cancel()
+
+// 2. Evict irrelevant data
+ditto.store.collection("flights").find("createdAt <= $args.yesterday", args: [
   "yesterday": yesterday(),
-]).subscribe()
+]).evict()
+
+// 3. Start new subscription
+subscription = ditto.store.collection("flights").find("createdAt > $args.yesterday", args: [
+                 "yesterday": yesterday(),
+               ]).subscribe()
 ```
+
+Notice that the query for eviction is exactly the opposite as the query for subscription. These
+queries should not overlap, so you must stop your subscription before you evict.
+Your subscription variable should remain in scope throughout the runtime time of the app, so that
+it will continue to sync data and not be garbage collected.
 
 
 ### 2. Stateful syncing
