@@ -164,18 +164,39 @@ ditto.store.collection("flights").find("createdAt <= $args.yesterday", args: [
 ```
 
 One way to implement eviction would be to create a global interval. For example,
-every 4 hours check to see if there is any data on the local machine that is
+every 24 hours check to see if there is any data on the local machine that is
 irrelevant. If so, evict it.
 
-Devices should periodically restart the query with a new date. Notice that the
-query for eviction is exactly the opposite as the query for subscription. These
-queries should not overlap.
+Whenever you have an eviction query that changes over time it is important that
+you also properly stop your subscription and update it with a new query each time your
+eviction query changes. This is because if you try to evict data that you are also subscribed to, then
+after you evict the data you will immediately sync it back to the device since the
+subscription is still syncing that data.
+
+Using the example of evicting data every 24 hours we will see how to stop the subscription, evict the data,
+and then start the new subscription.
 
 ```swift
-ditto.store.collection("flights").find("createdAt > $args.yesterday", args: [
+// 24 hours pass. Need to evict irrelevant data.
+
+// 1. Stop subscription
+subscription.cancel()
+
+// 2. Evict irrelevant data
+ditto.store.collection("flights").find("createdAt <= $args.yesterday", args: [
   "yesterday": yesterday(),
-]).subscribe()
+]).evict()
+
+// 3. Start new subscription
+subscription = ditto.store.collection("flights").find("createdAt > $args.yesterday", args: [
+                 "yesterday": yesterday(),
+               ]).subscribe()
 ```
+
+Notice that the query for eviction is exactly the opposite as the query for subscription. These
+queries should not overlap.
+Your subscription variable should remain in scope throughout the runtime time of the app, so that
+it will continue to sync data and not be garbage collected.
 
 
 ### 2. Stateful syncing
@@ -218,53 +239,3 @@ self.ditto.collection("orders").upsert([
 ])
 self.ditto.collection("orders").findByID(id).evict()
 ```
-
-
-### 3. Properly Stop Subscription Before Evicting
-
-When working with eviction and subscription it is important to remember that their queries should never overlap. This is because if you try to evict data that you are also subscribed to, then after you evict the data you will immediately sync it back to the device since the subscription is still syncing that data. To illustrate this we can use the same time-based syncing example that we used above. In this example we only want to sync/store data on the device that was created within the past 24 hours. Any data older than 24 hours should be removed from the device. Also, after 24 hours have passed we will need to update our subscription to make sure it is syncing the new correct 24 hour time frame.
-
-The flow would look like this:
-1. Start subscription
-```
-subscription = ditto.store.collection("flights").find("createdAt > $args.yesterday", args: [
-  "yesterday": yesterday(),
-]).subscribe()
-```
-
-2. 24 hours pass...
-
-3. Stop subscription 
-```
-Call cancel() to stop a subscription 
-subscription.cancel()
-```
-
-4. Evict old data
-```
-ditto.store.collection("flights").find("createdAt <= $args.yesterday", args: [
-  "yesterday": yesterday(),
-]).evict()
-```
-
-5. Start new subscription
-```
-subscription = ditto.store.collection("flights").find("createdAt > $args.yesterday", args: [
-  "yesterday": yesterday(),
-]).subscribe()
-```
-
-*Your subscription variable should remain in scope throughout the runtime time of the app, so that it will continue to sync data and not be garbage collected. 
-
-Subscriptions run asynchronously, which means that if you want to stop a subscription and evict the data it was syncing at the same time it is important to ensure your subscription has completely stopped before `evict` is called or else you may experience a race condition where the evict call happens before the subscription is stopped. The way to ensure your subscription completely stops before `evict` is called is by calling `cancel` on the subscription.
-```
-// Start a subscription for syncing only red cars
-subscription = ditto.store.collection("Cars").find("color == red").subscribe()
-
-// Stop subscription using cancel()
-subscription.cancel()
-
-// Evict all red cars
-ditto.store.collection("Cars").find("color == red").evict()
-```
-
