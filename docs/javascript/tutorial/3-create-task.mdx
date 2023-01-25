@@ -13,14 +13,15 @@ In the command line, the user can input a task they want to create using `readli
 1. `--delete`. We will parse the string without --delete and assume the user's input is a Task document's id. We can then find the document by it's id and toggle the `isDeleted` property
 
 ```js
-import { init, Ditto } from '@dittolive/ditto'
+
+import { init, Ditto, Document } from '@dittolive/ditto'
 import * as readline from 'readline/promises'
 import { stdin as input, stdout as output } from 'node:process';
 
 let ditto
 let subscription
 let liveQuery
-let tasks = []
+let tasks: Document[] = []
 
 async function main () {
   await init()
